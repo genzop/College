@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Ejercicio 15</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="code.js"></script>
+    </head>
+    <body>
+        <form onsubmit="ejercicio15()">
+            <table style="border-collapse: collapse; margin-left: 18px">
+                <h1>REGISTRO CLIENTE</h1>
+                <tr style="border-top: 3px darkkhaki solid">
+                    <td style="padding-top: 20px">Nombre:</td>
+                    <td style="padding-top: 20px">
+                        <input type="text" name="nombre" size="15">
+                    </td>
+                </tr>
+                <tr>
+                    <td>Primer Apellido:</td>
+                    <td>
+                        <input type="text" name="primerApellido" size="15">
+                    </td>
+                </tr>
+                <tr>
+                    <td>Segundo Apellido:</td>
+                    <td>
+                        <input type="text" name="segundoApellido" size="15">
+                    </td>
+                </tr>
+                <tr>
+                    <td>Teléfono del Contacto</td>
+                    <td>
+                        <input type="text" name="telefonoContacto" size="15">
+                    </td>
+                </tr>
+                <tr>
+                    <td>E-mail:</td>
+                    <td>
+                        <input type="text" name="email" size="15">
+                    </td>
+                </tr>
+                <tr>
+                    <td>Tipo de tarjeta:</td>
+                    <td>
+                        <select name="tipoTarjeta">
+                            <option value="Visa">1. Visa</option>
+                            <option value="Mastercard">2. Mastercard</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Numero de Tarjeta:</td>
+                    <td>
+                        <input type="text" name="numeroTarjeta" size="12">
+                    </td>
+                </tr>
+                <tr>
+                    <td>Nombre de Usuario:</td>
+                    <td>
+                        <input type="text" name="nombreUsuario" size="15">
+                    </td>
+                </tr>
+                <tr>
+                    <td>Contraseña:</td>
+                    <td>
+                        <input type="text" name="contrasenia" size="15">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding-bottom: 20px">Verificar Contraseñia:</td>
+                    <td style="padding-bottom: 20px">
+                        <input type="text" name="verificarContrasenia" size="15">
+                    </td>
+                </tr>
+                <tr style="border-top: 3px darkkhaki solid">
+                    <td style="text-align: center; padding-top: 20px">
+                        <input type="submit" value="Enviar">
+                    </td>
+                    <td style="text-align: center; padding-top: 20px">
+                        <input type="reset" value="Borrar">
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </body>
+</html>

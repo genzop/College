@@ -1,0 +1,29 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="BarraNavegacion.master.cs" Inherits="BarraNavegacion" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">    
+    <asp:ContentPlaceHolder id="header" runat="server"></asp:ContentPlaceHolder>
+    <link href="css/estilos.css" rel="stylesheet" />
+    <link href="css/bootstrap-grid-3.3.1.css" rel="stylesheet" />
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div>
+            <ul>
+                <li><asp:HyperLink ID="hlTurnos" runat="server" Text="Turnos" NavigateUrl="~/Turnos.aspx" /></li>
+                <li><asp:HyperLink ID="hlPacientes" runat="server" Text="Pacientes" NavigateUrl="~/Pacientes.aspx" /></li>    
+                <li><asp:HyperLink ID="hlFacturacion" runat="server" Text="Facturacion" NavigateUrl="~/Facturacion.aspx" /></li>
+                <li><asp:HyperLink ID="hlServicios" runat="server" Text="Servicios" NavigateUrl="~/Servicios.aspx" /></li>
+                <li><asp:HyperLink ID="hlMedicos" runat="server" Text="Medicos" NavigateUrl="~/Medicos.aspx" /></li>    
+                <li><asp:HyperLink ID="hlObraSocial" runat="server" Text="Obras Sociales" NavigateUrl="~/ObrasSociales.aspx" /></li>                            
+                <li style="float: right"><asp:HyperLink ID="hlCerrarSesion" runat="server" Text="Cerrar Sesion" NavigateUrl="~/LogIn.aspx" CssClass="active"/></li>
+            </ul>
+        </div>
+        <div>
+            <asp:ContentPlaceHolder ID="content" runat="server"></asp:ContentPlaceHolder>
+        </div>
+    </form>
+</body>
+</html>

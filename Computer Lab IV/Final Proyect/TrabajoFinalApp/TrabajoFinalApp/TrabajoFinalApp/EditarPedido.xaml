@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TrabajoFinalApp.EditarPedido">
+
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout Padding="10" BackgroundColor="#0d2625">
+
+                <Frame Padding="30" HorizontalOptions="FillAndExpand">
+                    <StackLayout>
+                        <Label Text="Pedido" FontSize="20" FontAttributes="Bold"/>
+                        <Entry x:Name="txtNumero" FontSize="17" Placeholder="Numero"/>
+                        <Picker x:Name="pickerCliente" Title="Cliente" HorizontalOptions="FillAndExpand" >
+                            <Picker.Items>
+                                <x:String>Enzo Panettieri</x:String>
+                                <x:String>Sarah Mangiavacchi</x:String>
+                            </Picker.Items>
+                        </Picker>
+                        <Picker x:Name="pickerEstado" Title="Estado" HorizontalOptions="FillAndExpand" >
+                            <Picker.Items>
+                                <x:String>Enviado</x:String>
+                                <x:String>Entregado</x:String>
+                            </Picker.Items>
+                        </Picker>
+                        <DatePicker x:Name="dateFechaPedido" Format="dd-MM-yyyy"></DatePicker>
+                        
+                        <Label Text="Domicilio" FontSize="20" FontAttributes="Bold" Margin="0, 30, 0, 0"/>
+                        <Entry x:Name="txtCalle" FontSize="17" Placeholder="Calle"/>
+                        <Entry x:Name="txtCalleNumero" FontSize="17" Placeholder="N°"/>
+                        <Picker x:Name="pickerLocalidad" Title="Localidad" HorizontalOptions="FillAndExpand" >
+                            <Picker.Items>
+                                <x:String>Guaymallen</x:String>
+                                <x:String>Capital</x:String>
+                            </Picker.Items>
+                        </Picker>
+                        <Entry x:Name="txtLatitud" FontSize="17" Placeholder="Latitud"/>
+                        <Entry x:Name="txtLongitud" FontSize="17" Placeholder="Longitud"/>
+
+                        <ListView x:Name="listDetalles"></ListView>
+
+                        <Label x:Name="lblSubTotal" FontSize="17" Text="25"/>
+                        <Entry x:Name="txtGastosEnvio" FontSize="17" Placeholder="Gastos de envio"/>
+                        <Label x:Name="lblTotal" FontSize="17" Text="40"/>
+                    </StackLayout>                    
+                </Frame>
+                
+                
+                
+
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

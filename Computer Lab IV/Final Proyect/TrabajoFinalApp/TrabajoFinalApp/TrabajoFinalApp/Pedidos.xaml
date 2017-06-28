@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TrabajoFinalApp.Pedidos">
+
+    <ContentPage.Content>
+        <StackLayout Padding="10" BackgroundColor="#0d2625">
+
+            <StackLayout Orientation="Horizontal" BackgroundColor="#0d2625" Margin="0, 5, 0, 10">
+                <Frame Padding="0, 2, 10, 2" HorizontalOptions="FillAndExpand">
+                    <SearchBar x:Name="txtBuscar" Placeholder="Buscar cliente..." TextChanged="txtBuscar_TextChanged" FontSize="17"/>
+                </Frame>
+            </StackLayout>
+
+            <ListView x:Name="listPedidos" HasUnevenRows="True" ItemTapped="listPedidos_ItemTapped">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Frame Margin="0, 0, 0, 5" Padding="0">
+                                <StackLayout BackgroundColor="White" Padding="10">
+                                    <StackLayout Orientation="Horizontal">
+                                        <StackLayout Orientation="Horizontal">
+                                            <Label Text="#" FontSize="15"/>
+                                            <Label Text="{Binding NroPedido}" FontSize="15" FontAttributes="Bold" TextColor="Black"/>
+                                        </StackLayout>
+                                        <StackLayout Orientation="Horizontal" HorizontalOptions="EndAndExpand">
+                                            <Label Text="Cliente:" FontSize="15"/>
+                                            <Label Text="{Binding Cliente}" FontSize="15" FontAttributes="Bold" TextColor="Black"/>
+                                        </StackLayout>
+                                    </StackLayout>
+                                    <StackLayout Orientation="Horizontal">
+                                        <StackLayout Orientation="Horizontal">
+                                            <Label Text="Estado:" FontSize="15"/>
+                                            <Label Text="{Binding Estado}" FontSize="15" FontAttributes="Bold" TextColor="Black"/>
+                                        </StackLayout>
+                                        <StackLayout Orientation="Horizontal" HorizontalOptions="EndAndExpand">
+                                            <Label Text="Total: $" FontSize="15"/>
+                                            <Label Text="{Binding MontoTotal}" FontSize="15" FontAttributes="Bold" TextColor="Black"/>
+                                        </StackLayout>
+                                    </StackLayout>
+                                </StackLayout>
+                            </Frame>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <StackLayout Orientation="Horizontal" Margin="0, 10, 0, 10" HorizontalOptions="CenterAndExpand" Spacing="100">
+                <Image Source="insertar" WidthRequest="50"/>
+                <Image Source="exportar" WidthRequest="50"/>
+            </StackLayout>
+
+        </StackLayout>
+    </ContentPage.Content>    
+</ContentPage>

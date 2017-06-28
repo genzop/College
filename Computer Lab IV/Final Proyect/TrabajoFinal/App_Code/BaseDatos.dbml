@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="TrabajoFinal" Class="BaseDatosDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="WebSettings" ConnectionString="Data Source=DESKTOP-VLDD9KS;Initial Catalog=TrabajoFinal;Integrated Security=True" SettingsObjectName="System.Configuration.ConfigurationManager.ConnectionStrings" SettingsPropertyName="TrabajoFinalConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.Articulo" Member="Articulos">
+    <Type Name="Articulo">
+      <Column Name="IdArticulo" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Denominacion" Type="System.String" DbType="VarChar(200)" CanBeNull="true" />
+      <Column Name="Codigo" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
+      <Column Name="PrecioCompra" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="PrecioVenta" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="Iva" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="IdRubro" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="Articulo_PedidoVentaDetalle" Member="PedidoVentaDetalles" ThisKey="IdArticulo" OtherKey="IdArticulo" Type="PedidoVentaDetalle" />
+      <Association Name="Rubro_Articulo" Member="Rubro" ThisKey="IdRubro" OtherKey="IdRubro" Type="Rubro" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Vendedor" Member="Vendedors">
+    <Type Name="Vendedor">
+      <Column Name="IdVendedor" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Usuario" Type="System.String" DbType="VarChar(12)" CanBeNull="true" />
+      <Column Name="Contrasenia" Type="System.String" DbType="VarChar(12)" CanBeNull="true" />
+      <Column Name="Nombre" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Apellido" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Association Name="Vendedor_PedidoVenta" Member="PedidoVentas" ThisKey="IdVendedor" OtherKey="IdVendedor" Type="PedidoVenta" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Cliente" Member="Clientes">
+    <Type Name="Cliente">
+      <Column Name="IdCliente" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="RazonSocial" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="Cuit" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
+      <Column Name="Saldo" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="IdDomicilio" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="Cliente_PedidoVenta" Member="PedidoVentas" ThisKey="IdCliente" OtherKey="IdCliente" Type="PedidoVenta" />
+      <Association Name="Domicilio_Cliente" Member="Domicilio" ThisKey="IdDomicilio" OtherKey="IdDomicilio" Type="Domicilio" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Domicilio" Member="Domicilios">
+    <Type Name="Domicilio">
+      <Column Name="IdDomicilio" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Calle" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="Numero" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Localidad" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="Latitud" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="Longitud" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Association Name="Domicilio_Cliente" Member="Clientes" ThisKey="IdDomicilio" OtherKey="IdDomicilio" Type="Cliente" />
+      <Association Name="Domicilio_PedidoVenta" Member="PedidoVentas" ThisKey="IdDomicilio" OtherKey="IdDomicilio" Type="PedidoVenta" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PedidoVenta" Member="PedidoVentas">
+    <Type Name="PedidoVenta">
+      <Column Name="IdPedidoVenta" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="FechaEstimadaEntrega" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="GastosEnvio" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="Estado" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
+      <Column Name="Entregado" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="FechaPedido" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="NroPedido" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="SubTotal" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="MontoTotal" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="Editable" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="IdDomicilio" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="IdCliente" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="IdVendedor" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="PedidoVenta_PedidoVentaDetalle" Member="PedidoVentaDetalles" ThisKey="IdPedidoVenta" OtherKey="IdPedidoVenta" Type="PedidoVentaDetalle" />
+      <Association Name="Cliente_PedidoVenta" Member="Cliente" ThisKey="IdCliente" OtherKey="IdCliente" Type="Cliente" IsForeignKey="true" />
+      <Association Name="Domicilio_PedidoVenta" Member="Domicilio" ThisKey="IdDomicilio" OtherKey="IdDomicilio" Type="Domicilio" IsForeignKey="true" />
+      <Association Name="Vendedor_PedidoVenta" Member="Vendedor" ThisKey="IdVendedor" OtherKey="IdVendedor" Type="Vendedor" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PedidoVentaDetalle" Member="PedidoVentaDetalles">
+    <Type Name="PedidoVentaDetalle">
+      <Column Name="IdPedidoVentaDetalle" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Cantidad" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="SubTotal" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="PorcentajeDescuento" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="IdPedidoVenta" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="IdArticulo" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="Articulo_PedidoVentaDetalle" Member="Articulo" ThisKey="IdArticulo" OtherKey="IdArticulo" Type="Articulo" IsForeignKey="true" />
+      <Association Name="PedidoVenta_PedidoVentaDetalle" Member="PedidoVenta" ThisKey="IdPedidoVenta" OtherKey="IdPedidoVenta" Type="PedidoVenta" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Rubro" Member="Rubros">
+    <Type Name="Rubro">
+      <Column Name="IdRubro" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Codigo" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
+      <Column Name="Denominacion" Type="System.String" DbType="VarChar(200)" CanBeNull="true" />
+      <Column Name="IdRubroSuperior" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="Rubro_Articulo" Member="Articulos" ThisKey="IdRubro" OtherKey="IdRubro" Type="Articulo" />
+      <Association Name="Rubro_Rubro" Member="Rubros" ThisKey="IdRubro" OtherKey="IdRubroSuperior" Type="Rubro" />
+      <Association Name="Rubro_Rubro" Member="Rubro1" ThisKey="IdRubroSuperior" OtherKey="IdRubro" Type="Rubro" IsForeignKey="true" />
+    </Type>
+  </Table>
+</Database>

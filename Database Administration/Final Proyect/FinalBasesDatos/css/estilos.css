@@ -1,0 +1,121 @@
+﻿body {
+    margin: 0;
+    background-color: #D8D8D8;
+    font-family: Verdana;
+}
+
+/* Barra de navegacion */
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid #e7e7e7;
+    background-color: #f3f3f3;
+}
+
+li {
+    float: left;
+}
+
+    li a {
+        display: block;
+        color: #666;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+    }
+
+        li a:hover:not(.active) {
+            background-color: #ddd;
+        }
+
+        li a.active {
+            color: white;
+            background-color: #333333;
+            font-weight: bold;
+        }
+
+/* Formulario */
+.formulario {
+    margin: 0 auto;
+    width: 240px;
+    background-color: #FFFFFF;
+    padding: 30px 50px;
+    text-align: center;
+    box-shadow: 5px 5px 5px #888888;
+}
+
+/* Input */
+.tituloInput {
+    font-size: 11px;
+    font-weight: bold;
+    padding-left: 5px;
+}
+
+.input {
+    padding: 8px;
+    width: 220px;
+    margin-top: 5px;
+}
+
+/* Campo Formulario*/
+.campoFormulario {
+    text-align: left;
+    padding-bottom: 8px;
+}
+
+/* Boton */
+.colorButton {
+    font-weight: bold;
+    color: #FFFFFF;
+    padding: 8px 50px;
+    background-color: #333333;
+    border: 0;
+    margin-top: 20px;
+}
+
+    .colorButton:hover {
+        background-color: #555555;
+    }
+
+/* Titulo */
+.titulo {
+    color: #000000;
+    font-weight: bold;
+    font-size: 30px;
+}
+
+.subtitulo {
+    color: #000000;
+    font-weight: bold;
+    font-size: 23px;
+}
+
+/* Link */
+.link {
+    font-size: 12px;
+    font-weight: bold;
+    text-decoration: none;
+    color: #0000DD;
+}
+
+    .link:hover {
+        color: #0088DD;
+    }
+
+/* Validacion */
+.validacion {
+    font-size: 10px;
+    color: #FF0000;
+    font-weight: bold;
+}
+
+.formularioTom {
+    margin: 0 auto;
+    width: 80%;
+    background-color: #FFFFFF;
+    padding: 30px 50px;
+    text-align: center;
+    box-shadow: 5px 5px 5px #888888;
+}

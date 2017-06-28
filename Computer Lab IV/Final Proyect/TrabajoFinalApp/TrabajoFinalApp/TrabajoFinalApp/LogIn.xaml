@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TrabajoFinalApp.LogIn">
+
+    <ContentPage.Content>
+        <StackLayout BackgroundColor="#0d2625" Padding="20">
+            <Image Source="utnGrande" WidthRequest="250" Margin="0, 80, 0 ,0"/>
+
+            <Frame Padding="20, 5, 20, 5" HorizontalOptions="FillAndExpand" Margin="0, 30, 0 ,0">
+                <Entry x:Name="txtUsuario" FontSize="17" Placeholder="Usuario"/>
+            </Frame>
+
+            <Frame Padding="20, 5, 20, 5" HorizontalOptions="FillAndExpand">
+                <Entry x:Name="txtContrasenia" IsPassword="True" FontSize="17" Placeholder="Contraseña"/>
+            </Frame>
+
+            <Button x:Name="btnLogIn" Text="Ingresar" BackgroundColor="#3AAFA9" TextColor="#FEFFFF" Margin="0, 30, 0, 0"/>
+            
+            <Image Source="importar" WidthRequest="50" Margin="0, 40, 0, 0"/>
+        </StackLayout>            
+    </ContentPage.Content>
+</ContentPage>

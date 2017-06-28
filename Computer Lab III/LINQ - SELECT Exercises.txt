@@ -1,0 +1,31 @@
+SELECT * FROM Employees 
+
+SELECT * FROM Employees WHERE City = 'London'
+
+SELECT * FROM Employees WHERE City = 'London' AND TitleOfCourtesy = 'Mr.'
+
+SELECT * FROM Employees WHERE Country = 'USA' Or City = 'Seattle'
+
+SELECT * FROM Employees WHERE Title LIKE 'Sales%'
+
+SELECT * FROM Products ORDER BY UnitsInStock ASC
+
+SELECT * FROM Products ORDER BY UnitsInStock DESC
+
+SELECT City, count(*) as Customers FROM Customers GROUP BY City
+
+SELECT COUNT(UnitPrice) FROM Products WHERE UnitPrice > 0
+
+SELECT MAX(UnitPrice) FROM Products WHERE UnitPrice > 0
+
+SELECT AVG(UnitPrice) FROM Products WHERE UnitPrice > 0
+
+SELECT TOP 1 UnitPrice FROM Products WHERE UnitPrice > 0		
+
+SELECT * FROM Products INNER JOIN Categories ON Products.CategoryID = Categories.CategoryID
+
+INSERT INTO Customers (CustomerID, CompanyName) VALUES ('UTN', 'Universidad Tecnologica Nacional');
+
+UPDATE Customers SET Region = 'AR' WHERE Region is NULL 
+
+DELETE FROM Customers WHERE CustomerID = 'UTN'

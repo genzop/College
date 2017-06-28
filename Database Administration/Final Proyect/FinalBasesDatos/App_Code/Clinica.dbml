@@ -1,0 +1,196 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="FinalBaseDatos" Class="ClinicaDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="WebSettings" ConnectionString="Data Source=DESKTOP-VLDD9KS;Initial Catalog=FinalBaseDatos;Integrated Security=True" SettingsObjectName="System.Configuration.ConfigurationManager.ConnectionStrings" SettingsPropertyName="FinalBaseDatosConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.Especialidad" Member="Especialidads">
+    <Type Name="Especialidad">
+      <Column Name="ID_Especialidad" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Habilitado" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="Denominacion" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Association Name="Especialidad_MedicoEspecialidad" Member="MedicoEspecialidads" ThisKey="ID_Especialidad" OtherKey="ID_Especialidad" Type="MedicoEspecialidad" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Usuario" Member="Usuarios">
+    <Type Name="Usuario">
+      <Column Name="ID_Usuario" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Habilitado" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="Nombre" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="Contrasenia" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="ID_TipoUsuario" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="Usuario_Medico" Member="Medicos" ThisKey="ID_Usuario" OtherKey="ID_Usuario" Type="Medico" />
+      <Association Name="TipoUsuario_Usuario" Member="TipoUsuario" ThisKey="ID_TipoUsuario" OtherKey="ID_TipoUsuario" Type="TipoUsuario" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Factura" Member="Facturas">
+    <Type Name="Factura">
+      <Column Name="ID_Factura" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Habilitado" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="Tipo" Type="System.Char" DbType="Char(1) NOT NULL" CanBeNull="false" />
+      <Column Name="Fecha" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Estado" Type="System.String" DbType="VarChar(30) NOT NULL" CanBeNull="false" />
+      <Column Name="SubTotal" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="Iva" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="Total" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="ID_Paciente" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="Factura_FacturaDetalle" Member="FacturaDetalles" ThisKey="ID_Factura" OtherKey="ID_Factura" Type="FacturaDetalle" />
+      <Association Name="Paciente_Factura" Member="Paciente" ThisKey="ID_Paciente" OtherKey="ID_Paciente" Type="Paciente" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.FacturaDetalle" Member="FacturaDetalles">
+    <Type Name="FacturaDetalle">
+      <Column Name="ID_FacturaDetalle" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Habilitado" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="ID_Factura" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ID_Servicio" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Cantidad" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="SubTotal" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Association Name="Factura_FacturaDetalle" Member="Factura" ThisKey="ID_Factura" OtherKey="ID_Factura" Type="Factura" IsForeignKey="true" />
+      <Association Name="Servicio_FacturaDetalle" Member="Servicio" ThisKey="ID_Servicio" OtherKey="ID_Servicio" Type="Servicio" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Medico" Member="Medicos">
+    <Type Name="Medico">
+      <Column Name="ID_Medico" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Habilitado" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="Nombre" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Apellido" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Matricula" Type="System.String" DbType="VarChar(10)" CanBeNull="true" />
+      <Column Name="ID_Usuario" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="Medico_MedicoEspecialidad" Member="MedicoEspecialidads" ThisKey="ID_Medico" OtherKey="ID_Medico" Type="MedicoEspecialidad" />
+      <Association Name="Medico_MedicoServicio" Member="MedicoServicios" ThisKey="ID_Medico" OtherKey="ID_Medico" Type="MedicoServicio" />
+      <Association Name="Medico_Turno" Member="Turnos" ThisKey="ID_Medico" OtherKey="ID_Medico" Type="Turno" />
+      <Association Name="Usuario_Medico" Member="Usuario" ThisKey="ID_Usuario" OtherKey="ID_Usuario" Type="Usuario" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.MedicoEspecialidad" Member="MedicoEspecialidads">
+    <Type Name="MedicoEspecialidad">
+      <Column Name="ID_MedicoEspecialidad" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Habilitado" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="ID_Medico" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ID_Especialidad" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="Especialidad_MedicoEspecialidad" Member="Especialidad" ThisKey="ID_Especialidad" OtherKey="ID_Especialidad" Type="Especialidad" IsForeignKey="true" />
+      <Association Name="Medico_MedicoEspecialidad" Member="Medico" ThisKey="ID_Medico" OtherKey="ID_Medico" Type="Medico" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.MedicoServicio" Member="MedicoServicios">
+    <Type Name="MedicoServicio">
+      <Column Name="ID_MedicoServicio" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Habilitado" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="ID_Medico" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ID_Servicio" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="Medico_MedicoServicio" Member="Medico" ThisKey="ID_Medico" OtherKey="ID_Medico" Type="Medico" IsForeignKey="true" />
+      <Association Name="Servicio_MedicoServicio" Member="Servicio" ThisKey="ID_Servicio" OtherKey="ID_Servicio" Type="Servicio" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ObraSocial" Member="ObraSocials">
+    <Type Name="ObraSocial">
+      <Column Name="ID_ObraSocial" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Habilitado" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="Nombre" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="Direccion" Type="System.String" DbType="VarChar(100)" CanBeNull="true" />
+      <Column Name="Localidad" Type="System.String" DbType="VarChar(30)" CanBeNull="true" />
+      <Column Name="Telefono" Type="System.String" DbType="VarChar(15)" CanBeNull="true" />
+      <Association Name="ObraSocial_Plan" Member="Plans" ThisKey="ID_ObraSocial" OtherKey="ID_ObraSocial" Type="Plan" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PacientePlan" Member="PacientePlans">
+    <Type Name="PacientePlan">
+      <Column Name="ID_PacientePlan" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Habilitado" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="ID_Paciente" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ID_Plan" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Estado" Type="System.String" DbType="VarChar(30) NOT NULL" CanBeNull="false" />
+      <Column Name="FechaInicio" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="FechaFin" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Association Name="Plan_PacientePlan" Member="Plan" ThisKey="ID_Plan" OtherKey="ID_Plan" Type="Plan" IsForeignKey="true" />
+      <Association Name="Paciente_PacientePlan" Member="Paciente" ThisKey="ID_Paciente" OtherKey="ID_Paciente" Type="Paciente" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.[Plan]" Member="Plans">
+    <Type Name="Plan">
+      <Column Name="ID_Plan" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Habilitado" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="Denominacion" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Descuento" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="ID_ObraSocial" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="Plan_PacientePlan" Member="PacientePlans" ThisKey="ID_Plan" OtherKey="ID_Plan" Type="PacientePlan" />
+      <Association Name="ObraSocial_Plan" Member="ObraSocial" ThisKey="ID_ObraSocial" OtherKey="ID_ObraSocial" Type="ObraSocial" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Servicio" Member="Servicios">
+    <Type Name="Servicio">
+      <Column Name="ID_Servicio" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Habilitado" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="Denominacion" Type="System.String" DbType="VarChar(50)" CanBeNull="true" />
+      <Column Name="Precio" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Association Name="Servicio_FacturaDetalle" Member="FacturaDetalles" ThisKey="ID_Servicio" OtherKey="ID_Servicio" Type="FacturaDetalle" />
+      <Association Name="Servicio_MedicoServicio" Member="MedicoServicios" ThisKey="ID_Servicio" OtherKey="ID_Servicio" Type="MedicoServicio" />
+    </Type>
+  </Table>
+  <Table Name="dbo.TipoUsuario" Member="TipoUsuarios">
+    <Type Name="TipoUsuario">
+      <Column Name="ID_TipoUsuario" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Habilitado" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="Denominacion" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
+      <Association Name="TipoUsuario_Usuario" Member="Usuarios" ThisKey="ID_TipoUsuario" OtherKey="ID_TipoUsuario" Type="Usuario" />
+    </Type>
+  </Table>
+  <Table Name="dbo.HistoriaClinica" Member="HistoriaClinicas">
+    <Type Name="HistoriaClinica">
+      <Column Name="ID_HistoriaClinica" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="GrupoSanguineo" Type="System.String" DbType="NChar(10)" CanBeNull="true" />
+      <Column Name="AntecedentesFamiliares" Type="System.String" DbType="NChar(50)" CanBeNull="true" />
+      <Column Name="Alergias" Type="System.String" DbType="NChar(50)" CanBeNull="true" />
+      <Column Name="Enfermedades" Type="System.String" DbType="NChar(30)" CanBeNull="true" />
+      <Association Name="HistoriaClinica_Paciente" Member="Pacientes" ThisKey="ID_HistoriaClinica" OtherKey="ID_HistoriaClinica" Type="Paciente" />
+      <Association Name="HistoriaClinica_ConsultaHistoriaClinica" Member="ConsultaHistoriaClinicas" ThisKey="ID_HistoriaClinica" OtherKey="ID_HistoriaClinica" Type="ConsultaHistoriaClinica" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Paciente" Member="Pacientes">
+    <Type Name="Paciente">
+      <Column Name="ID_Paciente" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Nombre" Type="System.String" DbType="VarChar(30) NOT NULL" CanBeNull="false" />
+      <Column Name="Apellido" Type="System.String" DbType="VarChar(30) NOT NULL" CanBeNull="false" />
+      <Column Name="Sexo" Type="System.Char" DbType="Char(1)" CanBeNull="true" />
+      <Column Name="Dni" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="FechaNacimiento" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="EstadoCivil" Type="System.Char" DbType="Char(1)" CanBeNull="true" />
+      <Column Name="Domicilio" Type="System.String" DbType="NChar(50)" CanBeNull="true" />
+      <Column Name="Localidad" Type="System.String" DbType="NChar(20)" CanBeNull="true" />
+      <Column Name="Telefono" Type="System.String" DbType="NChar(10)" CanBeNull="true" />
+      <Column Name="Email" Type="System.String" DbType="NChar(50)" CanBeNull="true" />
+      <Column Name="Ocupacion" Type="System.String" DbType="NChar(25)" CanBeNull="true" />
+      <Column Name="ID_HistoriaClinica" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="Paciente_Factura" Member="Facturas" ThisKey="ID_Paciente" OtherKey="ID_Paciente" Type="Factura" />
+      <Association Name="Paciente_PacientePlan" Member="PacientePlans" ThisKey="ID_Paciente" OtherKey="ID_Paciente" Type="PacientePlan" />
+      <Association Name="Paciente_Turno" Member="Turnos" ThisKey="ID_Paciente" OtherKey="ID_Paciente" Type="Turno" />
+      <Association Name="HistoriaClinica_Paciente" Member="HistoriaClinica" ThisKey="ID_HistoriaClinica" OtherKey="ID_HistoriaClinica" Type="HistoriaClinica" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Turno" Member="Turnos">
+    <Type Name="Turno">
+      <Column Name="ID_Turno" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="FechaHora" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Estado" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="ID_Paciente" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="ID_Medico" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="Medico_Turno" Member="Medico" ThisKey="ID_Medico" OtherKey="ID_Medico" Type="Medico" IsForeignKey="true" />
+      <Association Name="Paciente_Turno" Member="Paciente" ThisKey="ID_Paciente" OtherKey="ID_Paciente" Type="Paciente" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ConsultaHistoriaClinica" Member="ConsultaHistoriaClinicas">
+    <Type Name="ConsultaHistoriaClinica">
+      <Column Name="ID_ConsultaHistoriaClinica" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ID_HistoriaClinica" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Peso" Type="System.Decimal" DbType="Decimal(6,3) NOT NULL" CanBeNull="false" />
+      <Column Name="Altura" Type="System.Decimal" DbType="Decimal(3,2) NOT NULL" CanBeNull="false" />
+      <Column Name="Sintomas" Type="System.String" DbType="NChar(10)" CanBeNull="true" />
+      <Column Name="DiagnosticoPresunto" Type="System.String" DbType="NChar(10)" CanBeNull="true" />
+      <Column Name="PedidoEstudio" Type="System.String" DbType="NChar(10) NOT NULL" CanBeNull="false" />
+      <Column Name="Derivaciones" Type="System.String" DbType="NChar(10) NOT NULL" CanBeNull="false" />
+      <Column Name="Tratamiento" Type="System.String" DbType="NChar(10)" CanBeNull="true" />
+      <Column Name="Receta" Type="System.String" DbType="NChar(10) NOT NULL" CanBeNull="false" />
+      <Column Name="ProximoControl" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="Alta" Type="System.Byte" DbType="TinyInt NOT NULL" CanBeNull="false" />
+      <Association Name="HistoriaClinica_ConsultaHistoriaClinica" Member="HistoriaClinica" ThisKey="ID_HistoriaClinica" OtherKey="ID_HistoriaClinica" Type="HistoriaClinica" IsForeignKey="true" />
+    </Type>
+  </Table>
+</Database>

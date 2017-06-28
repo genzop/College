@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Ejercicio 1</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="jquery-3.1.1.js"></script>
+        <script src="code.js"></script>
+    </head>
+    <body>
+        <form>
+            <table style="border-collapse: collapse; margin-left: auto; margin-right: auto; width: 50%; font-family: arial; font-size: 12px">
+                <tr>
+                    <td style="border: 1px black solid; text-align: center" colspan="2">
+                        <img src="Olimpiadas.jpg"/>
+                    </td>                                    
+                </tr>
+                <tr>
+                    <td style="border: 1px black solid; font-weight: bold; width: 50%">
+                        Deporte
+                    </td>
+                    <td style="border: 1px black solid; width: 50%">
+                        <input type="text" id="deporte" name="deporte" >
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border: 1px black solid; font-weight: bold; width: 50%">
+                        Clasificación
+                    </td>
+                    <td style="border: 1px black solid; width: 50%">
+                        <select id="clasificacion" name="clasificacion">
+                            <option value="Medición por tiempo">Medición por tiempo</option>
+                            <option value="Deporte de Anotación">Deporte de Anotación</option>
+                            <option value="Deporte de Calificación">Deporte de Califcación</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border: 1px black solid; font-weight: bold; width: 50%">
+                        Tipo
+                    </td>
+                    <td style="border: 1px black solid; width: 50%">
+                        <table>
+                            <tr>
+                                <td><input type="radio" id="tipoColectivo" name="tipo" value="Colectivo"></td>
+                                <td>Colectivo</td>
+                            </tr>
+                            <tr>
+                                <td><input type="radio" id="tipoIndividual" name="tipo" value="Individual"></td>
+                                <td>Individual</td>
+                            </tr>                            
+                        </table>                                              
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border: 1px black solid; font-weight: bold; width: 50%">
+                        Cantidad de jugadores
+                    </td>
+                    <td style="border: 1px black solid; width: 50%">
+                        <input type="text" id="cantJugadores" name="cantJugadores">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border: 1px black solid; font-weight: bold; width: 50%">
+                        Categoria
+                    </td>
+                    <td style="border: 1px black solid; width: 50%">
+                        <table>
+                            <tr>
+                                <td><input type="checkbox" id="categoriaInfatil" name="categoriaInfantil" value="Infatil"></td>
+                                <td>Infantil</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" id="categoriaJuvenil" name="categoriaJuvenil" value="Juvenil"></td>
+                                <td>Juvenil</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" id="categoriaMayores" name="categoriaMayores" value="Mayores"></td>
+                                <td>Mayores</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border: 1px black solid; font-weight: bold; width: 50%">
+                        Descripción
+                    </td>
+                    <td style="border: 1px black solid; width: 50%">
+                        <textarea id="descripcion" name="descripcion" rows="8" cols="34"></textarea>   
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border: 1px black solid; font-weight: bold; width: 50%"></td>
+                    <td style="border: 1px black solid; width: 50%">     
+                        <button onclick="validarMostrarDatos()">JavaScript / JQuery</button>
+                    </td>
+                </tr>                
+            </table>
+        </form>
+    </body>
+</html>
