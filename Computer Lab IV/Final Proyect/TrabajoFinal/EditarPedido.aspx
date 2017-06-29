@@ -112,7 +112,7 @@
                                 <asp:RegularExpressionValidator ID="revLongitud" runat="server" ValidationGroup="Pedido" ControlToValidate="txtLongitud" ValidationExpression="[+-]?([0-9]*[,])?[0-9]+" ErrorMessage="* La longitud solo puede ser un numero" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
                             </div>
 
-                            <asp:Button ID="btnAccion" runat="server" ValidationGroup="Pedido" Text="Texto temporal" CssClass="botonImportante" Width="200px" OnClick="btnAccion_Click" />
+                            <asp:Button ID="btnAccion" runat="server" ValidationGroup="Pedido" Text="Guardar" CssClass="botonImportante" Width="200px" OnClick="btnAccion_Click" />
                         </div>
                     </div>
                 </asp:TableCell>
@@ -121,7 +121,7 @@
                     <!-- Tabla Detalles -->
                     <p id="lblDetalles" runat="server" style="color: #FEFFFF; font-family: Arial; font-size: 25px; font-weight: bold">Detalles</p>
 
-                    <asp:GridView ID="grdDetalles" runat="server" AutoGenerateColumns="False" ForeColor="#333333" GridLines="None" Font-Size="14px" AllowPaging="True" AllowSorting="True" BorderWidth="0px" Style="text-align: center; width: 100%" DataSourceID="SqlDataSource1" CssClass="tablaDetalles" DataKeyNames="IdPedidoVentaDetalle">
+                    <asp:GridView ID="grdDetalles" runat="server" AutoGenerateColumns="False" ForeColor="#333333" GridLines="None" Font-Size="14px" AllowPaging="True" AllowSorting="True" BorderWidth="0px" Style="text-align: center; width: 100%" CssClass="tablaDetalles">
                         <AlternatingRowStyle BackColor="#F2F2F2" />
                         <Columns>
                             <asp:BoundField DataField="Denominacion" HeaderText="Articulo" SortExpression="Denominacion" ItemStyle-Width="30%" />
@@ -150,11 +150,7 @@
                         <SortedDescendingCellStyle BackColor="#E9EBEF" />
                         <SortedDescendingHeaderStyle BackColor="#2b7a78" />
                     </asp:GridView>
-                    <asp:SqlDataSource ID="SqlDataSource1" runat="server" ConnectionString="<%$ ConnectionStrings:TrabajoFinalConnectionString %>" SelectCommand="SELECT PedidoVentaDetalle.IdPedidoVentaDetalle, PedidoVentaDetalle.Cantidad, PedidoVentaDetalle.PorcentajeDescuento, PedidoVentaDetalle.SubTotal, Articulo.Denominacion FROM PedidoVentaDetalle INNER JOIN Articulo ON PedidoVentaDetalle.IdArticulo = Articulo.IdArticulo WHERE PedidoVentaDetalle.IdPedidoVenta=@pedidoVenta">
-                        <SelectParameters>
-                            <asp:QueryStringParameter Name="pedidoVenta" QueryStringField="id" />
-                        </SelectParameters>
-                    </asp:SqlDataSource>
+                    <asp:SqlDataSource ID="SqlDataSource1" runat="server" ConnectionString="<%$ ConnectionStrings:TrabajoFinalConnectionString %>" SelectCommand=""></asp:SqlDataSource>
                     <br />
                     <div>
                         <asp:ImageButton ID="imgbtnAdd" runat="server" ImageUrl="~/img/addDetalle.png" Width="150px" CausesValidation="false" OnClick="imgbtnAdd_Click"/>                                                                

@@ -14,9 +14,9 @@
         </div><br />
 
         <!-- Buscar -->
-        <div style="width: 1300px; margin: 0 auto">
+        <div style="width: 1000px; margin: 0 auto">
             <asp:DropDownList ID="ddlBuscar" runat="server" Style="padding-left: 5px" Height="37px" BackColor="#f2f2f2">
-                <asp:ListItem Text="Razon Social" Value="Cliente.RazonSocial" />
+                <asp:ListItem Text="Cliente" Value="Cliente.RazonSocial" />
                 <asp:ListItem Text="Estado" Value="PedidoVenta.Estado" />
                 <asp:ListItem Text="Fecha" Value="PedidoVenta.FechaPedido" />
                 <asp:ListItem Text="Fecha de Entrega" Value="PedidoVenta.FechaEstimadaEntrega" />
@@ -30,16 +30,13 @@
         <div>
 
             <!-- Tabla Pedidos -->
-            <asp:GridView ID="grdPedidos" runat="server" AutoGenerateColumns="False" CellPadding="6" DataSourceID="SqlDataSource1" ForeColor="#333333" GridLines="None" Font-Size="14px" AllowPaging="True" AllowSorting="True" BorderWidth="0px" Style="margin: 0 auto; margin-top: 20px; text-align: center; width: 1300px" DataKeyNames="IdPedidoVenta">
+            <asp:GridView ID="grdPedidos" runat="server" AutoGenerateColumns="False" CellPadding="6" DataSourceID="SqlDataSource1" ForeColor="#333333" GridLines="None" Font-Size="14px" AllowPaging="True" AllowSorting="True" BorderWidth="0px" Style="margin: 0 auto; margin-top: 20px; text-align: center; width: 1000px" DataKeyNames="IdPedidoVenta">
                 <AlternatingRowStyle BackColor="#F2F2F2" />
                 <Columns>
                     <asp:BoundField DataField="NroPedido" HeaderText="N°" SortExpression="NroPedido" />
-                    <asp:BoundField DataField="RazonSocial" HeaderText="Razon Social" SortExpression="RazonSocial" />
+                    <asp:BoundField DataField="RazonSocial" HeaderText="Cliente" SortExpression="RazonSocial" />
                     <asp:BoundField DataField="Estado" HeaderText="Estado" SortExpression="Estado" />
-                    <asp:BoundField DataField="FechaPedido" HeaderText="Fecha" SortExpression="FechaPedido" DataFormatString="{0:d}" />
-                    <asp:BoundField DataField="FechaEstimadaEntrega" HeaderText="Fecha de Entrega" SortExpression="FechaEstimadaEntrega" DataFormatString="{0:d}" />                   
-                    <asp:BoundField DataField="Calle" HeaderText="Calle" SortExpression="Calle" />
-                    <asp:BoundField DataField="Numero" HeaderText="Numero" SortExpression="Numero" />
+                    <asp:BoundField DataField="FechaPedido" HeaderText="Fecha" SortExpression="FechaPedido" DataFormatString="{0:d}" />                    
                     <asp:BoundField DataField="Localidad" HeaderText="Localidad" SortExpression="Localidad" />
                     <asp:BoundField DataField="SubTotal" HeaderText="Sub Total" SortExpression="SubTotal" DataFormatString="{0:C}"/>  
                     <asp:BoundField DataField="GastosEnvio" HeaderText="Gastos de Envio" SortExpression="GastosEnvio" DataFormatString="{0:C}"/>                  
@@ -76,7 +73,7 @@
         </div>
 
         <!-- Agregar Pedido -->
-        <div style="margin: 0 auto; width: 1300px">
+        <div style="margin: 0 auto; width: 1000px">
             <asp:HyperLink ID="hlAdd" runat="server" NavigateUrl="~/EditarPedido.aspx" Font-Bold="true" Font-Underline="false" ForeColor="#DEF2F1">
                 <asp:Image ID="imgAdd" runat="server" ImageUrl="~/img/add.png" Width="20px" style="vertical-align:middle; padding-right: 10px"/>
                 <asp:Label ID="lblAdd" runat="server" Text="Agregar Pedido" />

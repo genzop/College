@@ -38,6 +38,13 @@ function initMap() {
 
         marker.setMap(map);
     }
+
+    google.maps.event.addListenerOnce(map, 'idle', function () {
+        var font = document.querySelector('link[href$="//fonts.googleapis.com/css?family=Roboto:300,400,500,700"]');
+        if (font) {
+            font.parentNode.removeChild(font);
+        }
+    });
 }
 
 //Se convierten las coordenadas de texto a numero
