@@ -67,7 +67,7 @@
 
                             <div class="editContent">
                                 <p class="editContentTitle">Gastos de envio</p>
-                                <asp:TextBox ID="txtGastosEnvio" runat="server" AutoPostBack="true" OnTextChanged="cambiaTotal" />
+                                <asp:TextBox ID="txtGastosEnvio" runat="server" AutoPostBack="true" OnTextChanged="cambiarGastosEnvio" />
                                 <asp:RegularExpressionValidator ID="revGastosEnvio" runat="server" ValidationGroup="Pedido" ControlToValidate="txtGastosEnvio" ValidationExpression="[+-]?([0-9]*[,])?[0-9]+" ErrorMessage="* EL gasto de envio solo puede ser un numero" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px"/>                                            
                             </div>
 
@@ -121,12 +121,13 @@
                     <!-- Tabla Detalles -->
                     <p id="lblDetalles" runat="server" style="color: #FEFFFF; font-family: Arial; font-size: 25px; font-weight: bold">Detalles</p>
 
-                    <asp:GridView ID="grdDetalles" runat="server" AutoGenerateColumns="False" ForeColor="#333333" GridLines="None" Font-Size="14px" AllowPaging="True" AllowSorting="True" BorderWidth="0px" Style="text-align: center; width: 100%" CssClass="tablaDetalles">
+                    <asp:GridView ID="grdDetalles" runat="server" AutoGenerateColumns="False" ForeColor="#333333" GridLines="None" Font-Size="14px" BorderWidth="0px" Style="text-align: center; width: 100%" CssClass="tablaDetalles">
                         <AlternatingRowStyle BackColor="#F2F2F2" />
                         <Columns>
-                            <asp:BoundField DataField="Denominacion" HeaderText="Articulo" SortExpression="Denominacion" ItemStyle-Width="30%" />
+                            <asp:BoundField DataField="Articulo" HeaderText="Articulo" SortExpression="Articulo"/>
+                            <asp:BoundField DataField="PrecioUnitario" HeaderText="Precio Unitario" SortExpression="PrecioUnitario" DataFormatString="{0:C}" />
                             <asp:BoundField DataField="Cantidad" HeaderText="Cantidad" SortExpression="Cantidad" />
-                            <asp:BoundField DataField="PorcentajeDescuento" HeaderText="Descuento" SortExpression="PorcentajeDescuento"  DataFormatString="{0:p}" />
+                            <asp:BoundField DataField="Descuento" HeaderText="Descuento" SortExpression="Descuento"  DataFormatString="{0:p}" />
                             <asp:BoundField DataField="SubTotal" HeaderText="Sub Total" SortExpression="SubTotal" DataFormatString="{0:C}"/>
                             <asp:TemplateField HeaderStyle-BackColor="#17252a" ItemStyle-BackColor="#17252a" ItemStyle-Width="40px">
                                 <ItemTemplate>
@@ -135,7 +136,7 @@
                             </asp:TemplateField>
                             <asp:TemplateField HeaderStyle-BackColor="#17252a" ItemStyle-BackColor="#17252a" ItemStyle-Width="30px">
                                 <ItemTemplate>
-                                    <asp:ImageButton ID="imgDelete" runat="server" ImageUrl="~/img/delete.png" Width="18px" OnClientClick="return confirm('¿Esta seguro que quiere borrar este cliente?')" OnCommand="imgDelete_Command" CommandArgument='<%# Eval("IdPedidoVentaDetalle") %>' ImageAlign="Left" />
+                                    <asp:ImageButton ID="imgDelete" runat="server" ImageUrl="~/img/delete.png" Width="18px" OnClientClick="return confirm('¿Esta seguro que quiere borrar este detalle?')" OnCommand="imgDelete_Command" CommandArgument='<%# Eval("IdPedidoVentaDetalle") %>' ImageAlign="Left" />
                                 </ItemTemplate>
                             </asp:TemplateField>
                         </Columns>
@@ -158,6 +159,11 @@
                                    
                     <!-- Formulario Detalle -->      
                     <div id="formularioDetalle" runat="server" class="formPedidos" style="margin: 0 auto" visible="false">
+
+                        <div>
+                            <asp:HiddenField ID="hiddenFila" runat="server" />
+                        </div>
+
                         <div style="padding: 10px 0px 20px 0px" visible="false">
                             <asp:Label ID="lblTituloDetalle" runat="server" Text="Titulo Temporal" ForeColor="Black" Font-Names="Arial" Font-Bold="true" Font-Size="25px" />
                         </div>
@@ -186,7 +192,7 @@
                         <table style="margin: 0 auto">
                             <tr>
                                 <td><asp:Button ID="btnCancelar" runat="server" Text="Cancelar" CssClass="botonImportante" Width="140px" OnClick="btnCancelar_Click" CausesValidation="false"/></td>
-                                <td><asp:Button ID="btnAccionDetalle" runat="server" ValidationGroup="Detalle" Text="Texto temporal" CssClass="botonImportante" Width="140px" OnClick="btnAccionDetalle_Click" CausesValidation="true"/></td>
+                                <td><asp:Button ID="btnAccionDetalle" runat="server" ValidationGroup="Detalle" Text="Guardar" CssClass="botonImportante" Width="140px" OnClick="btnAccionDetalle_Click" CausesValidation="true"/></td>
                             </tr>
                         </table>                        
                     </div>

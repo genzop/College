@@ -80,6 +80,7 @@ public partial class Ingresar : System.Web.UI.Page
                             where vend.Usuario == txtUsuario.Text
                             select vend).Single();
 
+                Session.Timeout = 600;
                 Session["IdVendedor"] = temp.IdVendedor;
                 Response.Redirect("Pedidos.aspx");
             }
