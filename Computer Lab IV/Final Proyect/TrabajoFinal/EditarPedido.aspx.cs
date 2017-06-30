@@ -40,8 +40,9 @@ public partial class EditarPedido : System.Web.UI.Page
                     cargarPedido(Convert.ToInt32(Request.QueryString["id"]));
                     cargarDetalles(Convert.ToInt32(Request.QueryString["id"]));
                     rellenarTabla();
+                    crearListaEliminados();
                 }                
-            }
+            }            
         }        
     }
         
@@ -146,9 +147,24 @@ public partial class EditarPedido : System.Web.UI.Page
         grdDetalles.DataBind();
     }
     
+    //Se hace click en el boton Guardar
     protected void btnAccion_Click(object sender, EventArgs e)
     {
-        
+        if (Page.IsValid)
+        {
+            //Si se esta creando un nuevo pedido
+            if (Request.QueryString["id"] == null)
+            {
+                crearPedido();
+            }
+            //Si se esta editando un pedido ya existente
+            else
+            {
+                editarPedido(Convert.ToInt32(Request.QueryString["id"]));
+            }
+
+            Response.Redirect("Pedidos.aspx");
+        }        
     }
     
     //Se hace click en Agregar Detalle
@@ -194,9 +210,36 @@ public partial class EditarPedido : System.Web.UI.Page
         GridViewRow row = (GridViewRow)btn.NamingContainer;
         int fila = row.RowIndex;
 
+        //Se carga la lista de detalles
         List<DetalleTemporal> listaDetalles = (List<DetalleTemporal>)Session["Detalles"];
-        listaDetalles.RemoveAt(fila);
-        Session["Detalles"] = listaDetalles;
+
+        //Se guarda en una variable el detalle a eliminar
+        DetalleTemporal detalleSeleccionado = listaDetalles[fila];
+
+        //Si el detalle seleccionado, no ha sido persistido
+        if(detalleSeleccionado.IdPedidoVentaDetalle == 0)
+        {
+            //Se lo elimina del list de detalles
+            listaDetalles.RemoveAt(fila);
+            Session["Detalles"] = listaDetalles;
+        }
+        //Si ya habia sido persistido
+        else
+        {
+            //Se carga la lista de detalles eliminados
+            List<DetalleTemporal> listaEliminados = (List<DetalleTemporal>)Session["Eliminados"];
+
+            //Se agrega el detalle persistido a eliminar
+            listaEliminados.Add(detalleSeleccionado);
+
+            //Se lo elimina de la lista de detalles
+            listaDetalles.RemoveAt(fila);
+
+            //Se guardan los cambios en las listas
+            Session["Detalles"] = listaDetalles;
+            Session["Eliminados"] = listaEliminados;
+        }
+                
         rellenarTabla();
         calcularTotales();
     }
@@ -324,8 +367,198 @@ public partial class EditarPedido : System.Web.UI.Page
 
     
 
-    private void calcularSaldoCliente(int id)
+    private void calcularSaldoCliente(int idCliente)
     {
-     
+        double subtotalCliente = 0;
+
+        //Se verifica si ese cliente tiene pedidos a su nombre
+        bool tienePedidos = (from ped in bd.PedidoVentas
+                             where ped.IdCliente == idCliente
+                             select ped).Any();
+
+        //Si tiene pedidos 
+        if (tienePedidos)
+        {
+            //Se cargan los pedidos
+            var pedidos = from ped in bd.PedidoVentas
+                          where ped.IdCliente == idCliente
+                          select ped;
+                        
+            foreach (var pedido in pedidos)
+            {
+                //Se suma el monto total de cada pedido
+                subtotalCliente += Convert.ToDouble(pedido.MontoTotal);
+            }
+        }
+
+        var cliente = (from cli in bd.Clientes
+                       where cli.IdCliente == idCliente
+                       select cli).Single();
+
+        cliente.Saldo = 0 - subtotalCliente;
+        bd.SubmitChanges();
     }    
+
+    private void crearListaEliminados()
+    {
+        List<DetalleTemporal> listaEliminados = new List<DetalleTemporal>();
+        Session["Eliminados"] = listaEliminados;
+    }
+
+    //Se guarda un pedido nuevo en la base de datos
+    private void crearPedido()
+    {
+        //Se guardan los datos del domicilio
+        Domicilio nuevoDomicilio = new Domicilio();
+        nuevoDomicilio.Calle = txtCalle.Text;
+        nuevoDomicilio.Numero = Convert.ToInt32(txtNumeroCalle.Text);
+        DropDownList ddlLocalidad = (DropDownList)ddlLocalidades.FindControl("ddlLocalidad");
+        nuevoDomicilio.Localidad = ddlLocalidad.SelectedValue;
+        if (txtLatitud.Text != "")
+        {
+            nuevoDomicilio.Latitud = Convert.ToDouble(txtLatitud.Text);
+        }
+        if (txtLongitud.Text != "")
+        {
+            nuevoDomicilio.Longitud = Convert.ToDouble(txtLongitud.Text);
+        }
+        bd.Domicilios.InsertOnSubmit(nuevoDomicilio);
+        bd.SubmitChanges();
+
+        //Se guardan los datos del pedido
+        PedidoVenta nuevoPedido = new PedidoVenta();
+        nuevoPedido.Editable = false;
+        nuevoPedido.IdVendedor = Convert.ToInt32(Session["IdVendedor"]);
+        nuevoPedido.NroPedido = Convert.ToInt32(txtNumero.Text);
+        nuevoPedido.IdCliente = Convert.ToInt32(ddlCliente.SelectedValue);        
+        nuevoPedido.Estado = ddlEstado.SelectedValue;
+        if (ddlEstado.SelectedValue == "Entregado")
+        {
+            nuevoPedido.Entregado = true;
+        }
+        else
+        {
+            nuevoPedido.Entregado = false;
+        }        
+        nuevoPedido.FechaPedido = Convert.ToDateTime(txtFecha.Text);
+        nuevoPedido.FechaEstimadaEntrega = Convert.ToDateTime(txtFechaEntrega.Text);
+        nuevoPedido.SubTotal = Convert.ToDouble(txtSubTotal.Text);
+        nuevoPedido.GastosEnvio = Convert.ToDouble(txtGastosEnvio.Text);
+        nuevoPedido.MontoTotal = Convert.ToDouble(txtMontoTotal.Text);
+        nuevoPedido.IdDomicilio = nuevoDomicilio.IdDomicilio;
+        bd.PedidoVentas.InsertOnSubmit(nuevoPedido);
+        bd.SubmitChanges();
+
+        guardarDetalles(nuevoPedido.IdPedidoVenta);
+
+        calcularSaldoCliente(Convert.ToInt32(nuevoPedido.IdCliente));                       
+    }
+
+    //Se edita un pedido ya existente en la base de datos
+    private void editarPedido(int id)
+    {
+        var pedidoEditar = (from ped in bd.PedidoVentas
+                             where ped.IdPedidoVenta == id
+                             select ped).Single();
+
+        var domicilioEditar = (from dom in bd.Domicilios
+                               where dom.IdDomicilio == pedidoEditar.IdDomicilio
+                               select dom).Single();
+
+        pedidoEditar.NroPedido = Convert.ToInt32(txtNumero.Text);
+        pedidoEditar.IdCliente = Convert.ToInt32(ddlCliente.SelectedValue);
+        pedidoEditar.Estado = ddlEstado.SelectedValue;
+        if (ddlEstado.SelectedValue == "Entregado")
+        {
+            pedidoEditar.Entregado = true;
+        }
+        else
+        {
+            pedidoEditar.Entregado = false;
+        }
+        pedidoEditar.FechaPedido = Convert.ToDateTime(txtFecha.Text);
+        pedidoEditar.FechaEstimadaEntrega = Convert.ToDateTime(txtFechaEntrega.Text);
+        pedidoEditar.SubTotal = Convert.ToDouble(txtSubTotal.Text);
+        pedidoEditar.GastosEnvio = Convert.ToDouble(txtGastosEnvio.Text);
+        pedidoEditar.MontoTotal = Convert.ToDouble(txtMontoTotal.Text);
+
+        domicilioEditar.Calle = txtCalle.Text;
+        domicilioEditar.Numero = Convert.ToInt32(txtNumeroCalle.Text);
+        DropDownList ddlLocalidad = (DropDownList)ddlLocalidades.FindControl("ddlLocalidad");
+        domicilioEditar.Localidad = ddlLocalidad.SelectedValue;
+        if (txtLatitud.Text != "")
+        {
+            domicilioEditar.Latitud = Convert.ToDouble(txtLatitud.Text);
+        }
+        if (txtLongitud.Text != "")
+        {
+            domicilioEditar.Longitud = Convert.ToDouble(txtLongitud.Text);
+        }
+
+        bd.SubmitChanges();
+
+        guardarDetalles(pedidoEditar.IdPedidoVenta);
+        eliminarDetalles();
+
+        calcularSaldoCliente(Convert.ToInt32(pedidoEditar.IdCliente));
+
+    }
+
+    //Se persisten todos los detalles asociados con un pedido
+    private void guardarDetalles(int idPedido)
+    {
+        //Se cargan todos los detalles de este pedido
+        List<DetalleTemporal> listaDetalles = (List<DetalleTemporal>)Session["Detalles"];
+
+        foreach (DetalleTemporal detalle in listaDetalles)
+        {
+            //Si el detalle aun no ha sido persistido
+            if (detalle.IdPedidoVentaDetalle == 0)
+            {
+                //Se crea un nuevo detalle
+                PedidoVentaDetalle detalleNuevo = new PedidoVentaDetalle();
+                detalleNuevo.IdPedidoVenta = idPedido;
+                detalleNuevo.Cantidad = detalle.Cantidad;
+                detalleNuevo.SubTotal = detalle.SubTotal;
+                detalleNuevo.PorcentajeDescuento = detalle.Descuento;
+                detalleNuevo.IdArticulo = detalle.IdArticulo;
+
+                //Se lo inserta en la base de datos
+                bd.PedidoVentaDetalles.InsertOnSubmit(detalleNuevo);
+                bd.SubmitChanges();
+            }
+            //Si el detalle ya ha sido persistido
+            else
+            {
+                //Se carga el detalle seleccionado
+                var detalleEditado = (from det in bd.PedidoVentaDetalles
+                                      where det.IdPedidoVentaDetalle == detalle.IdPedidoVentaDetalle
+                                      select det).Single();
+
+                //Se cambian los datos
+                detalleEditado.Cantidad = detalle.Cantidad;
+                detalleEditado.SubTotal = detalle.SubTotal;
+                detalleEditado.PorcentajeDescuento = detalle.Descuento;
+                detalleEditado.IdArticulo = detalle.IdArticulo;
+
+                //Se aplican los cambios a la base de datos
+                bd.SubmitChanges();
+            }
+        }
+    }
+
+    private void eliminarDetalles()
+    {
+        List<DetalleTemporal> listaElminados = (List<DetalleTemporal>)Session["Eliminados"];
+
+        foreach (DetalleTemporal detalle in listaElminados)
+        {
+            var temp = (from det in bd.PedidoVentaDetalles
+                        where det.IdPedidoVentaDetalle == detalle.IdPedidoVentaDetalle
+                        select det).Single();
+
+            bd.PedidoVentaDetalles.DeleteOnSubmit(temp);            
+        }
+        bd.SubmitChanges();
+    }
 }
