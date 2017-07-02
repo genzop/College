@@ -26,6 +26,16 @@ namespace TrabajoFinalApp
         {
 
         }
+             
+        private async void listPedidos_ItemTapped(object sender, ItemTappedEventArgs e)
+        {                    
+            //No se muestra el item seleccionado
+            ((ListView)sender).SelectedItem = null;
+
+            //Se redirecciona a la pagina Editar Pedido con el pedido seleccionado
+            await Navigation.PushModalAsync(new EditarPedido((PedidoVenta)e.Item));            
+        }       
+
 
         private void cargarPedidos()
         {
@@ -44,21 +54,11 @@ namespace TrabajoFinalApp
             p2.MontoTotal = 4000;
 
             pedidos.Add(p1);
-            pedidos.Add(p2);
-            pedidos.Add(p1);
-            pedidos.Add(p2);
-            pedidos.Add(p1);
-            pedidos.Add(p2);
-            pedidos.Add(p1);
-            pedidos.Add(p2);
+            pedidos.Add(p2);            
 
             listPedidos.ItemsSource = pedidos;
-
         }
 
-        private void listPedidos_ItemTapped(object sender, ItemTappedEventArgs e)
-        {
-            DisplayAlert("Hola", "tocaste algo", "Cerrar");
-        }
+        
     }
 }

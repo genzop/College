@@ -12,10 +12,7 @@ namespace TrabajoFinalApp
         public App()
         {
             InitializeComponent();
-
-            //MainPage = new NavigationPage(new LogIn());
-            //MainPage = new NavigationPage(new Pedidos());
-            MainPage = new NavigationPage(new EditarPedido());
+            MainPage = new NavigationPage(new LogIn());
         }
 
         protected override void OnStart()

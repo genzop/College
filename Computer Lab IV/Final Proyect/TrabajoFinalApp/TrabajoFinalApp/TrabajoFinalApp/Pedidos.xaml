@@ -8,11 +8,11 @@
 
             <StackLayout Orientation="Horizontal" BackgroundColor="#0d2625" Margin="0, 5, 0, 10">
                 <Frame Padding="0, 2, 10, 2" HorizontalOptions="FillAndExpand">
-                    <SearchBar x:Name="txtBuscar" Placeholder="Buscar cliente..." TextChanged="txtBuscar_TextChanged" FontSize="17"/>
+                    <SearchBar x:Name="txtBuscar" Placeholder="Buscar por cliente..." TextChanged="txtBuscar_TextChanged" FontSize="17"/>
                 </Frame>
             </StackLayout>
 
-            <ListView x:Name="listPedidos" HasUnevenRows="True" ItemTapped="listPedidos_ItemTapped">
+            <ListView x:Name="listPedidos" HasUnevenRows="True" ItemTapped="listPedidos_ItemTapped" >
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>

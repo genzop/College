@@ -17,5 +17,10 @@ namespace TrabajoFinalApp
             InitializeComponent();
             NavigationPage.SetHasNavigationBar(this, false);
         }
+
+        private void btnLogIn_Clicked(object sender, EventArgs e)
+        {
+            App.Current.MainPage = new Pedidos();
+        }
     }
 }
