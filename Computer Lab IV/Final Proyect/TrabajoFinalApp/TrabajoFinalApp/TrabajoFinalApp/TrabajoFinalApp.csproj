@@ -38,16 +38,29 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controladores\ControladorArticulo.cs" />
+    <Compile Include="Controladores\ControladorCliente.cs" />
+    <Compile Include="Controladores\ControladorDomicilio.cs" />
+    <Compile Include="Controladores\ControladorPedidoVenta.cs" />
+    <Compile Include="Controladores\ControladorPedidoVentaDetalle.cs" />
+    <Compile Include="Controladores\ControladorVendedor.cs" />
     <Compile Include="EditarDetalle.xaml.cs">
       <DependentUpon>EditarDetalle.xaml</DependentUpon>
     </Compile>
     <Compile Include="EditarPedido.xaml.cs">
       <DependentUpon>EditarPedido.xaml</DependentUpon>
     </Compile>
+    <Compile Include="IConfig.cs" />
     <Compile Include="LogIn.xaml.cs">
       <DependentUpon>LogIn.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Modelo\Articulo.cs" />
+    <Compile Include="Modelo\Cliente.cs" />
+    <Compile Include="Modelo\Domicilio.cs" />
     <Compile Include="Modelo\PedidoVenta.cs" />
+    <Compile Include="Modelo\PedidoVentaDetalle.cs" />
+    <Compile Include="Modelo\PedidoVentaDetalleTabla.cs" />
+    <Compile Include="Modelo\Vendedor.cs" />
     <Compile Include="Pedidos.xaml.cs">
       <DependentUpon>Pedidos.xaml</DependentUpon>
     </Compile>
@@ -64,6 +77,17 @@
       <HintPath>..\..\packages\Newtonsoft.Json.10.0.3\lib\portable-net45+win8+wp8+wpa81\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="SQLite.Net, Version=3.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\SQLite.Net-PCL.3.1.1\lib\portable-win8+net45+wp8+wpa81+MonoAndroid1+MonoTouch1\SQLite.Net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SQLiteNetExtensions, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\SQLiteNetExtensions.1.3.0\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\SQLiteNetExtensions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Net.Http">
+      <HintPath>..\..\..\..\..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\MonoAndroid\v1.0\System.Net.Http.dll</HintPath>
+    </Reference>
     <Reference Include="Xamarin.Forms.Core, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Xamarin.Forms.2.3.3.193\lib\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+Xamarin.iOS10+xamarinmac20\Xamarin.Forms.Core.dll</HintPath>
       <Private>True</Private>
@@ -78,6 +102,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -86,9 +111,7 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Controladores\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="Pedidos.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>

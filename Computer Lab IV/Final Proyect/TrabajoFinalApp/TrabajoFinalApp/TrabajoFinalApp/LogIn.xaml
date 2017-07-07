@@ -5,19 +5,26 @@
 
     <ContentPage.Content>
         <StackLayout BackgroundColor="#0d2625" Padding="20">
-            <Image Source="utnGrande" WidthRequest="250" Margin="0, 80, 0 ,0"/>
+            <Image Source="utnGrande" WidthRequest="250" Margin="0, 70, 0 ,0"/>
 
             <Frame Padding="20, 5, 20, 5" HorizontalOptions="FillAndExpand" Margin="0, 30, 0 ,0">
-                <Entry x:Name="txtUsuario" FontSize="17" Placeholder="Usuario"/>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="Usuario:" TextColor="Black" FontSize="15" FontAttributes="Bold"  VerticalOptions="Center"/>
+                    <Entry x:Name="txtUsuario" FontSize="17" HorizontalOptions="FillAndExpand"/>
+                </StackLayout>                
             </Frame>
 
             <Frame Padding="20, 5, 20, 5" HorizontalOptions="FillAndExpand">
-                <Entry x:Name="txtContrasenia" IsPassword="True" FontSize="17" Placeholder="Contraseña"/>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="Contraseña:" TextColor="Black" FontSize="15" FontAttributes="Bold"  VerticalOptions="Center"/>
+                    <Entry x:Name="txtContrasenia" IsPassword="True" FontSize="17" HorizontalOptions="FillAndExpand"/>
+                </StackLayout>
+                
             </Frame>
 
-            <Button x:Name="btnLogIn" Text="Ingresar" BackgroundColor="#3AAFA9" TextColor="#FEFFFF" Margin="0, 30, 0, 0" Clicked="btnLogIn_Clicked"/>
+            <Button x:Name="btnLogIn" Text="Ingresar" BackgroundColor="#3AAFA9" TextColor="#FEFFFF" FontAttributes="Bold" Margin="0, 30, 0, 0" Clicked="btnLogIn_Clicked" HeightRequest="55"/>
             
-            <Image Source="importar" WidthRequest="50" Margin="0, 40, 0, 0"/>
+            <Image Source="importar" WidthRequest="35" Margin="0, 40, 0, 0"/>
         </StackLayout>            
     </ContentPage.Content>
 </ContentPage>

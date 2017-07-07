@@ -13,6 +13,7 @@ namespace TrabajoFinalApp
         {
             InitializeComponent();
             MainPage = new NavigationPage(new LogIn());
+            //MainPage = new NavigationPage(new EditarDetalle());
         }
 
         protected override void OnStart()

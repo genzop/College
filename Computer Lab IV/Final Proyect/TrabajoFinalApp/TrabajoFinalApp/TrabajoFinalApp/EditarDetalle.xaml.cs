@@ -16,6 +16,17 @@ namespace TrabajoFinalApp
         {
             InitializeComponent();
             NavigationPage.SetHasNavigationBar(this, false);
+            lblTitulo.Text = "Editar Detalle";
+        }
+
+        private void btnEliminar_Clicked(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnGuardar_Clicked(object sender, EventArgs e)
+        {
+
         }
     }
 }
