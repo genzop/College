@@ -19,5 +19,14 @@ namespace TrabajoFinalApp.Modelo
         public double Longitud { get; set; }
 
         public Domicilio() { }
+
+        public Domicilio(int id, string calle, int numero, string localidad)
+        {
+            this.IdDomicilio = id;
+            this.Calle = calle;
+            this.Numero = numero;
+            this.Localidad = localidad;
+        }
+
     }
 }

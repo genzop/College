@@ -8,23 +8,20 @@
             <Image Source="utnGrande" WidthRequest="250" Margin="0, 70, 0 ,0"/>
 
             <Frame Padding="20, 5, 20, 5" HorizontalOptions="FillAndExpand" Margin="0, 30, 0 ,0">
-                <StackLayout Orientation="Horizontal">
-                    <Label Text="Usuario:" TextColor="Black" FontSize="15" FontAttributes="Bold"  VerticalOptions="Center"/>
-                    <Entry x:Name="txtUsuario" FontSize="17" HorizontalOptions="FillAndExpand"/>
-                </StackLayout>                
+                <Entry x:Name="txtUsuario" FontSize="17" Placeholder="Usuario" HorizontalOptions="FillAndExpand"/>
             </Frame>
 
             <Frame Padding="20, 5, 20, 5" HorizontalOptions="FillAndExpand">
-                <StackLayout Orientation="Horizontal">
-                    <Label Text="Contraseña:" TextColor="Black" FontSize="15" FontAttributes="Bold"  VerticalOptions="Center"/>
-                    <Entry x:Name="txtContrasenia" IsPassword="True" FontSize="17" HorizontalOptions="FillAndExpand"/>
-                </StackLayout>
-                
+                    <Entry x:Name="txtContrasenia" IsPassword="True" FontSize="17"  Placeholder="Contraseña" HorizontalOptions="FillAndExpand"/>
             </Frame>
 
             <Button x:Name="btnLogIn" Text="Ingresar" BackgroundColor="#3AAFA9" TextColor="#FEFFFF" FontAttributes="Bold" Margin="0, 30, 0, 0" Clicked="btnLogIn_Clicked" HeightRequest="55"/>
-            
-            <Image Source="importar" WidthRequest="35" Margin="0, 40, 0, 0"/>
+
+            <Image Source="importar" WidthRequest="35" Margin="0, 40, 0, 0">
+                <Image.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="imgImportar_Tapped"/>
+                </Image.GestureRecognizers>
+            </Image>
         </StackLayout>            
     </ContentPage.Content>
 </ContentPage>

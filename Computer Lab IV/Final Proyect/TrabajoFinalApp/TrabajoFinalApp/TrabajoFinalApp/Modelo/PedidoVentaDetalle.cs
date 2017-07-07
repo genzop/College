@@ -22,6 +22,8 @@ namespace TrabajoFinalApp.Modelo
         [ForeignKey(typeof(Articulo))]
         public int IdArticulo { get; set; }
 
-        public PedidoVentaDetalle() { }           
+        public PedidoVentaDetalle() { }        
+     
+         
     }
 }

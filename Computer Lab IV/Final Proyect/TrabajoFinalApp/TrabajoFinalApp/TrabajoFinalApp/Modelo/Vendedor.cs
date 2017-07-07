@@ -17,5 +17,14 @@ namespace TrabajoFinalApp.Modelo
         public string Apellido { get; set; }
 
         public Vendedor() { }
+
+        public Vendedor(int id, string usuario, string contrasenia, string nombre, string apellido)
+        {
+            this.IdVendedor = id;
+            this.Usuario = usuario;
+            this.Contrasenia = contrasenia;
+            this.Nombre = nombre;
+            this.Apellido = apellido;
+        }
     }
 }

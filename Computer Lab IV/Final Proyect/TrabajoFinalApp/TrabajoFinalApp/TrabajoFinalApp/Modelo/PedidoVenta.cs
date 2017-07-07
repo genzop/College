@@ -33,6 +33,7 @@ namespace TrabajoFinalApp.Modelo
 
 
         public PedidoVenta() { }
+                
 
 
         //ARREGLAR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

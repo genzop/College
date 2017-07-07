@@ -13,7 +13,7 @@ namespace TrabajoFinalApp
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class Pedidos : ContentPage
     {
-        public Pedidos()
+        public Pedidos(int idVendedor)
         {
             InitializeComponent();
             NavigationPage.SetHasNavigationBar(this, false);
