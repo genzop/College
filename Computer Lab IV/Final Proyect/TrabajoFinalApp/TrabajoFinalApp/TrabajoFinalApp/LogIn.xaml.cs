@@ -17,8 +17,7 @@ namespace TrabajoFinalApp
         public LogIn()
         {
             InitializeComponent();
-            NavigationPage.SetHasNavigationBar(this, false);
-         
+            NavigationPage.SetHasNavigationBar(this, false);        
         }
 
         private void btnLogIn_Clicked(object sender, EventArgs e)

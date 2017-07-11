@@ -8,11 +8,11 @@
             <Image Source="utnGrande" WidthRequest="250" Margin="0, 70, 0 ,0"/>
 
             <Frame Padding="20, 5, 20, 5" HorizontalOptions="FillAndExpand" Margin="0, 30, 0 ,0">
-                <Entry x:Name="txtUsuario" FontSize="17" Placeholder="Usuario" HorizontalOptions="FillAndExpand"/>
+                <Entry x:Name="txtUsuario" FontSize="17" Placeholder="Usuario" HorizontalOptions="FillAndExpand" Text="genzop"/>
             </Frame>
 
             <Frame Padding="20, 5, 20, 5" HorizontalOptions="FillAndExpand">
-                    <Entry x:Name="txtContrasenia" IsPassword="True" FontSize="17"  Placeholder="Contraseña" HorizontalOptions="FillAndExpand"/>
+                <Entry x:Name="txtContrasenia" IsPassword="True" FontSize="17"  Placeholder="Contraseña" HorizontalOptions="FillAndExpand" Text="admin"/>
             </Frame>
 
             <Button x:Name="btnLogIn" Text="Ingresar" BackgroundColor="#3AAFA9" TextColor="#FEFFFF" FontAttributes="Bold" Margin="0, 30, 0, 0" Clicked="btnLogIn_Clicked" HeightRequest="55"/>

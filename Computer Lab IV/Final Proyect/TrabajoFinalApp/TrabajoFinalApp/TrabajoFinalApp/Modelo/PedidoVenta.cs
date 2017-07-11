@@ -10,7 +10,7 @@ namespace TrabajoFinalApp.Modelo
 {
     public class PedidoVenta
     {
-        [PrimaryKey]
+        [PrimaryKey, AutoIncrement]
         public int IdPedidoVenta { get; set; }
         public long NroPedido { get; set; }
         public string Estado { get; set; }

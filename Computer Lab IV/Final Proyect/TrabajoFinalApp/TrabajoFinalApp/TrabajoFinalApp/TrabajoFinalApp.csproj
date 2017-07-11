@@ -44,9 +44,6 @@
     <Compile Include="Controladores\ControladorPedidoVenta.cs" />
     <Compile Include="Controladores\ControladorPedidoVentaDetalle.cs" />
     <Compile Include="Controladores\ControladorVendedor.cs" />
-    <Compile Include="EditarDetalle.xaml.cs">
-      <DependentUpon>EditarDetalle.xaml</DependentUpon>
-    </Compile>
     <Compile Include="EditarPedido.xaml.cs">
       <DependentUpon>EditarPedido.xaml</DependentUpon>
     </Compile>
@@ -120,12 +117,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="EditarPedido.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="EditarDetalle.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
       <SubType>Designer</SubType>
     </EmbeddedResource>

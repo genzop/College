@@ -13,13 +13,11 @@ namespace TrabajoFinalApp
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class Pedidos : ContentPage
     {
-        public Pedidos(int idVendedor)
+       public Pedidos(int idVendedor)
         {
             InitializeComponent();
             NavigationPage.SetHasNavigationBar(this, false);
-
-            cargarPedidos();
-
+            
         }
 
         private void txtBuscar_TextChanged(object sender, TextChangedEventArgs e)
@@ -59,6 +57,14 @@ namespace TrabajoFinalApp
             listPedidos.ItemsSource = pedidos;
         }
 
-        
+        private void imgExportar_Tapped(object sender, EventArgs e)
+        {
+
+        }
+
+        private async void imgInsertar_Tapped(object sender, EventArgs e)
+        {
+            await Navigation.PushModalAsync(new EditarPedido(null));
+        }
     }
 }

@@ -46,8 +46,16 @@
             </ListView>
 
             <StackLayout Orientation="Horizontal" Margin="0, 10, 0, 10" HorizontalOptions="CenterAndExpand" Spacing="130">
-                <Image Source="exportar" WidthRequest="35"/>
-                <Image Source="insertar" WidthRequest="35"/>
+                <Image Source="exportar" WidthRequest="35">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="imgExportar_Tapped"/>
+                    </Image.GestureRecognizers>
+                </Image>
+                <Image Source="insertar" WidthRequest="35">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="imgInsertar_Tapped"/>
+                    </Image.GestureRecognizers>
+                </Image>
             </StackLayout>
 
         </StackLayout>

@@ -19,12 +19,7 @@
                 <Frame Padding="20, 5, 20, 5" HorizontalOptions="FillAndExpand" >
                     <StackLayout Orientation="Horizontal">
                         <Label Text="Cliente:" TextColor="Black" FontSize="15" FontAttributes="Bold"  VerticalOptions="Center"/>
-                        <Picker x:Name="pickerCliente" HorizontalOptions="FillAndExpand" >
-                            <Picker.Items>
-                                <x:String>Enzo Panettieri</x:String>
-                                <x:String>Sarah Mangiavacchi</x:String>
-                            </Picker.Items>
-                        </Picker>
+                        <Picker x:Name="pickerCliente" HorizontalOptions="FillAndExpand" ></Picker>
                     </StackLayout>
                 </Frame>
 
@@ -33,8 +28,10 @@
                         <Label Text="Estado:" TextColor="Black" FontSize="15" FontAttributes="Bold"  VerticalOptions="Center"/>
                         <Picker x:Name="pickerEstado" HorizontalOptions="FillAndExpand" >
                             <Picker.Items>
+                                <x:String>Pendiente</x:String>
                                 <x:String>Enviado</x:String>
                                 <x:String>Entregado</x:String>
+                                <x:String>Anulado</x:String>
                             </Picker.Items>
                         </Picker>
                     </StackLayout>
@@ -57,7 +54,7 @@
                 <Frame Padding="20, 5, 20, 5" HorizontalOptions="FillAndExpand" >
                     <StackLayout Orientation="Horizontal">
                         <Label Text="Gastos de envio:    $" TextColor="Black" FontSize="15" FontAttributes="Bold"  VerticalOptions="Center"/>
-                        <Entry x:Name="txtGastosEnvio" FontSize="17" HorizontalOptions="FillAndExpand" Keyboard="Numeric"/>
+                        <Entry x:Name="txtGastosEnvio" FontSize="17" HorizontalOptions="FillAndExpand" Keyboard="Numeric" TextChanged="txtGastosEnvio_TextChanged"/>
                     </StackLayout>
                 </Frame>
                 
@@ -155,7 +152,11 @@
                 <StackLayout Orientation="Horizontal">
 
                     <StackLayout Margin="10, 20, 0, 0">
-                        <Image Source="insertar" WidthRequest="25"/>
+                        <Image x:Name="imgAddDetalle" Source="insertar" WidthRequest="25">
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="imgAddDetalle_Tapped"/>
+                            </Image.GestureRecognizers>
+                        </Image>
                     </StackLayout>
                     
                     
@@ -163,20 +164,66 @@
                         <StackLayout Spacing="0" Orientation="Horizontal" HorizontalOptions="End" Margin="0, 0, 10, 0">
                             <Label Text="SubTotal: " FontSize="14" TextColor="White" FontAttributes="Bold" VerticalOptions="Center" Margin="5, 0, 0, 0"/>
                             <Label Text="$" FontSize="17" TextColor="White" VerticalOptions="Center"/>
-                            <Label x:Name="lblSubTotal" FontSize="20" TextColor="White" Text="25"/>
+                            <Label x:Name="lblSubTotal" FontSize="20" TextColor="White" Text="0"/>
                         </StackLayout>
 
                         <StackLayout Spacing="0" Orientation="Horizontal" HorizontalOptions="End" Margin="0, 0, 10, 0">
                             <Label Text="Total: " FontSize="14" TextColor="White" FontAttributes="Bold" VerticalOptions="Center" Margin="5, 0, 0, 0"/>
                             <Label Text="$" FontSize="17" TextColor="White" VerticalOptions="Center"/>
-                            <Label x:Name="lblTotal" FontSize="20" TextColor="White" Text="40"/>
+                            <Label x:Name="lblTotal" FontSize="20" TextColor="White" Text="0"/>
                         </StackLayout>
                     </StackLayout>
                     
                 </StackLayout>
                 
+                <!-- Editar Detalle -->
+                <StackLayout x:Name="editarDetalle" IsVisible="False" Margin="0, 20, 0, 20">
+                    <Frame Padding="20, 5, 20, 5" HorizontalOptions="FillAndExpand" >
+                        <StackLayout>
+                            
+                            <Image Source="cerrar" WidthRequest="20" HorizontalOptions="End" Margin="0, 10, 0, 0">
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="imgCerrarDetalle_Tapped"/>
+                                </Image.GestureRecognizers>
+                            </Image>
+                            
+                            <Label x:Name="lblTituloDetalle" TextColor="Black" FontAttributes="Bold" FontSize="20" HorizontalOptions="Center"/>
 
-                <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand" Spacing="20" Margin="0, 30, 0, 20">
+                            <StackLayout Orientation="Horizontal">
+                                <Label Text="Articulo:" TextColor="Black" FontSize="15" FontAttributes="Bold"  VerticalOptions="Center"/>
+                                <Picker x:Name="pickerArticulo" HorizontalOptions="FillAndExpand" >
+                                    <Picker.Items>
+                                        <x:String>Helado</x:String>
+                                        <x:String>Jabon</x:String>
+                                    </Picker.Items>
+                                </Picker>
+                            </StackLayout>
+
+                            <StackLayout Orientation="Horizontal">
+                                <Label Text="Cantidad:" TextColor="Black" FontSize="15" FontAttributes="Bold"  VerticalOptions="Center"/>
+                                <Entry x:Name="txtCantidad" FontSize="17" HorizontalOptions="FillAndExpand" Keyboard="Numeric"/>
+                            </StackLayout>
+
+                            <StackLayout Orientation="Horizontal">
+                                <Label Text="Descuento:" TextColor="Black" FontSize="15" FontAttributes="Bold"  VerticalOptions="Center"/>
+                                <Entry x:Name="txtDescuento" FontSize="17" HorizontalOptions="FillAndExpand" Keyboard="Numeric"/>
+                            </StackLayout>
+
+                            <StackLayout Spacing="0" Orientation="Horizontal" Margin="0, 10, 0, 10">
+                                <Label Text="SubTotal:  $" TextColor="Black" FontSize="15" FontAttributes="Bold"  VerticalOptions="Center"/>                                
+                                <Label x:Name="lblSubTotalDetalle" FontSize="17" TextColor="Black" Text="0"/>
+                            </StackLayout>
+
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand" Spacing="20" Margin="0, 10, 0, 20">
+                                <Button x:Name="btnEliminarDetalle" Text="Eliminar" TextColor="White" FontAttributes="Bold" WidthRequest="120" BackgroundColor="Red" Clicked="btnEliminarDetalle_Clicked"/>
+                                <Button x:Name="btnGuardarDetalle" Text="Guardar" TextColor="White" FontAttributes="Bold" WidthRequest="120" BackgroundColor="#3AAFA9" Clicked="btnGuardarDetalle_Clicked"/>
+                            </StackLayout>
+                        </StackLayout>                       
+                        
+                    </Frame>
+                </StackLayout>                
+
+                <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand" Spacing="20" Margin="0, 10, 0, 20">
                     <Button x:Name="btnEliminar" Text="Eliminar" TextColor="White" FontAttributes="Bold" WidthRequest="150" BackgroundColor="Red" Clicked="btnEliminar_Clicked"/>
                     <Button x:Name="btnGuardar" Text="Guardar" TextColor="White" FontAttributes="Bold" WidthRequest="150" BackgroundColor="#3AAFA9" Clicked="btnGuardar_Clicked"/>
                 </StackLayout>
