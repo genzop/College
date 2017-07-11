@@ -49,6 +49,14 @@ namespace TrabajoFinalApp.Controladores
             return domicilio;
         }
 
+        public Domicilio FindLast()
+        {
+            var domicilio = (from dom in conexion.Table<Domicilio>()
+                             orderby dom.IdDomicilio
+                             select dom).LastOrDefault();
+            return domicilio;
+        }
+
         public List<Domicilio> ShowAll()
         {
             var domicilios = (from dom in conexion.Table<Domicilio>()

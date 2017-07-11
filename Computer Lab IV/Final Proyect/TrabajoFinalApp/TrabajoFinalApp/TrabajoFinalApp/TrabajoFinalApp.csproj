@@ -56,7 +56,6 @@
     <Compile Include="Modelo\Domicilio.cs" />
     <Compile Include="Modelo\PedidoVenta.cs" />
     <Compile Include="Modelo\PedidoVentaDetalle.cs" />
-    <Compile Include="Modelo\PedidoVentaDetalleTabla.cs" />
     <Compile Include="Modelo\Vendedor.cs" />
     <Compile Include="Pedidos.xaml.cs">
       <DependentUpon>Pedidos.xaml</DependentUpon>

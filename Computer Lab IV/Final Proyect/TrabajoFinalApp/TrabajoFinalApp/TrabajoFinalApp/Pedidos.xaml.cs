@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TrabajoFinalApp.Controladores;
 using TrabajoFinalApp.Modelo;
 
 using Xamarin.Forms;
@@ -13,11 +14,18 @@ namespace TrabajoFinalApp
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class Pedidos : ContentPage
     {
-       public Pedidos(int idVendedor)
+
+        protected List<PedidoVenta> listaPedidos;        
+        private int IdVendedor { get; set; }
+
+        public Pedidos(int idVendedor)
         {
             InitializeComponent();
             NavigationPage.SetHasNavigationBar(this, false);
-            
+
+            //Se guarda el id del vendedor que se le logueo
+            this.IdVendedor = idVendedor;
+            cargarPedidos();                                  
         }
 
         private void txtBuscar_TextChanged(object sender, TextChangedEventArgs e)
@@ -31,31 +39,8 @@ namespace TrabajoFinalApp
             ((ListView)sender).SelectedItem = null;
 
             //Se redirecciona a la pagina Editar Pedido con el pedido seleccionado
-            await Navigation.PushModalAsync(new EditarPedido((PedidoVenta)e.Item));            
+            await Navigation.PushModalAsync(new EditarPedido((PedidoVenta)e.Item, this.IdVendedor));            
         }       
-
-
-        private void cargarPedidos()
-        {
-            List<PedidoVenta> pedidos = new List<PedidoVenta>();
-
-            PedidoVenta p1 = new PedidoVenta();
-            p1.NroPedido = 1;
-            p1.Cliente = "Enzo Panettieri";
-            p1.Estado = "Entregado";
-            p1.MontoTotal = 25000;
-
-            PedidoVenta p2 = new PedidoVenta();
-            p2.NroPedido = 2;
-            p2.Cliente = "Luigi Panettieri";
-            p2.Estado = "Enviado";
-            p2.MontoTotal = 4000;
-
-            pedidos.Add(p1);
-            pedidos.Add(p2);            
-
-            listPedidos.ItemsSource = pedidos;
-        }
 
         private void imgExportar_Tapped(object sender, EventArgs e)
         {
@@ -64,7 +49,24 @@ namespace TrabajoFinalApp
 
         private async void imgInsertar_Tapped(object sender, EventArgs e)
         {
-            await Navigation.PushModalAsync(new EditarPedido(null));
+            await Navigation.PushModalAsync(new EditarPedido(null, this.IdVendedor));
+        }
+
+        private void cargarPedidos()
+        {
+            //Se cargan los pedidos correspondientes a ese vendedor
+            using (var pedControlador = new ControladorPedidoVenta())
+            {
+                this.listaPedidos = pedControlador.FindByVendedor(this.IdVendedor);
+            }
+
+            listPedidos.ItemsSource = listaPedidos;
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            cargarPedidos();
         }
     }
 }

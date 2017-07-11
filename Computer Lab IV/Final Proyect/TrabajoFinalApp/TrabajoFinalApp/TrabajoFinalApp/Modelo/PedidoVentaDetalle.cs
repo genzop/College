@@ -22,6 +22,10 @@ namespace TrabajoFinalApp.Modelo
         [ForeignKey(typeof(Articulo))]
         public int IdArticulo { get; set; }
 
+        //Agregado para que se vea en la lista
+        public string Articulo { get; set; }
+        public double PrecioUnitario { get; set; }
+
         public PedidoVentaDetalle() { }        
      
          

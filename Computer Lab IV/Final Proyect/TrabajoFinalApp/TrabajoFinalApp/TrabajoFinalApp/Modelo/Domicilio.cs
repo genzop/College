@@ -10,7 +10,7 @@ namespace TrabajoFinalApp.Modelo
     public class Domicilio
     {
 
-        [PrimaryKey]
+        [PrimaryKey, AutoIncrement]
         public int IdDomicilio { get; set; }
         public string Calle { get; set; }
         public int Numero { get; set; }

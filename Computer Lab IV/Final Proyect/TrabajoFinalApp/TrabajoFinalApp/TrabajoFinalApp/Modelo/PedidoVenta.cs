@@ -31,13 +31,11 @@ namespace TrabajoFinalApp.Modelo
         [ForeignKey(typeof(Vendedor))]
         public int IdVendedor { get; set; }
 
-
-        public PedidoVenta() { }
-                
-
-
-        //ARREGLAR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //Agregado para que se vea en la lista
         public string Cliente { get; set; }
+
+
+        public PedidoVenta() { }       
 
     }
 }

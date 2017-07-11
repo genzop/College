@@ -48,12 +48,20 @@ namespace TrabajoFinalApp.Controladores
             return pedidoVenta;
         }
 
+        public List<PedidoVenta> FindByVendedor(int idVendedor)
+        {
+            var pedidosVentas = (from ped in conexion.Table<PedidoVenta>()
+                                 where ped.IdVendedor == idVendedor
+                                 select ped).ToList();
+            return pedidosVentas;
+        }
+
         public List<PedidoVenta> ShowAll()
         {
-            var pedidoVentas = (from ped in conexion.Table<PedidoVenta>()
+            var pedidosVentas = (from ped in conexion.Table<PedidoVenta>()
                                 orderby ped.IdPedidoVenta
                                 select ped).ToList();
-            return pedidoVentas;
+            return pedidosVentas;
         }
 
         public void Dispose()

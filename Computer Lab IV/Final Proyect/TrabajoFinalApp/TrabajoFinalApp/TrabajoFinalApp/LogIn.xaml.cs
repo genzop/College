@@ -18,6 +18,11 @@ namespace TrabajoFinalApp
         {
             InitializeComponent();
             NavigationPage.SetHasNavigationBar(this, false);        
+
+            using(var domControlador = new ControladorDomicilio())
+            {
+                
+            }
         }
 
         private void btnLogIn_Clicked(object sender, EventArgs e)
