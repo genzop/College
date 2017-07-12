@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,55 +14,92 @@ namespace TrabajoFinalApp
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class EditarPedido : ContentPage
     {
+        //Propiedades
         protected List<Cliente> clientes;
-        protected List<PedidoVentaDetalle> detalles;        
-
+        protected List<Articulo> articulos;         
+                
         protected PedidoVenta tempPedido;
         protected Domicilio tempDomicilio;
+        protected PedidoVentaDetalle tempDetalle;
+
+        protected ObservableCollection<PedidoVentaDetalle> detalles;
+        protected List<PedidoVentaDetalle> detallesEliminados;
 
         protected int IdVendedor { get; set; }
         
+
+        //Constructor
         public EditarPedido(PedidoVenta pedido, int idVendedor)
         {
             //Se inicializan las cosas
             InitializeComponent();
             NavigationPage.SetHasNavigationBar(this, false);
+
+            //Se guarda el id del vendedor
             this.IdVendedor = idVendedor;
 
+            //Se cargan los clientes para el picker
+            cargarClientes();
+
+            //Se cargan los articulos para el picker
+            cargarArticulos();
+
             //Se verifica si se esta creando un pedido o si se esta modificando uno
-            if(pedido == null)
+            if (pedido == null)
             {
                 lblTitulo.Text = "Agregar Pedido";
-                cargarClientes();
+                
                 this.tempPedido = new PedidoVenta();
                 this.tempDomicilio = new Domicilio();
-                btnEliminar.Text = "Cancelar";         
+                btnEliminar.Text = "Cancelar";
+                this.detalles = new ObservableCollection<PedidoVentaDetalle>();
+                listDetalles.ItemsSource = this.detalles;                
             }
             else
             {
                 lblTitulo.Text = "Editar Pedido";
-                cargarClientes();
                 this.tempPedido = pedido;
                 using(var domControlador = new ControladorDomicilio())
                 {
                     this.tempDomicilio = domControlador.FindById(this.tempPedido.IdDomicilio);
                 }
                 rellenarCampos();
+                cargarDetalles();
+                this.detallesEliminados = new List<PedidoVentaDetalle>();
             }            
         }
 
+        //Se cargan los articulos de la base de datos
+        private void cargarArticulos()
+        {
+            using(var artControlador = new ControladorArticulo())
+            {
+                this.articulos = artControlador.ShowAll();
+            }
+
+            foreach (Articulo art in this.articulos)
+            {
+                pickerArticulo.Items.Add(art.Denominacion);
+            }
+        }
+
+        //Cuando se presiona eliminar pedido
         private async void btnEliminar_Clicked(object sender, EventArgs e)
         {
+            //Si se esta eliminando un pedido ya persistido
             if(btnEliminar.Text == "Eliminar")
             {
+                //Se confirma la eliminacion del pedido
                 var respuesta = await DisplayAlert("Confirmar eliminacion del pedido", "¿Está seguro que desea eliminar este pedido con sus respectivos detalles?", "Si", "Cancelar");
 
                 if (respuesta)
                 {
+                    //Se elimina el domicilio de ese pedido
                     using (var domControlador = new ControladorDomicilio())
                     {
                         domControlador.Delete(this.tempDomicilio);
                     }
+                    //Se elimina el pedido en si
                     using (var pedControlador = new ControladorPedidoVenta())
                     {
                         pedControlador.Delete(this.tempPedido);
@@ -72,6 +110,7 @@ namespace TrabajoFinalApp
             }
             else
             {
+                //Se confirma que se quiera cancelar la creacion del pedido
                 var respuesta = await DisplayAlert("Confirmar cancelacion del pedido", "¿Está seguro que desea cancelar la creacion de ste pedido?", "Si", "Cancelar");
                 if (respuesta)
                 {
@@ -80,6 +119,7 @@ namespace TrabajoFinalApp
             }            
         }
 
+        //Cuando se presiona el boton guardar pedido
         private void btnGuardar_Clicked(object sender, EventArgs e)
         {
             if(lblTitulo.Text == "Agregar Pedido")
@@ -195,16 +235,41 @@ namespace TrabajoFinalApp
 
         }
 
-        private async void listDetalles_ItemTapped(object sender, ItemTappedEventArgs e)
+        private void listDetalles_ItemTapped(object sender, ItemTappedEventArgs e)
         {
             //No se muestra el item seleccionado
             ((ListView)sender).SelectedItem = null;
 
+            //Se guarda el detalle seleccionado en una variable
+            this.tempDetalle = (PedidoVentaDetalle)e.Item;
+
+            //Se muestra el formulario para editar un detalle
+            tablaDetalles.IsVisible = false;
+
+            editarDetalle.IsVisible = true;
+            imgAddDetalle.IsVisible = false;
+            lblTituloDetalle.Text = "Editar Detalle";
+
+            //Se cargan los valores correspondientes
+            for (int i = 0; i < articulos.Count; i++)
+            {
+                if(articulos[i].IdArticulo == this.tempDetalle.IdArticulo)
+                {
+                    pickerArticulo.SelectedIndex = i;
+                }
+            }
+
+            txtCantidad.Text = this.tempDetalle.Cantidad.ToString();
+            txtDescuento.Text = (this.tempDetalle.PorcentajeDescuento * 100).ToString();
         }
 
         public void cargarDetalles()
         {
-           
+           using(var detControlador = new ControladorPedidoVentaDetalle())
+            {
+                this.detalles = new ObservableCollection<PedidoVentaDetalle>(detControlador.FindByPedidoVenta(this.tempPedido.IdPedidoVenta));
+                listDetalles.ItemsSource = this.detalles;
+            }
         }
 
         //Se cargan los clientes de la base de datos para ser utilizados en el picker
@@ -234,22 +299,19 @@ namespace TrabajoFinalApp
             lblTotal.Text = total.ToString();            
         }
 
-        private void btnEliminarDetalle_Clicked(object sender, EventArgs e)
-        {
-
-        }
-
-        private void btnGuardarDetalle_Clicked(object sender, EventArgs e)
-        {
-
-        }
-
         //Se muestra el formulario para editar un detalle
         private void imgAddDetalle_Tapped(object sender, EventArgs e)
-        {            
+        {
+            tablaDetalles.IsVisible = false;
             editarDetalle.IsVisible = true;
             lblTituloDetalle.Text = "Agregar Detalle";
-            imgAddDetalle.IsVisible = false;     
+            imgAddDetalle.IsVisible = false;
+            
+            txtCantidad.Text = "0";
+            txtDescuento.Text = "0";
+            lblSubTotalDetalle.Text = "0";
+
+            this.tempDetalle = new PedidoVentaDetalle();
         }
 
         //Se esconde el formulario para editar un detalle
@@ -257,6 +319,7 @@ namespace TrabajoFinalApp
         {
             editarDetalle.IsVisible = false;
             imgAddDetalle.IsVisible = true;
+            tablaDetalles.IsVisible = true;
         }
 
         //Se rellenan todos los campos con los datos del pedido seleccionado
@@ -312,6 +375,108 @@ namespace TrabajoFinalApp
             lblSubTotal.Text = this.tempPedido.SubTotal.ToString();
             lblTotal.Text = this.tempPedido.MontoTotal.ToString();                   
         }
+
+        //Se calcula el subtotal del detalles
+        private void calcularSubTotalDetalle()
+        {
+            double precio = 0;
+            int cantidad = 0;
+            double descuento = 0;
+
+            Articulo artSeleccionado = this.articulos[pickerArticulo.SelectedIndex];
+            precio = artSeleccionado.PrecioVenta;
+            if(txtCantidad.Text != "")
+            {
+                cantidad = Convert.ToInt32(txtCantidad.Text);
+            }
+            if(txtDescuento.Text != "")
+            {
+                descuento = (Convert.ToDouble(txtDescuento.Text)) / 100;
+            }            
+
+            double subTotal = precio * cantidad;
+            subTotal = subTotal * (1 - descuento);
+            lblSubTotalDetalle.Text = subTotal.ToString();
+
+        }
+
+        //Cambia el valor del picker de articulo
+        private void pickerArticulo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            calcularSubTotalDetalle();
+        }
+
+        //Cambia el valor de la cantidad
+        private void txtCantidad_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            calcularSubTotalDetalle();
+        }
+
+        //Cambia el valor del descuento
+        private void txtDescuento_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            calcularSubTotalDetalle();
+        }
+
+        //Se presiona guardar detalle
+        private void btnGuardarDetalle_Clicked(object sender, EventArgs e)
+        {
+            var articulo = articulos[pickerArticulo.SelectedIndex];
+
+            if (lblTituloDetalle.Text == "Agregar Detalle")
+            {
+                tempDetalle.Cantidad = Convert.ToInt32(txtCantidad.Text);
+                tempDetalle.SubTotal = Convert.ToDouble(lblSubTotalDetalle.Text);
+                tempDetalle.PorcentajeDescuento = Convert.ToDouble(txtDescuento.Text);
+                tempDetalle.IdArticulo = articulo.IdArticulo;
+                tempDetalle.Articulo = articulo.Denominacion;
+                tempDetalle.PrecioUnitario = articulo.PrecioVenta;
+
+                this.detalles.Add(tempDetalle);
+                
+            }
+            else
+            {
+                //Se guarda la posicion del pedido en la lista
+                int posicion = this.detalles.IndexOf(this.tempDetalle);                
+
+                tempDetalle.Cantidad = Convert.ToInt32(txtCantidad.Text);
+                tempDetalle.SubTotal = Convert.ToDouble(lblSubTotalDetalle.Text);
+                tempDetalle.PorcentajeDescuento = Convert.ToDouble(txtDescuento.Text);
+                tempDetalle.IdArticulo = articulo.IdArticulo;
+                tempDetalle.Articulo = articulo.Denominacion;
+                tempDetalle.PrecioUnitario = articulo.PrecioVenta;
+
+                detalles[posicion] = tempDetalle;
+
+                this.tempDetalle = null;
+            }
+
+            editarDetalle.IsVisible = false;
+            imgAddDetalle.IsVisible = true;
+            tablaDetalles.IsVisible = true;
+        }
+
+        //Se presiona eliminar detalle
+        private void btnEliminarDetalle_Clicked(object sender, EventArgs e)
+        {
+            //Se guarda la posicion del pedido en la lista
+            int posicion = this.detalles.IndexOf(this.tempDetalle);
+
+            if (this.tempDetalle.IdPedidoVentaDetalle == 0)
+            {
+                detalles.RemoveAt(posicion);
+            }
+            else
+            {
+                this.detallesEliminados.Add(detalles[posicion]);
+                this.detalles.RemoveAt(posicion);
+            }
+
+            editarDetalle.IsVisible = false;
+            imgAddDetalle.IsVisible = true;
+            tablaDetalles.IsVisible = true;
+        }                
     }
 }
 

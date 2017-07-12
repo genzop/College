@@ -17,12 +17,7 @@ namespace TrabajoFinalApp
         public LogIn()
         {
             InitializeComponent();
-            NavigationPage.SetHasNavigationBar(this, false);        
-
-            using(var domControlador = new ControladorDomicilio())
-            {
-                
-            }
+            NavigationPage.SetHasNavigationBar(this, false);                 
         }
 
         private void btnLogIn_Clicked(object sender, EventArgs e)
