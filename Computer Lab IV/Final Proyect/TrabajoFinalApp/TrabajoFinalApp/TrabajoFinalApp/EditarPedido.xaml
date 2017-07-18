@@ -80,8 +80,24 @@
                         <Label Text="Localidad:" TextColor="Black" FontSize="15" FontAttributes="Bold"  VerticalOptions="Center"/>
                         <Picker x:Name="pickerLocalidad" HorizontalOptions="FillAndExpand" >
                             <Picker.Items>
-                                <x:String>Guaymallen</x:String>
                                 <x:String>Capital</x:String>
+                                <x:String>General Alvear</x:String>
+                                <x:String>Godoy Cruz</x:String>
+                                <x:String>Guaymallen</x:String>
+                                <x:String>Junin</x:String>
+                                <x:String>La Paz</x:String>
+                                <x:String>Las Heras</x:String>
+                                <x:String>Lavalle</x:String>
+                                <x:String>Lujan de Cuyo</x:String>
+                                <x:String>Maipu</x:String>
+                                <x:String>Malargue</x:String>
+                                <x:String>Rivadavia</x:String>
+                                <x:String>San Carlos</x:String>
+                                <x:String>San Martin</x:String>
+                                <x:String>San Rafael</x:String>
+                                <x:String>Santa Rosa</x:String>
+                                <x:String>Tunuyan</x:String>
+                                <x:String>Tupungato</x:String>
                             </Picker.Items>
                         </Picker>
                     </StackLayout>

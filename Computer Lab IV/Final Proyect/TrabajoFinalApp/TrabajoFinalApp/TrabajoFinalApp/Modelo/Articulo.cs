@@ -15,7 +15,8 @@ namespace TrabajoFinalApp.Modelo
         public string Codigo { get; set; }
         public double PrecioCompra { get; set; }
         public double PrecioVenta { get; set; }
-        public double Iva { get; set; }        
+        public double Iva { get; set; }      
+        public double IdRubro { get; set; }  
 
         public Articulo() { }
 

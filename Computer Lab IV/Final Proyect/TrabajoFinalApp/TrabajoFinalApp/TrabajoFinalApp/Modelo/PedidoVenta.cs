@@ -20,7 +20,7 @@ namespace TrabajoFinalApp.Modelo
         public double SubTotal { get; set; }
         public double GastosEnvio { get; set; }        
         public double MontoTotal { get; set; }
-        public bool EsEditable { get; set; }
+        public bool Editable { get; set; }
 
         [ForeignKey(typeof(Domicilio))]
         public int IdDomicilio { get; set; }

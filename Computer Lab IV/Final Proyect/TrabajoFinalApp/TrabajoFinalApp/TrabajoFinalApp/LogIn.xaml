@@ -17,11 +17,14 @@
 
             <Button x:Name="btnLogIn" Text="Ingresar" BackgroundColor="#3AAFA9" TextColor="#FEFFFF" FontAttributes="Bold" Margin="0, 30, 0, 0" Clicked="btnLogIn_Clicked" HeightRequest="55"/>
 
-            <Image Source="importar" WidthRequest="35" Margin="0, 40, 0, 0">
-                <Image.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="imgImportar_Tapped"/>
-                </Image.GestureRecognizers>
-            </Image>
+            <StackLayout Margin="0, 40, 0, 0">
+                <Image x:Name="imgImportar" Source="importar" WidthRequest="35">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="imgImportar_Tapped"/>
+                    </Image.GestureRecognizers>
+                </Image>
+            </StackLayout>
+            
         </StackLayout>            
     </ContentPage.Content>
 </ContentPage>

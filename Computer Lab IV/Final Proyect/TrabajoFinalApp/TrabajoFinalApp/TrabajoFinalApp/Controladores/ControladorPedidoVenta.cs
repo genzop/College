@@ -56,6 +56,14 @@ namespace TrabajoFinalApp.Controladores
             return pedidosVentas;
         }
 
+        public List<PedidoVenta> FindForExport(int idVendedor)
+        {
+            var pedidosVentas = (from ped in conexion.Table<PedidoVenta>()
+                                 where ped.IdVendedor == idVendedor && ped.Editable == true
+                                 select ped).ToList();
+            return pedidosVentas;
+        }
+
         public List<PedidoVenta> ShowAll()
         {
             var pedidosVentas = (from ped in conexion.Table<PedidoVenta>()

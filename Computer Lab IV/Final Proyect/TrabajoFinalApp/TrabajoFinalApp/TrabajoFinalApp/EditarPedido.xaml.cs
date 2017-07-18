@@ -160,7 +160,7 @@ namespace TrabajoFinalApp
                     }
 
                     //Se crea un pedido nuevo y se guardan los datos ingresados
-                    tempPedido.EsEditable = true;
+                    tempPedido.Editable = true;
                     tempPedido.NroPedido = Convert.ToInt64(txtNumero.Text);
                     tempPedido.IdCliente = clientes[pickerCliente.SelectedIndex].IdCliente;
 

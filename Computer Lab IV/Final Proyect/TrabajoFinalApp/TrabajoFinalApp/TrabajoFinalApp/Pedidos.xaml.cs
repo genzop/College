@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using TrabajoFinalApp.Controladores;
@@ -44,7 +46,58 @@ namespace TrabajoFinalApp
 
         private void imgExportar_Tapped(object sender, EventArgs e)
         {
+            //Cargar todos los pedidos editables de este vendedor  
+            List<PedidoVenta> pedidosExportar;                     
+            using(var cPedidos = new ControladorPedidoVenta())
+            {
+                pedidosExportar = cPedidos.FindForExport(this.IdVendedor);
+            }
 
+            //Por cada pedido encontrado
+            foreach (PedidoVenta pedExportar in pedidosExportar)
+            {
+                //Se guarda el domicilio
+                Domicilio domExportar;
+                using (var cDomicilio = new ControladorDomicilio())
+                {
+                    domExportar = cDomicilio.FindById(pedExportar.IdDomicilio);
+                }
+
+                //Se guardan sus detalles
+                List<PedidoVentaDetalle> detExportar;
+                using (var cDetalle = new ControladorPedidoVentaDetalle())
+                {
+                    detExportar = cDetalle.FindByPedidoVenta(pedExportar.IdPedidoVenta);
+                }
+
+                //Se pasan a formato JSON
+                var pedidoJson = JsonConvert.SerializeObject(pedExportar, Newtonsoft.Json.Formatting.Indented);
+                var domicilioJson = JsonConvert.SerializeObject(domExportar, Newtonsoft.Json.Formatting.Indented);
+                var detallesJson = JsonConvert.SerializeObject(detExportar, Newtonsoft.Json.Formatting.Indented);
+
+                //Se crea una lista de parejas
+                var parejas = new List<KeyValuePair<string, string>>
+                {
+                    new KeyValuePair<string, string>("pedido", pedidoJson),
+                    new KeyValuePair<string, string>("domicilio", domicilioJson),
+                    new KeyValuePair<string, string>("detalles", detallesJson)
+                };
+
+                //Se le da formato de formulario
+                var contenido = new FormUrlEncodedContent(parejas);
+
+                //Se envia el pedido, su domicilio y sus detalles correspondientes al servidor
+                HttpClient clienteHttp = new HttpClient();
+                clienteHttp.BaseAddress = new Uri("http://192.168.1.38:63942/");
+                string url = string.Format("/Importar.aspx");
+                var respuesta = clienteHttp.PostAsync(url, contenido).Result;
+
+                //Si fue exitosa la operacion se muestra un mensaje
+                if (respuesta.IsSuccessStatusCode)
+                {
+                    DisplayAlert("Exportacion exitosa", "Los datos fueron enviados al servidor exitosamente", "Aceptar");
+                }
+            }
         }
 
         private async void imgInsertar_Tapped(object sender, EventArgs e)
