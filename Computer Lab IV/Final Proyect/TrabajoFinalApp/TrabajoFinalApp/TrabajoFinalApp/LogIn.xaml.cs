@@ -61,8 +61,7 @@ namespace TrabajoFinalApp
                 importarVendedores();
                 importarClientes();
                 importarArticulos();
-                importarPedidos();
-                await DisplayAlert("Descarga exitosa", "Los datos se descargaron exitosamente", "Aceptar");
+                importarPedidos();                
             }            
         }
 
@@ -184,7 +183,7 @@ namespace TrabajoFinalApp
             respuesta = await clienteHttp.GetAsync(url);
             resultado = respuesta.Content.ReadAsStringAsync().Result;
             List<PedidoVentaDetalle> detalles = JsonConvert.DeserializeObject<List<PedidoVentaDetalle>>(resultado);
-
+            
 
             //Por cada pedido
             foreach (PedidoVenta pedido in pedidos)
@@ -229,6 +228,7 @@ namespace TrabajoFinalApp
                     {
                         //Se actualiza el IdPedidoVenta en cada detalle
                         detalle.IdPedidoVenta = pedido.IdPedidoVenta;
+                        detalle.PorcentajeDescuento = detalle.PorcentajeDescuento * 100;
 
                         using(var cArticulo = new ControladorArticulo())
                         {
@@ -242,17 +242,11 @@ namespace TrabajoFinalApp
                         {
                             cDetalle.Insert(detalle);
                         }
-
                     }
                 }
 
-
-
-
-
-            }
-            
-                    
+                await DisplayAlert("Descarga exitosa", "Los datos se descargaron exitosamente", "Aceptar");
+            }       
         }
     }
 }

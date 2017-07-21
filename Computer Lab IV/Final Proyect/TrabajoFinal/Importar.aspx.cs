@@ -33,6 +33,7 @@ public partial class Importar : System.Web.UI.Page
             {
                 detalle.IdPedidoVentaDetalle = 0;
                 detalle.IdPedidoVenta = pedido.IdPedidoVenta;
+                detalle.PorcentajeDescuento = detalle.PorcentajeDescuento / 100;
 
                 bd.PedidoVentaDetalles.InsertOnSubmit(detalle);
                 bd.SubmitChanges();
