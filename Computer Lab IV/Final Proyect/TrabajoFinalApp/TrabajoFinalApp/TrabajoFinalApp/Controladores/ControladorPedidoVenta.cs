@@ -56,6 +56,14 @@ namespace TrabajoFinalApp.Controladores
             return pedidosVentas;
         }
 
+        public List<PedidoVenta> FindByVendedorAndRazonSocial(int idVendedor, string cliente)
+        {
+            var pedidosVentas = (from ped in conexion.Table<PedidoVenta>()
+                                 where ped.IdVendedor == idVendedor && ped.Cliente.Contains(cliente)
+                                 select ped).ToList();
+            return pedidosVentas;
+        }
+
         public List<PedidoVenta> FindForExport(int idVendedor)
         {
             var pedidosVentas = (from ped in conexion.Table<PedidoVenta>()

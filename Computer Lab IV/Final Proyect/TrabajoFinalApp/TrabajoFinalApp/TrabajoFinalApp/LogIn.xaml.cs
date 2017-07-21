@@ -52,14 +52,18 @@ namespace TrabajoFinalApp
             }                       
         }
         
-        private void imgImportar_Tapped(object sender, EventArgs e)
+        private async void imgImportar_Tapped(object sender, EventArgs e)
         {
-            importarVendedores();
-            importarClientes();
-            importarArticulos();
-            importarPedidos();
+            var confirmacion = await DisplayAlert("Confirmar importacion", "A continuacion se descargara la informacion necesaria del servidor ¿Desea continuar?", "Si", "Cancelar");
 
-            DisplayAlert("Descarga exitosa", "Los datos se descargaron exitosamente", "Aceptar");
+            if (confirmacion)
+            {
+                importarVendedores();
+                importarClientes();
+                importarArticulos();
+                importarPedidos();
+                await DisplayAlert("Descarga exitosa", "Los datos se descargaron exitosamente", "Aceptar");
+            }            
         }
 
         private async void importarVendedores()

@@ -60,6 +60,7 @@ namespace TrabajoFinalApp
             {
                 lblTitulo.Text = "Editar Pedido";
                 this.tempPedido = pedido;
+
                 using(var domControlador = new ControladorDomicilio())
                 {
                     this.tempDomicilio = domControlador.FindById(this.tempPedido.IdDomicilio);
@@ -67,6 +68,29 @@ namespace TrabajoFinalApp
                 rellenarCampos();
                 cargarDetalles();
                 this.detallesEliminados = new List<PedidoVentaDetalle>();
+
+                if(this.tempPedido.Editable == false)
+                {
+                    txtNumero.IsEnabled = false;
+                    pickerCliente.IsEnabled = false;
+                    pickerEstado.IsEnabled = false;
+                    dateFechaPedido.IsEnabled = false;
+                    dateFechaEntrega.IsEnabled = false;
+                    txtGastosEnvio.IsEnabled = false;
+                    txtCalle.IsEnabled = false;
+                    txtCalleNumero.IsEnabled = false;
+                    pickerLocalidad.IsEnabled = false;
+                    txtLatitud.IsEnabled = false;
+                    txtLongitud.IsEnabled = false;
+                    imgAddDetalle.IsVisible = false;
+                    btnGuardar.IsVisible = false;
+                    btnGuardarDetalle.IsVisible = false;
+
+                    btnEliminar.BackgroundColor = Color.FromHex("#3AAFA9");
+                    btnEliminar.Text = "Cancelar";
+
+                    btnEliminarDetalle.BackgroundColor = Color.FromHex("#3AAFA9");                    
+                }
             }            
         }
 
@@ -123,11 +147,19 @@ namespace TrabajoFinalApp
             else
             {
                 //Se confirma que se quiera cancelar la creacion del pedido
-                var respuesta = await DisplayAlert("Confirmar cancelacion del pedido", "¿Está seguro que desea cancelar la creacion de ste pedido?", "Si", "Cancelar");
-                if (respuesta)
+                if (this.tempPedido.Editable)
+                {
+                    var respuesta = await DisplayAlert("Confirmar cancelacion del pedido", "¿Está seguro que desea cancelar la creacion de ste pedido?", "Si", "Cancelar");
+                    if (respuesta)
+                    {
+                        await Navigation.PopModalAsync();
+                    }
+                }
+                else
                 {
                     await Navigation.PopModalAsync();
                 }
+                
             }            
         }
 
@@ -148,9 +180,17 @@ namespace TrabajoFinalApp
                     {
                         tempDomicilio.Latitud = Convert.ToDouble(txtLatitud.Text);
                     }
+                    else
+                    {
+                        tempDomicilio.Latitud = 0;
+                    }
                     if (txtLongitud.Text != null)
                     {
                         tempDomicilio.Longitud = Convert.ToDouble(txtLongitud.Text);
+                    }
+                    else
+                    {
+                        tempDomicilio.Longitud = 0;
                     }
 
                     //Se persiste a la base de datos
@@ -294,7 +334,6 @@ namespace TrabajoFinalApp
             editarDetalle.IsVisible = true;
             imgAddDetalle.IsVisible = false;
             lblTituloDetalle.Text = "Editar Detalle";
-            btnEliminarDetalle.Text = "Eliminar";
 
             //Se cargan los valores correspondientes
             for (int i = 0; i < articulos.Count; i++)
@@ -307,6 +346,19 @@ namespace TrabajoFinalApp
 
             txtCantidad.Text = this.tempDetalle.Cantidad.ToString();
             txtDescuento.Text = this.tempDetalle.PorcentajeDescuento.ToString();
+
+
+            if (this.tempPedido.Editable)
+            {
+                btnEliminarDetalle.Text = "Eliminar";
+            }
+            else
+            {
+                btnEliminarDetalle.Text = "Cancelar";
+                pickerArticulo.IsEnabled = false;
+                txtCantidad.IsEnabled = false;
+                txtDescuento.IsEnabled = false;
+            }
         }
 
         public void cargarDetalles()
@@ -396,12 +448,60 @@ namespace TrabajoFinalApp
             txtCalle.Text = tempDomicilio.Calle;
             txtCalleNumero.Text = tempDomicilio.Numero.ToString();
             switch (tempDomicilio.Localidad)
-            {
-                case "Guaymallen":
+            {                
+                case "Capital":
                     pickerLocalidad.SelectedIndex = 0;
                     break;
-                case "Capital":
+                case "General Alvear":
                     pickerLocalidad.SelectedIndex = 1;
+                    break;
+                case "Godoy Cruz":
+                    pickerLocalidad.SelectedIndex = 2;
+                    break;
+                case "Guaymallen":
+                    pickerLocalidad.SelectedIndex = 3;
+                    break;
+                case "Junin":
+                    pickerLocalidad.SelectedIndex = 4;
+                    break;
+                case "La Paz":
+                    pickerLocalidad.SelectedIndex = 5;
+                    break;
+                case "Las Heras":
+                    pickerLocalidad.SelectedIndex = 6;
+                    break;
+                case "Lavalle":
+                    pickerLocalidad.SelectedIndex = 7;
+                    break;
+                case "Lujan de Cuyo":
+                    pickerLocalidad.SelectedIndex = 8;
+                    break;
+                case "Maipu":
+                    pickerLocalidad.SelectedIndex = 9;
+                    break;
+                case "Malargue":
+                    pickerLocalidad.SelectedIndex = 10;
+                    break;
+                case "Rivadavia":
+                    pickerLocalidad.SelectedIndex = 11;
+                    break;
+                case "San Carlos":
+                    pickerLocalidad.SelectedIndex = 12;
+                    break;
+                case "San Martin":
+                    pickerLocalidad.SelectedIndex = 13;
+                    break;
+                case "San Rafael":
+                    pickerLocalidad.SelectedIndex = 14;
+                    break;
+                case "Santa Rosa":
+                    pickerLocalidad.SelectedIndex = 15;
+                    break;
+                case "Tunuyan":
+                    pickerLocalidad.SelectedIndex = 16;
+                    break;
+                case "Tupungato":
+                    pickerLocalidad.SelectedIndex = 17;
                     break;
             }
             if(tempDomicilio.Latitud != 0)
@@ -504,8 +604,17 @@ namespace TrabajoFinalApp
             if(btnEliminarDetalle.Text == "Cancelar")
             {
                 editarDetalle.IsVisible = false;
-                imgAddDetalle.IsVisible = true;
-                tablaDetalles.IsVisible = true;                
+                
+                tablaDetalles.IsVisible = true;
+
+                if (this.tempPedido.Editable)
+                {
+                    imgAddDetalle.IsVisible = true;
+                }
+                else
+                {
+                    imgAddDetalle.IsVisible = false;
+                }
             }
             else
             {

@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -17,7 +18,7 @@ namespace TrabajoFinalApp
     public partial class Pedidos : ContentPage
     {
 
-        protected List<PedidoVenta> listaPedidos;        
+        protected ObservableCollection<PedidoVenta> listaPedidos;        
         private int IdVendedor { get; set; }
 
         public Pedidos(int idVendedor)
@@ -32,7 +33,24 @@ namespace TrabajoFinalApp
 
         private void txtBuscar_TextChanged(object sender, TextChangedEventArgs e)
         {
+            listPedidos.BeginRefresh();
 
+            if (string.IsNullOrEmpty(e.NewTextValue))
+            {
+                cargarPedidos();
+            }
+            else
+            {
+                //Se cargan los pedidos correspondientes a ese vendedor
+                using (var pedControlador = new ControladorPedidoVenta())
+                {
+                    this.listaPedidos = new ObservableCollection<PedidoVenta>(pedControlador.FindByVendedorAndRazonSocial(this.IdVendedor, e.NewTextValue));
+                }
+
+                listPedidos.ItemsSource = listaPedidos;
+            }
+
+            listPedidos.EndRefresh();
         }
              
         private async void listPedidos_ItemTapped(object sender, ItemTappedEventArgs e)
@@ -44,58 +62,88 @@ namespace TrabajoFinalApp
             await Navigation.PushModalAsync(new EditarPedido((PedidoVenta)e.Item, this.IdVendedor));            
         }       
 
-        private void imgExportar_Tapped(object sender, EventArgs e)
+        private async void imgExportar_Tapped(object sender, EventArgs e)
         {
-            //Cargar todos los pedidos editables de este vendedor  
-            List<PedidoVenta> pedidosExportar;                     
-            using(var cPedidos = new ControladorPedidoVenta())
-            {
-                pedidosExportar = cPedidos.FindForExport(this.IdVendedor);
-            }
+            var confirmacion = await DisplayAlert("Confirmar exportacion", "A continuacion se exportaran todos los pedidos que hayan sido creados ¿Desea continuar?", "Si", "Cancelar");
 
-            //Por cada pedido encontrado
-            foreach (PedidoVenta pedExportar in pedidosExportar)
+            if (confirmacion)
             {
-                //Se guarda el domicilio
-                Domicilio domExportar;
-                using (var cDomicilio = new ControladorDomicilio())
+                //Cargar todos los pedidos editables de este vendedor  
+                List<PedidoVenta> pedidosExportar;
+                bool operacionExitosa = true;
+
+                using (var cPedidos = new ControladorPedidoVenta())
                 {
-                    domExportar = cDomicilio.FindById(pedExportar.IdDomicilio);
+                    pedidosExportar = cPedidos.FindForExport(this.IdVendedor);
                 }
 
-                //Se guardan sus detalles
-                List<PedidoVentaDetalle> detExportar;
-                using (var cDetalle = new ControladorPedidoVentaDetalle())
+                //Por cada pedido encontrado
+                foreach (PedidoVenta pedExportar in pedidosExportar)
                 {
-                    detExportar = cDetalle.FindByPedidoVenta(pedExportar.IdPedidoVenta);
+                    //Se cambia el atributo "editable" en todos los pedidos que fueron exportados
+                    pedExportar.Editable = false;                    
+                    using (var pControlador = new ControladorPedidoVenta())
+                    {
+                        pControlador.Update(pedExportar);
+                    }
+
+                    //Se guarda el domicilio
+                    Domicilio domExportar;
+                    using (var cDomicilio = new ControladorDomicilio())
+                    {
+                        domExportar = cDomicilio.FindById(pedExportar.IdDomicilio);
+                    }
+
+                    //Se guardan sus detalles
+                    List<PedidoVentaDetalle> detExportar;
+                    using (var cDetalle = new ControladorPedidoVentaDetalle())
+                    {
+                        detExportar = cDetalle.FindByPedidoVenta(pedExportar.IdPedidoVenta);
+                    }
+
+                    //Se pasan a formato JSON
+                    var pedidoJson = JsonConvert.SerializeObject(pedExportar, Newtonsoft.Json.Formatting.Indented);
+                    var domicilioJson = JsonConvert.SerializeObject(domExportar, Newtonsoft.Json.Formatting.Indented);
+                    var detallesJson = JsonConvert.SerializeObject(detExportar, Newtonsoft.Json.Formatting.Indented);
+
+                    //Se crea una lista de parejas
+                    var parejas = new List<KeyValuePair<string, string>>
+                    {
+                        new KeyValuePair<string, string>("pedido", pedidoJson),
+                        new KeyValuePair<string, string>("domicilio", domicilioJson),
+                        new KeyValuePair<string, string>("detalles", detallesJson)
+                    };
+
+                    //Se le da formato de formulario
+                    var contenido = new FormUrlEncodedContent(parejas);
+
+                    //Se envia el pedido, su domicilio y sus detalles correspondientes al servidor
+                    HttpClient clienteHttp = new HttpClient();
+                    clienteHttp.BaseAddress = new Uri("http://192.168.1.38:63942/");
+                    string url = string.Format("/Importar.aspx");
+                    var respuesta = clienteHttp.PostAsync(url, contenido).Result;
+                                        
+                    if (!respuesta.IsSuccessStatusCode)
+                    {
+                        operacionExitosa = false;                        
+                    }
                 }
-
-                //Se pasan a formato JSON
-                var pedidoJson = JsonConvert.SerializeObject(pedExportar, Newtonsoft.Json.Formatting.Indented);
-                var domicilioJson = JsonConvert.SerializeObject(domExportar, Newtonsoft.Json.Formatting.Indented);
-                var detallesJson = JsonConvert.SerializeObject(detExportar, Newtonsoft.Json.Formatting.Indented);
-
-                //Se crea una lista de parejas
-                var parejas = new List<KeyValuePair<string, string>>
-                {
-                    new KeyValuePair<string, string>("pedido", pedidoJson),
-                    new KeyValuePair<string, string>("domicilio", domicilioJson),
-                    new KeyValuePair<string, string>("detalles", detallesJson)
-                };
-
-                //Se le da formato de formulario
-                var contenido = new FormUrlEncodedContent(parejas);
-
-                //Se envia el pedido, su domicilio y sus detalles correspondientes al servidor
-                HttpClient clienteHttp = new HttpClient();
-                clienteHttp.BaseAddress = new Uri("http://192.168.1.38:63942/");
-                string url = string.Format("/Importar.aspx");
-                var respuesta = clienteHttp.PostAsync(url, contenido).Result;
-
+                
                 //Si fue exitosa la operacion se muestra un mensaje
-                if (respuesta.IsSuccessStatusCode)
+                if (operacionExitosa)
                 {
-                    DisplayAlert("Exportacion exitosa", "Los datos fueron enviados al servidor exitosamente", "Aceptar");
+                    if (pedidosExportar.Count > 0)
+                    {
+                        await DisplayAlert("Exportacion exitosa", "Los pedidos se exportaron exitosamente", "Aceptar");
+                    }
+                    else
+                    {
+                        await DisplayAlert("Exportacion fallida", "No hay ningun pedido para exportar", "Aceptar");
+                    }                    
+                }
+                else
+                {
+                    await DisplayAlert("Exportacion fallida", "Hubo un problema durante la exportacion de los pedidos", "Aceptar");
                 }
             }
         }
@@ -110,7 +158,7 @@ namespace TrabajoFinalApp
             //Se cargan los pedidos correspondientes a ese vendedor
             using (var pedControlador = new ControladorPedidoVenta())
             {
-                this.listaPedidos = pedControlador.FindByVendedor(this.IdVendedor);
+                this.listaPedidos = new ObservableCollection<PedidoVenta>(pedControlador.FindByVendedor(this.IdVendedor));
             }
 
             listPedidos.ItemsSource = listaPedidos;

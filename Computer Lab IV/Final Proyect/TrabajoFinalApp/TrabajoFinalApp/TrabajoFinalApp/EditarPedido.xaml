@@ -123,12 +123,12 @@
                 <StackLayout x:Name="tablaDetalles" Spacing="0">
                     <Frame Padding="0" HasShadow="False" BackgroundColor="#3AAFA9" HeightRequest="30">
                         <StackLayout Orientation="Horizontal" VerticalOptions="Center">
-                            <StackLayout Orientation="Horizontal" WidthRequest="60" Margin="8, 0, 0, 0">
-                                <Label Text="Cantidad" TextColor="White" FontSize="12" FontAttributes="Bold" HorizontalOptions="CenterAndExpand"/>
-                            </StackLayout>
                             <StackLayout Orientation="Horizontal" WidthRequest="110">
                                 <Label Text="Articulo" TextColor="White" FontSize="12" FontAttributes="Bold" HorizontalOptions="CenterAndExpand"/>
                             </StackLayout>
+                            <StackLayout Orientation="Horizontal" WidthRequest="60" Margin="8, 0, 0, 0">
+                                <Label Text="Cantidad" TextColor="White" FontSize="12" FontAttributes="Bold" HorizontalOptions="CenterAndExpand"/>
+                            </StackLayout>                            
                             <StackLayout Orientation="Horizontal" WidthRequest="70">
                                 <Label Text="Precio" TextColor="White" FontSize="12" FontAttributes="Bold" HorizontalOptions="CenterAndExpand"/>
                             </StackLayout>
@@ -143,18 +143,24 @@
                             <DataTemplate>
                                 <ViewCell>
                                     <Frame Padding="0">
-                                        <StackLayout Orientation="Horizontal" VerticalOptions="Center" HeightRequest="40">
-                                            <StackLayout Orientation="Horizontal" WidthRequest="60" Margin="8, 0, 0, 0" VerticalOptions="Center">
-                                                <Label Text="{Binding Cantidad}" TextColor="Black" FontSize="15" HorizontalOptions="CenterAndExpand"/>
-                                            </StackLayout>
+                                        <StackLayout Orientation="Horizontal" VerticalOptions="Center" HeightRequest="40">                                            
                                             <StackLayout Orientation="Horizontal" WidthRequest="110" VerticalOptions="Center">
                                                 <Label Text="{Binding Articulo}" TextColor="Black" FontSize="15" HorizontalOptions="CenterAndExpand"/>
                                             </StackLayout>
-                                            <StackLayout Orientation="Horizontal" WidthRequest="70" VerticalOptions="Center">
-                                                <Label Text="{Binding PrecioUnitario}" TextColor="Black" FontSize="15" HorizontalOptions="CenterAndExpand"/>
+                                            <StackLayout Orientation="Horizontal" WidthRequest="60" Margin="8, 0, 0, 0" VerticalOptions="Center">
+                                                <Label Text="{Binding Cantidad}" TextColor="Black" FontSize="15" HorizontalOptions="CenterAndExpand"/>
                                             </StackLayout>
-                                            <StackLayout Orientation="Horizontal" WidthRequest="70" VerticalOptions="Center">
-                                                <Label Text="{Binding SubTotal}" TextColor="Black" FontSize="15" HorizontalOptions="CenterAndExpand"/>
+                                            <StackLayout WidthRequest="70" VerticalOptions="CenterAndExpand">
+                                                <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand" Spacing="0">
+                                                    <Label Text="$ " TextColor="Black" FontSize="15" HorizontalOptions="Center"/>
+                                                    <Label Text="{Binding PrecioUnitario}" TextColor="Black" FontSize="15" HorizontalOptions="Center"/>
+                                                </StackLayout>                                                
+                                            </StackLayout>
+                                            <StackLayout WidthRequest="70" VerticalOptions="CenterAndExpand">
+                                                <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand" Spacing="0">
+                                                    <Label Text="$ " TextColor="Black" FontSize="15" HorizontalOptions="Center"/>
+                                                    <Label Text="{Binding SubTotal}" TextColor="Black" FontSize="15" HorizontalOptions="Center"/>
+                                                </StackLayout>                                                
                                             </StackLayout>
                                         </StackLayout>
                                     </Frame>
