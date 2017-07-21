@@ -4,8 +4,9 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>Trabajo Final</title>
+    <title>Registrarse</title>
     <link href="css/estilos.css" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="/img/icon.png" />
 </head>
 <body>
     <div class="signUp-page">

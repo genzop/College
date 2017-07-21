@@ -78,11 +78,11 @@ public partial class EditarPedido : System.Web.UI.Page
         txtNumeroCalle.Text = domicilio.Numero.ToString();
         DropDownList ddlLocalidad = (DropDownList)ddlLocalidades.FindControl("ddlLocalidad");
         ddlLocalidad.SelectedValue = domicilio.Localidad;
-        if(domicilio.Latitud != null)
+        if(domicilio.Latitud != 0)
         {
             txtLatitud.Text = domicilio.Latitud.ToString();
         }
-        if(domicilio.Longitud != null)
+        if(domicilio.Longitud != 0)
         {
             txtLongitud.Text = domicilio.Longitud.ToString();
         }
@@ -418,10 +418,20 @@ public partial class EditarPedido : System.Web.UI.Page
         {
             nuevoDomicilio.Latitud = Convert.ToDouble(txtLatitud.Text);
         }
+        else
+        {
+            nuevoDomicilio.Latitud = 0;
+        }
+
         if (txtLongitud.Text != "")
         {
             nuevoDomicilio.Longitud = Convert.ToDouble(txtLongitud.Text);
         }
+        else
+        {
+            nuevoDomicilio.Longitud = 0;
+        }
+
         bd.Domicilios.InsertOnSubmit(nuevoDomicilio);
         bd.SubmitChanges();
 
@@ -490,9 +500,18 @@ public partial class EditarPedido : System.Web.UI.Page
         {
             domicilioEditar.Latitud = Convert.ToDouble(txtLatitud.Text);
         }
+        else
+        {
+            domicilioEditar.Latitud = 0;
+        }
+
         if (txtLongitud.Text != "")
         {
             domicilioEditar.Longitud = Convert.ToDouble(txtLongitud.Text);
+        }
+        else
+        {
+            domicilioEditar.Longitud = 0;
         }
 
         bd.SubmitChanges();

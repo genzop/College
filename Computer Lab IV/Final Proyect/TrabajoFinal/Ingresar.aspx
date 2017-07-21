@@ -6,6 +6,7 @@
 <head runat="server">
     <title>Trabajo Final</title>
     <link href="css/estilos.css" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="/img/icon.png" />
 </head>
 <body>
     <div class="login-page">
