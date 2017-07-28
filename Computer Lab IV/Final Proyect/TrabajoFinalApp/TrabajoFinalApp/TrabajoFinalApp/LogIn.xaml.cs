@@ -34,7 +34,7 @@ namespace TrabajoFinalApp
                 {
                     if(vendedor.Contrasenia == contrasenia)
                     {
-                        App.Current.MainPage = new Pedidos(vendedor.IdVendedor);
+                        App.Current.MainPage = new Pedidos(vendedor.IdVendedor, lblDireccion.Text);
                     }
                     else
                     {
@@ -62,7 +62,7 @@ namespace TrabajoFinalApp
                 importarClientes();
                 importarArticulos();
                 importarPedidos();                
-            }            
+            }
         }
 
         private async void importarVendedores()
@@ -75,7 +75,7 @@ namespace TrabajoFinalApp
 
             //Se hace el request al servidor
             HttpClient clienteHttp = new HttpClient();
-            clienteHttp.BaseAddress = new Uri("http://192.168.1.38:63942/");
+            clienteHttp.BaseAddress = new Uri(lblDireccion.Text);
             string url = string.Format("/Exportar.aspx?exportar=vendedores");
             var respuesta = await clienteHttp.GetAsync(url);
             var resultado = respuesta.Content.ReadAsStringAsync().Result;
@@ -101,7 +101,7 @@ namespace TrabajoFinalApp
 
             //Se hace el request al servidor
             HttpClient clienteHttp = new HttpClient();
-            clienteHttp.BaseAddress = new Uri("http://192.168.1.38:63942/");
+            clienteHttp.BaseAddress = new Uri(lblDireccion.Text);
             string url = string.Format("/Exportar.aspx?exportar=clientes");
             var respuesta = await clienteHttp.GetAsync(url);
             var resultado = respuesta.Content.ReadAsStringAsync().Result;
@@ -127,7 +127,7 @@ namespace TrabajoFinalApp
 
             //Se hace el request al servidor
             HttpClient clienteHttp = new HttpClient();
-            clienteHttp.BaseAddress = new Uri("http://192.168.1.38:63942/");
+            clienteHttp.BaseAddress = new Uri(lblDireccion.Text);
             string url = string.Format("/Exportar.aspx?exportar=articulos");
             var respuesta = await clienteHttp.GetAsync(url);
             var resultado = respuesta.Content.ReadAsStringAsync().Result;
@@ -166,7 +166,7 @@ namespace TrabajoFinalApp
             
             //Se importan todos los pedidos
             HttpClient clienteHttp = new HttpClient();
-            clienteHttp.BaseAddress = new Uri("http://192.168.1.38:63942/");
+            clienteHttp.BaseAddress = new Uri(lblDireccion.Text);
             string url = string.Format("/Exportar.aspx?exportar=pedidos");
             var respuesta = await clienteHttp.GetAsync(url);
             var resultado = respuesta.Content.ReadAsStringAsync().Result;
@@ -184,7 +184,6 @@ namespace TrabajoFinalApp
             resultado = respuesta.Content.ReadAsStringAsync().Result;
             List<PedidoVentaDetalle> detalles = JsonConvert.DeserializeObject<List<PedidoVentaDetalle>>(resultado);
             
-
             //Por cada pedido
             foreach (PedidoVenta pedido in pedidos)
             {
@@ -243,10 +242,10 @@ namespace TrabajoFinalApp
                             cDetalle.Insert(detalle);
                         }
                     }
-                }
+                }                
+            }
 
-                await DisplayAlert("Descarga exitosa", "Los datos se descargaron exitosamente", "Aceptar");
-            }       
+            await DisplayAlert("Descarga exitosa", "Los datos se descargaron exitosamente", "Aceptar");
         }
     }
 }

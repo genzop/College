@@ -20,14 +20,16 @@ namespace TrabajoFinalApp
 
         protected ObservableCollection<PedidoVenta> listaPedidos;        
         private int IdVendedor { get; set; }
+        private string Direccion { get; set; }
 
-        public Pedidos(int idVendedor)
+        public Pedidos(int idVendedor, string direccion)
         {
             InitializeComponent();
             NavigationPage.SetHasNavigationBar(this, false);
 
             //Se guarda el id del vendedor que se le logueo
             this.IdVendedor = idVendedor;
+            this.Direccion = direccion;
             cargarPedidos();                                  
         }
 
@@ -119,7 +121,7 @@ namespace TrabajoFinalApp
 
                     //Se envia el pedido, su domicilio y sus detalles correspondientes al servidor
                     HttpClient clienteHttp = new HttpClient();
-                    clienteHttp.BaseAddress = new Uri("http://192.168.1.38:63942/");
+                    clienteHttp.BaseAddress = new Uri(this.Direccion);
                     string url = string.Format("/Importar.aspx");
                     var respuesta = clienteHttp.PostAsync(url, contenido).Result;
                                         
@@ -135,15 +137,12 @@ namespace TrabajoFinalApp
                     if (pedidosExportar.Count > 0)
                     {
                         await DisplayAlert("Exportacion exitosa", "Los pedidos se exportaron exitosamente", "Aceptar");
+                        App.Current.MainPage = new Pedidos(this.IdVendedor, this.Direccion);
                     }
                     else
                     {
                         await DisplayAlert("Exportacion fallida", "No hay ningun pedido para exportar", "Aceptar");
                     }                    
-                }
-                else
-                {
-                    await DisplayAlert("Exportacion fallida", "Hubo un problema durante la exportacion de los pedidos", "Aceptar");
                 }
             }
         }

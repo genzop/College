@@ -5,6 +5,7 @@
 
     <ContentPage.Content>
         <StackLayout BackgroundColor="#0d2625" Padding="20">
+
             <Image Source="utnGrande" WidthRequest="250" Margin="0, 70, 0 ,0"/>
 
             <Frame Padding="20, 5, 20, 5" HorizontalOptions="FillAndExpand" Margin="0, 30, 0 ,0">
@@ -24,7 +25,10 @@
                     </Image.GestureRecognizers>
                 </Image>
             </StackLayout>
-            
+
+            <!-- Entry invisible que sirve para especificar la direccion del servidor -->
+            <Label x:Name="lblDireccion" Text="http://192.168.1.36:63942/" IsVisible="False"/>
+
         </StackLayout>            
     </ContentPage.Content>
 </ContentPage>
