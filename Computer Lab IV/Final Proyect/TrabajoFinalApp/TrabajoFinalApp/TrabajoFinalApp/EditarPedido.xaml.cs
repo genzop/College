@@ -561,41 +561,48 @@ namespace TrabajoFinalApp
         //Se presiona guardar detalle
         private void btnGuardarDetalle_Clicked(object sender, EventArgs e)
         {
-            var articulo = articulos[pickerArticulo.SelectedIndex];
-
-            if (lblTituloDetalle.Text == "Agregar Detalle")
+            if(pickerArticulo.SelectedIndex != -1)
             {
-                tempDetalle.Cantidad = Convert.ToInt32(txtCantidad.Text);
-                tempDetalle.SubTotal = Convert.ToDouble(lblSubTotalDetalle.Text);
-                tempDetalle.PorcentajeDescuento = Convert.ToDouble(txtDescuento.Text);
-                tempDetalle.IdArticulo = articulo.IdArticulo;
-                tempDetalle.Articulo = articulo.Denominacion;
-                tempDetalle.PrecioUnitario = articulo.PrecioVenta;
+                var articulo = articulos[pickerArticulo.SelectedIndex];
 
-                this.detalles.Add(tempDetalle);
-                
+                if (lblTituloDetalle.Text == "Agregar Detalle")
+                {
+                    tempDetalle.Cantidad = Convert.ToInt32(txtCantidad.Text);
+                    tempDetalle.SubTotal = Convert.ToDouble(lblSubTotalDetalle.Text);
+                    tempDetalle.PorcentajeDescuento = Convert.ToDouble(txtDescuento.Text);
+                    tempDetalle.IdArticulo = articulo.IdArticulo;
+                    tempDetalle.Articulo = articulo.Denominacion;
+                    tempDetalle.PrecioUnitario = articulo.PrecioVenta;
+
+                    this.detalles.Add(tempDetalle);
+
+                }
+                else
+                {
+                    //Se guarda la posicion del pedido en la lista
+                    int posicion = this.detalles.IndexOf(this.tempDetalle);
+
+                    tempDetalle.Cantidad = Convert.ToInt32(txtCantidad.Text);
+                    tempDetalle.SubTotal = Convert.ToDouble(lblSubTotalDetalle.Text);
+                    tempDetalle.PorcentajeDescuento = Convert.ToDouble(txtDescuento.Text);
+                    tempDetalle.IdArticulo = articulo.IdArticulo;
+                    tempDetalle.Articulo = articulo.Denominacion;
+                    tempDetalle.PrecioUnitario = articulo.PrecioVenta;
+
+                    detalles[posicion] = tempDetalle;
+
+                    this.tempDetalle = null;
+                }
+
+                editarDetalle.IsVisible = false;
+                imgAddDetalle.IsVisible = true;
+                tablaDetalles.IsVisible = true;
+                calcularTotales();
             }
             else
             {
-                //Se guarda la posicion del pedido en la lista
-                int posicion = this.detalles.IndexOf(this.tempDetalle);                
-
-                tempDetalle.Cantidad = Convert.ToInt32(txtCantidad.Text);
-                tempDetalle.SubTotal = Convert.ToDouble(lblSubTotalDetalle.Text);
-                tempDetalle.PorcentajeDescuento = Convert.ToDouble(txtDescuento.Text);
-                tempDetalle.IdArticulo = articulo.IdArticulo;
-                tempDetalle.Articulo = articulo.Denominacion;
-                tempDetalle.PrecioUnitario = articulo.PrecioVenta;
-
-                detalles[posicion] = tempDetalle;
-
-                this.tempDetalle = null;
-            }
-
-            editarDetalle.IsVisible = false;
-            imgAddDetalle.IsVisible = true;
-            tablaDetalles.IsVisible = true;
-            calcularTotales();
+                DisplayAlert("Error", "No se selecciono ningun articulo", "Aceptar");
+            }            
         }
 
         //Se presiona eliminar detalle
@@ -607,7 +614,7 @@ namespace TrabajoFinalApp
                 
                 tablaDetalles.IsVisible = true;
 
-                if (this.tempPedido.Editable)
+                if (this.txtNumero.IsEnabled)
                 {
                     imgAddDetalle.IsVisible = true;
                 }

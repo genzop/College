@@ -83,9 +83,17 @@ public partial class EditarCliente : System.Web.UI.Page
                     {
                         tempDom.Latitud = Convert.ToDouble(txtLatitud.Text);
                     }
+                    else
+                    {
+                        tempDom.Latitud = 0;
+                    }
                     if (txtLongitud.Text != "")
                     {
                         tempDom.Longitud = Convert.ToDouble(txtLongitud.Text);
+                    }
+                    else
+                    {
+                        tempDom.Longitud = 0;
                     }
                     bd.Domicilios.InsertOnSubmit(tempDom);
                     bd.SubmitChanges();
@@ -118,9 +126,17 @@ public partial class EditarCliente : System.Web.UI.Page
                     {
                         tempDom.Latitud = Convert.ToDouble(txtLatitud.Text);
                     }
+                    else
+                    {
+                        tempDom.Latitud = 0;
+                    }
                     if (txtLongitud.Text != "")
                     {
                         tempDom.Longitud = Convert.ToDouble(txtLongitud.Text);
+                    }
+                    else
+                    {
+                        tempDom.Longitud = 0;
                     }
                     bd.SubmitChanges();
                     Response.Redirect("Clientes.aspx");

@@ -58,14 +58,14 @@ namespace TrabajoFinalApp
 
             if (confirmacion)
             {
-                importarVendedores();
-                importarClientes();
-                importarArticulos();
-                importarPedidos();                
+                await importarVendedores();
+                await importarClientes();
+                await importarArticulos();
+                await importarPedidos();                
             }
         }
 
-        private async void importarVendedores()
+        private async Task importarVendedores()
         {
             //Se eliminan todos los vendedores
             using (var cVendedor = new ControladorVendedor())
@@ -91,7 +91,7 @@ namespace TrabajoFinalApp
             }
         }
 
-        private async void importarClientes()
+        private async Task importarClientes()
         {
             //Se eliminan todos los clientes
             using (var cCliente = new ControladorCliente())
@@ -117,7 +117,7 @@ namespace TrabajoFinalApp
             }
         }
 
-        private async void importarArticulos()
+        private async Task importarArticulos()
         {
             //Se eliminan todos los articulos
             using (var cArticulo = new ControladorArticulo())
@@ -143,7 +143,7 @@ namespace TrabajoFinalApp
             }
         }
 
-        private async void importarPedidos()
+        private async Task importarPedidos()
         {
             
             //Se eliminan todos los detalles
