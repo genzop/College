@@ -19,7 +19,7 @@ public partial class Pedidos : System.Web.UI.Page
             Response.Redirect("Ingresar.aspx");
         }
         else
-        {
+        {           
             HyperLink pedidos = (HyperLink)Master.FindControl("hlPedidos");
             pedidos.CssClass = "active";
         }

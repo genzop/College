@@ -27,7 +27,7 @@
         <asp:GridView ID="grdClientes" runat="server" AutoGenerateColumns="False" CellPadding="6" ForeColor="#333333" GridLines="None" Font-Size="14px" AllowPaging="True" AllowSorting="True" BorderWidth="0px" CssClass="tablaCentrada" DataKeyNames="IdCliente" DataSourceID="SqlDataSource1" style="margin: 0 auto; text-align: center; width: 1000px">
             <AlternatingRowStyle BackColor="#F2F2F2" />
             <Columns>                
-                <asp:BoundField DataField="RazonSocial" HeaderText="Razon Social" SortExpression="RazonSocial" />
+                <asp:BoundField DataField="RazonSocial" HeaderText="Razon Social" SortExpression="RazonSocial" ItemStyle-Height="22px"/>
                 <asp:BoundField DataField="Cuit" HeaderText="Cuit" SortExpression="Cuit" />
                 <asp:BoundField DataField="Calle" HeaderText="Calle" SortExpression="Calle" />
                 <asp:BoundField DataField="Numero" HeaderText="Numero" SortExpression="Numero" />

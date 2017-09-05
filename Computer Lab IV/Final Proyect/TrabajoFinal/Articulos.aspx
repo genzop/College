@@ -30,7 +30,7 @@
         <asp:GridView ID="grdArticulos" runat="server" AutoGenerateColumns="False" DataKeyNames="IdArticulo" DataSourceID="SqlDataSource1" AllowPaging="True" AllowSorting="True" CellPadding="6" ForeColor="#333333" GridLines="None" Font-Size="14px" Style="margin: 0 auto; text-align: center; width: 900px">
             <AlternatingRowStyle BackColor="#F2F2F2" />
             <Columns>    
-                <asp:BoundField DataField="Codigo" HeaderText="Codigo" SortExpression="Codigo" />            
+                <asp:BoundField DataField="Codigo" HeaderText="Codigo" SortExpression="Codigo" ItemStyle-Height="22px"/>            
                 <asp:BoundField DataField="Denominacion" HeaderText="Denominacion" SortExpression="Denominacion" />                
                 <asp:BoundField DataField="Denominacion1" HeaderText="Rubro" SortExpression="Denominacion1" />
                 <asp:BoundField DataField="PrecioCompra" HeaderText="Precio de Compra" SortExpression="PrecioCompra" DataFormatString="{0:C}" />

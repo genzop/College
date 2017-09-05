@@ -28,7 +28,7 @@
         <asp:GridView ID="grdRubros" runat="server" AllowPaging="True" AllowSorting="True" AutoGenerateColumns="False" DataSourceID="SqlDataSource1" CellPadding="6" ForeColor="#333333" GridLines="None" Font-Size="14px" style="margin: 0 auto; text-align: center; width: 500px" >
             <AlternatingRowStyle BackColor="#F2F2F2" />
             <Columns>                
-                <asp:BoundField DataField="Codigo" HeaderText="Codigo" SortExpression="Codigo" />
+                <asp:BoundField DataField="Codigo" HeaderText="Codigo" SortExpression="Codigo" ItemStyle-Height="22" />
                 <asp:BoundField DataField="Denominacion" HeaderText="Denominacion" SortExpression="Denominacion" />                
                 <asp:BoundField DataField="Denominacion1" HeaderText="Rubro Superior" SortExpression="Denominacion1" />
                 <asp:TemplateField HeaderStyle-BackColor="#17252a" ItemStyle-BackColor="#17252a" ItemStyle-Width="40px">

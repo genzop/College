@@ -18,9 +18,16 @@ public partial class Clientes : System.Web.UI.Page
             Response.Redirect("Ingresar.aspx");
         }
         else
-        {            
+        {
             HyperLink clientes = (HyperLink)Master.FindControl("hlClientes");
-            clientes.CssClass = "active";            
+            clientes.CssClass = "active";
+
+            if (Convert.ToInt32(Session["IdVendedor"]) != 20)
+            {                
+                grdClientes.Columns[6].Visible = false;
+                grdClientes.Columns[7].Visible = false;
+                hlAdd.Visible = false;                         
+            }            
         }        
     }
 

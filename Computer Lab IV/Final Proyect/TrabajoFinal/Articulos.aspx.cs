@@ -18,9 +18,16 @@ public partial class Articulos : System.Web.UI.Page
             Response.Redirect("Ingresar.aspx");
         }
         else
-        {
+        {            
             HyperLink articulos = (HyperLink)Master.FindControl("hlArticulos");
             articulos.CssClass = "active";
+
+            if (Convert.ToInt32(Session["IdVendedor"]) != 20)
+            {
+                grdArticulos.Columns[6].Visible = false;
+                grdArticulos.Columns[7].Visible = false;
+                hlAdd.Visible = false;
+            }
         }
     }
 

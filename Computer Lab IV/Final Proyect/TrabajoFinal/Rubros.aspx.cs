@@ -21,6 +21,13 @@ public partial class Rubros : System.Web.UI.Page
         {
             HyperLink rubros = (HyperLink)Master.FindControl("hlRubros");
             rubros.CssClass = "active";
+
+            if(Convert.ToInt32(Session["IdVendedor"]) != 20)
+            {
+                grdRubros.Columns[3].Visible = false;
+                grdRubros.Columns[4].Visible = false;
+                hlAdd.Visible = false;
+            }
         }
     }
 

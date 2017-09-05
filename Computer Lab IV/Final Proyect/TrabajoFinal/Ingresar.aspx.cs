@@ -41,8 +41,6 @@ public partial class Ingresar : System.Web.UI.Page
             }
         }
         catch (Exception) { }
-
-
     }
 
     //Se valida que la contraseña ingresada sea la correcta
