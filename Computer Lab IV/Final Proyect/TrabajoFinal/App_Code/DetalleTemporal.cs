@@ -9,8 +9,9 @@ public class DetalleTemporal
     public string Articulo { get; set; }
     public double PrecioUnitario { get; set; }
     public int Cantidad { get; set; }
-    public double Descuento { get; set; }
     public double SubTotal { get; set; }
+    public double Descuento { get; set; }
+    public double Total { get; set; }
     public int IdPedidoVenta { get; set; }
     public int IdArticulo { get; set; }
 

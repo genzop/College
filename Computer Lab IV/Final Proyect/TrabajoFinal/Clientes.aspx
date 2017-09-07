@@ -13,7 +13,7 @@
     <form id="form1" runat="server">
 
         <!-- Buscador -->
-        <div style="width: 1000px; margin: 0 auto">
+        <div style="width: 900px; margin: 0 auto">
             <asp:DropDownList ID="ddlBuscar" runat="server" Style="padding-left: 5px" Height="37px" BackColor="#f2f2f2">
                 <asp:ListItem Text="Razon Social" Value="Cliente.RazonSocial" />
                 <asp:ListItem Text="Cuit" Value="Cliente.Cuit" />
@@ -24,14 +24,14 @@
         </div><br />
 
         <!-- Tabla Clientes -->
-        <asp:GridView ID="grdClientes" runat="server" AutoGenerateColumns="False" CellPadding="6" ForeColor="#333333" GridLines="None" Font-Size="14px" AllowPaging="True" AllowSorting="True" BorderWidth="0px" CssClass="tablaCentrada" DataKeyNames="IdCliente" DataSourceID="SqlDataSource1" style="margin: 0 auto; text-align: center; width: 1000px">
+        <asp:GridView ID="grdClientes" runat="server" AutoGenerateColumns="False" CellPadding="6" ForeColor="#333333" GridLines="None" Font-Size="14px" AllowPaging="True" AllowSorting="True" BorderWidth="0px" CssClass="tablaCentrada" DataKeyNames="IdCliente" DataSourceID="SqlDataSource1" style="margin: 0 auto; text-align: center; width: 900px">
             <AlternatingRowStyle BackColor="#F2F2F2" />
             <Columns>                
-                <asp:BoundField DataField="RazonSocial" HeaderText="Razon Social" SortExpression="RazonSocial" ItemStyle-Height="22px"/>
-                <asp:BoundField DataField="Cuit" HeaderText="Cuit" SortExpression="Cuit" />
-                <asp:BoundField DataField="Calle" HeaderText="Calle" SortExpression="Calle" />
-                <asp:BoundField DataField="Numero" HeaderText="Numero" SortExpression="Numero" />
+                <asp:BoundField DataField="RazonSocial" HeaderText="Razon Social" SortExpression="RazonSocial" ItemStyle-Height="22px" ItemStyle-Width="200px"/>
+                <asp:BoundField DataField="Cuit" HeaderText="Cuit" SortExpression="Cuit" ItemStyle-Width="100px" />
                 <asp:BoundField DataField="Localidad" HeaderText="Localidad" SortExpression="Localidad" />
+                <asp:BoundField DataField="Calle" HeaderText="Calle" SortExpression="Calle" />
+                <asp:BoundField DataField="Numero" HeaderText="Numero" SortExpression="Numero" />                
                 <asp:BoundField DataField="Saldo" HeaderText="Saldo" SortExpression="Saldo" DataFormatString="{0:C}" />
                 <asp:TemplateField HeaderStyle-BackColor="#17252a" ItemStyle-BackColor="#17252a" ItemStyle-Width="40px">
                     <ItemTemplate>
@@ -60,7 +60,7 @@
         <br />
 
         <!-- Agregar Cliente -->
-        <div style="margin: 0 auto; width: 1000px">
+        <div style="margin: 0 auto; width: 900px">
             <asp:HyperLink ID="hlAdd" runat="server" NavigateUrl="~/EditarCliente.aspx?id=0" Font-Bold="true" Font-Underline="false" ForeColor="#DEF2F1">
                 <asp:Image ID="imgAdd" runat="server" ImageUrl="~/img/add.png" Width="20px" CssClass="verticalCentered" style="padding: 0 10px 0 0"/>
                 <asp:Label ID="lblAdd" runat="server" Text="Agregar Cliente" />

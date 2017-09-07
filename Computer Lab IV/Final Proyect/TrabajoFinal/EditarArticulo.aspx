@@ -5,22 +5,24 @@
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="cphContenido" Runat="Server">
-    <br /><br /><br />
+
+    <!-- Titulo -->
+    <div style="text-align: center; padding: 40px 0px 0px 0px">
+        <asp:Label ID="lblTitulo" runat="server" Text="Titulo Temporal" ForeColor="#FEFFFF" Font-Names="Arial" Font-Bold="true" Font-Size="30px " />
+    </div>
+    <br />
+
     <div class="create-page" style="padding-top: 0">
         <div class="create-form">
 
             <!-- Formulario Articulo -->
-            <form runat="server">   
-                <div style="margin: 10px 0">
-                    <asp:Label ID="lblTitulo" runat="server" Text="Titulo Temporal" Font-Names="Arial" Font-Bold="true" Font-Size="25px" /><br />
-                    <br />
-                </div>
+            <form runat="server">
 
                 <div class="editContent">
                     <p class="editContentTitle" style="font-weight: bold">Denominacion</p>
                     <asp:TextBox ID="txtDenominacion" runat="server" CssClass="inputCentrado" />
-                    <asp:RequiredFieldValidator ID="rfvDenominacion" runat="server" ControlToValidate="txtDenominacion" ErrorMessage="* Este campo es obligatorio" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px"/>         
-                    <asp:RegularExpressionValidator ID="revDenominacion" runat="server" ControlToValidate="txtDenominacion" ValidationExpression="^(\s|.){1,200}$" ErrorMessage="* La denominacion puede contener hasta un máximo de 200 caracteres" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px"/>    
+                    <asp:RequiredFieldValidator ID="rfvDenominacion" runat="server" ControlToValidate="txtDenominacion" ErrorMessage="* Este campo es obligatorio" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
+                    <asp:RegularExpressionValidator ID="revDenominacion" runat="server" ControlToValidate="txtDenominacion" ValidationExpression="^(\s|.){1,200}$" ErrorMessage="* La denominacion puede contener hasta un máximo de 200 caracteres" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />    
                 </div>
                 <div class="editContent">
                     <p class="editContentTitle" style="font-weight: bold">Codigo</p>

@@ -847,8 +847,6 @@ public partial class Domicilio : INotifyPropertyChanging, INotifyPropertyChanged
 	
 	private EntitySet<Cliente> _Clientes;
 	
-	private EntitySet<PedidoVenta> _PedidoVentas;
-	
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -870,7 +868,6 @@ public partial class Domicilio : INotifyPropertyChanging, INotifyPropertyChanged
 	public Domicilio()
 	{
 		this._Clientes = new EntitySet<Cliente>(new Action<Cliente>(this.attach_Clientes), new Action<Cliente>(this.detach_Clientes));
-		this._PedidoVentas = new EntitySet<PedidoVenta>(new Action<PedidoVenta>(this.attach_PedidoVentas), new Action<PedidoVenta>(this.detach_PedidoVentas));
 		OnCreated();
 	}
 	
@@ -1007,19 +1004,6 @@ public partial class Domicilio : INotifyPropertyChanging, INotifyPropertyChanged
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Domicilio_PedidoVenta", Storage="_PedidoVentas", ThisKey="IdDomicilio", OtherKey="IdDomicilio")]
-	public EntitySet<PedidoVenta> PedidoVentas
-	{
-		get
-		{
-			return this._PedidoVentas;
-		}
-		set
-		{
-			this._PedidoVentas.Assign(value);
-		}
-	}
-	
 	public event PropertyChangingEventHandler PropertyChanging;
 	
 	public event PropertyChangedEventHandler PropertyChanged;
@@ -1051,18 +1035,6 @@ public partial class Domicilio : INotifyPropertyChanging, INotifyPropertyChanged
 		this.SendPropertyChanging();
 		entity.Domicilio = null;
 	}
-	
-	private void attach_PedidoVentas(PedidoVenta entity)
-	{
-		this.SendPropertyChanging();
-		entity.Domicilio = this;
-	}
-	
-	private void detach_PedidoVentas(PedidoVenta entity)
-	{
-		this.SendPropertyChanging();
-		entity.Domicilio = null;
-	}
 }
 
 [global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.PedidoVenta")]
@@ -1073,25 +1045,25 @@ public partial class PedidoVenta : INotifyPropertyChanging, INotifyPropertyChang
 	
 	private int _IdPedidoVenta;
 	
-	private System.Nullable<System.DateTime> _FechaEstimadaEntrega;
+	private System.Nullable<bool> _Editable;
 	
-	private System.Nullable<double> _GastosEnvio;
+	private System.Nullable<long> _NroPedido;
 	
 	private string _Estado;
 	
 	private System.Nullable<bool> _Entregado;
 	
+	private System.Nullable<bool> _Pagado;
+	
 	private System.Nullable<System.DateTime> _FechaPedido;
 	
-	private System.Nullable<long> _NroPedido;
+	private System.Nullable<System.DateTime> _FechaEstimadaEntrega;
 	
 	private System.Nullable<double> _SubTotal;
 	
+	private System.Nullable<double> _GastosEnvio;
+	
 	private System.Nullable<double> _MontoTotal;
-	
-	private System.Nullable<bool> _Editable;
-	
-	private System.Nullable<int> _IdDomicilio;
 	
 	private System.Nullable<int> _IdCliente;
 	
@@ -1101,8 +1073,6 @@ public partial class PedidoVenta : INotifyPropertyChanging, INotifyPropertyChang
 	
 	private EntityRef<Cliente> _Cliente;
 	
-	private EntityRef<Domicilio> _Domicilio;
-	
 	private EntityRef<Vendedor> _Vendedor;
 	
     #region Extensibility Method Definitions
@@ -1111,26 +1081,26 @@ public partial class PedidoVenta : INotifyPropertyChanging, INotifyPropertyChang
     partial void OnCreated();
     partial void OnIdPedidoVentaChanging(int value);
     partial void OnIdPedidoVentaChanged();
-    partial void OnFechaEstimadaEntregaChanging(System.Nullable<System.DateTime> value);
-    partial void OnFechaEstimadaEntregaChanged();
-    partial void OnGastosEnvioChanging(System.Nullable<double> value);
-    partial void OnGastosEnvioChanged();
+    partial void OnEditableChanging(System.Nullable<bool> value);
+    partial void OnEditableChanged();
+    partial void OnNroPedidoChanging(System.Nullable<long> value);
+    partial void OnNroPedidoChanged();
     partial void OnEstadoChanging(string value);
     partial void OnEstadoChanged();
     partial void OnEntregadoChanging(System.Nullable<bool> value);
     partial void OnEntregadoChanged();
+    partial void OnPagadoChanging(System.Nullable<bool> value);
+    partial void OnPagadoChanged();
     partial void OnFechaPedidoChanging(System.Nullable<System.DateTime> value);
     partial void OnFechaPedidoChanged();
-    partial void OnNroPedidoChanging(System.Nullable<long> value);
-    partial void OnNroPedidoChanged();
+    partial void OnFechaEstimadaEntregaChanging(System.Nullable<System.DateTime> value);
+    partial void OnFechaEstimadaEntregaChanged();
     partial void OnSubTotalChanging(System.Nullable<double> value);
     partial void OnSubTotalChanged();
+    partial void OnGastosEnvioChanging(System.Nullable<double> value);
+    partial void OnGastosEnvioChanged();
     partial void OnMontoTotalChanging(System.Nullable<double> value);
     partial void OnMontoTotalChanged();
-    partial void OnEditableChanging(System.Nullable<bool> value);
-    partial void OnEditableChanged();
-    partial void OnIdDomicilioChanging(System.Nullable<int> value);
-    partial void OnIdDomicilioChanged();
     partial void OnIdClienteChanging(System.Nullable<int> value);
     partial void OnIdClienteChanged();
     partial void OnIdVendedorChanging(System.Nullable<int> value);
@@ -1141,7 +1111,6 @@ public partial class PedidoVenta : INotifyPropertyChanging, INotifyPropertyChang
 	{
 		this._PedidoVentaDetalles = new EntitySet<PedidoVentaDetalle>(new Action<PedidoVentaDetalle>(this.attach_PedidoVentaDetalles), new Action<PedidoVentaDetalle>(this.detach_PedidoVentaDetalles));
 		this._Cliente = default(EntityRef<Cliente>);
-		this._Domicilio = default(EntityRef<Domicilio>);
 		this._Vendedor = default(EntityRef<Vendedor>);
 		OnCreated();
 	}
@@ -1166,42 +1135,42 @@ public partial class PedidoVenta : INotifyPropertyChanging, INotifyPropertyChang
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FechaEstimadaEntrega", DbType="Date")]
-	public System.Nullable<System.DateTime> FechaEstimadaEntrega
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Editable", DbType="Bit")]
+	public System.Nullable<bool> Editable
 	{
 		get
 		{
-			return this._FechaEstimadaEntrega;
+			return this._Editable;
 		}
 		set
 		{
-			if ((this._FechaEstimadaEntrega != value))
+			if ((this._Editable != value))
 			{
-				this.OnFechaEstimadaEntregaChanging(value);
+				this.OnEditableChanging(value);
 				this.SendPropertyChanging();
-				this._FechaEstimadaEntrega = value;
-				this.SendPropertyChanged("FechaEstimadaEntrega");
-				this.OnFechaEstimadaEntregaChanged();
+				this._Editable = value;
+				this.SendPropertyChanged("Editable");
+				this.OnEditableChanged();
 			}
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_GastosEnvio", DbType="Float")]
-	public System.Nullable<double> GastosEnvio
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_NroPedido", DbType="BigInt")]
+	public System.Nullable<long> NroPedido
 	{
 		get
 		{
-			return this._GastosEnvio;
+			return this._NroPedido;
 		}
 		set
 		{
-			if ((this._GastosEnvio != value))
+			if ((this._NroPedido != value))
 			{
-				this.OnGastosEnvioChanging(value);
+				this.OnNroPedidoChanging(value);
 				this.SendPropertyChanging();
-				this._GastosEnvio = value;
-				this.SendPropertyChanged("GastosEnvio");
-				this.OnGastosEnvioChanged();
+				this._NroPedido = value;
+				this.SendPropertyChanged("NroPedido");
+				this.OnNroPedidoChanged();
 			}
 		}
 	}
@@ -1246,6 +1215,26 @@ public partial class PedidoVenta : INotifyPropertyChanging, INotifyPropertyChang
 		}
 	}
 	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Pagado", DbType="Bit")]
+	public System.Nullable<bool> Pagado
+	{
+		get
+		{
+			return this._Pagado;
+		}
+		set
+		{
+			if ((this._Pagado != value))
+			{
+				this.OnPagadoChanging(value);
+				this.SendPropertyChanging();
+				this._Pagado = value;
+				this.SendPropertyChanged("Pagado");
+				this.OnPagadoChanged();
+			}
+		}
+	}
+	
 	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FechaPedido", DbType="Date")]
 	public System.Nullable<System.DateTime> FechaPedido
 	{
@@ -1266,22 +1255,22 @@ public partial class PedidoVenta : INotifyPropertyChanging, INotifyPropertyChang
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_NroPedido", DbType="BigInt")]
-	public System.Nullable<long> NroPedido
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FechaEstimadaEntrega", DbType="Date")]
+	public System.Nullable<System.DateTime> FechaEstimadaEntrega
 	{
 		get
 		{
-			return this._NroPedido;
+			return this._FechaEstimadaEntrega;
 		}
 		set
 		{
-			if ((this._NroPedido != value))
+			if ((this._FechaEstimadaEntrega != value))
 			{
-				this.OnNroPedidoChanging(value);
+				this.OnFechaEstimadaEntregaChanging(value);
 				this.SendPropertyChanging();
-				this._NroPedido = value;
-				this.SendPropertyChanged("NroPedido");
-				this.OnNroPedidoChanged();
+				this._FechaEstimadaEntrega = value;
+				this.SendPropertyChanged("FechaEstimadaEntrega");
+				this.OnFechaEstimadaEntregaChanged();
 			}
 		}
 	}
@@ -1306,6 +1295,26 @@ public partial class PedidoVenta : INotifyPropertyChanging, INotifyPropertyChang
 		}
 	}
 	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_GastosEnvio", DbType="Float")]
+	public System.Nullable<double> GastosEnvio
+	{
+		get
+		{
+			return this._GastosEnvio;
+		}
+		set
+		{
+			if ((this._GastosEnvio != value))
+			{
+				this.OnGastosEnvioChanging(value);
+				this.SendPropertyChanging();
+				this._GastosEnvio = value;
+				this.SendPropertyChanged("GastosEnvio");
+				this.OnGastosEnvioChanged();
+			}
+		}
+	}
+	
 	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MontoTotal", DbType="Float")]
 	public System.Nullable<double> MontoTotal
 	{
@@ -1322,50 +1331,6 @@ public partial class PedidoVenta : INotifyPropertyChanging, INotifyPropertyChang
 				this._MontoTotal = value;
 				this.SendPropertyChanged("MontoTotal");
 				this.OnMontoTotalChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Editable", DbType="Bit")]
-	public System.Nullable<bool> Editable
-	{
-		get
-		{
-			return this._Editable;
-		}
-		set
-		{
-			if ((this._Editable != value))
-			{
-				this.OnEditableChanging(value);
-				this.SendPropertyChanging();
-				this._Editable = value;
-				this.SendPropertyChanged("Editable");
-				this.OnEditableChanged();
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_IdDomicilio", DbType="Int")]
-	public System.Nullable<int> IdDomicilio
-	{
-		get
-		{
-			return this._IdDomicilio;
-		}
-		set
-		{
-			if ((this._IdDomicilio != value))
-			{
-				if (this._Domicilio.HasLoadedOrAssignedValue)
-				{
-					throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-				}
-				this.OnIdDomicilioChanging(value);
-				this.SendPropertyChanging();
-				this._IdDomicilio = value;
-				this.SendPropertyChanged("IdDomicilio");
-				this.OnIdDomicilioChanged();
 			}
 		}
 	}
@@ -1465,40 +1430,6 @@ public partial class PedidoVenta : INotifyPropertyChanging, INotifyPropertyChang
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Domicilio_PedidoVenta", Storage="_Domicilio", ThisKey="IdDomicilio", OtherKey="IdDomicilio", IsForeignKey=true)]
-	public Domicilio Domicilio
-	{
-		get
-		{
-			return this._Domicilio.Entity;
-		}
-		set
-		{
-			Domicilio previousValue = this._Domicilio.Entity;
-			if (((previousValue != value) 
-						|| (this._Domicilio.HasLoadedOrAssignedValue == false)))
-			{
-				this.SendPropertyChanging();
-				if ((previousValue != null))
-				{
-					this._Domicilio.Entity = null;
-					previousValue.PedidoVentas.Remove(this);
-				}
-				this._Domicilio.Entity = value;
-				if ((value != null))
-				{
-					value.PedidoVentas.Add(this);
-					this._IdDomicilio = value.IdDomicilio;
-				}
-				else
-				{
-					this._IdDomicilio = default(Nullable<int>);
-				}
-				this.SendPropertyChanged("Domicilio");
-			}
-		}
-	}
-	
 	[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Vendedor_PedidoVenta", Storage="_Vendedor", ThisKey="IdVendedor", OtherKey="IdVendedor", IsForeignKey=true)]
 	public Vendedor Vendedor
 	{
@@ -1580,6 +1511,8 @@ public partial class PedidoVentaDetalle : INotifyPropertyChanging, INotifyProper
 	
 	private System.Nullable<double> _PorcentajeDescuento;
 	
+	private System.Nullable<double> _Total;
+	
 	private System.Nullable<int> _IdPedidoVenta;
 	
 	private System.Nullable<int> _IdArticulo;
@@ -1600,6 +1533,8 @@ public partial class PedidoVentaDetalle : INotifyPropertyChanging, INotifyProper
     partial void OnSubTotalChanged();
     partial void OnPorcentajeDescuentoChanging(System.Nullable<double> value);
     partial void OnPorcentajeDescuentoChanged();
+    partial void OnTotalChanging(System.Nullable<double> value);
+    partial void OnTotalChanged();
     partial void OnIdPedidoVentaChanging(System.Nullable<int> value);
     partial void OnIdPedidoVentaChanged();
     partial void OnIdArticuloChanging(System.Nullable<int> value);
@@ -1689,6 +1624,26 @@ public partial class PedidoVentaDetalle : INotifyPropertyChanging, INotifyProper
 				this._PorcentajeDescuento = value;
 				this.SendPropertyChanged("PorcentajeDescuento");
 				this.OnPorcentajeDescuentoChanged();
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Total", DbType="Float")]
+	public System.Nullable<double> Total
+	{
+		get
+		{
+			return this._Total;
+		}
+		set
+		{
+			if ((this._Total != value))
+			{
+				this.OnTotalChanging(value);
+				this.SendPropertyChanging();
+				this._Total = value;
+				this.SendPropertyChanged("Total");
+				this.OnTotalChanged();
 			}
 		}
 	}

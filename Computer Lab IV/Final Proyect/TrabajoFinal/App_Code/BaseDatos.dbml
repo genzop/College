@@ -43,27 +43,25 @@
       <Column Name="Latitud" Type="System.Double" DbType="Float" CanBeNull="true" />
       <Column Name="Longitud" Type="System.Double" DbType="Float" CanBeNull="true" />
       <Association Name="Domicilio_Cliente" Member="Clientes" ThisKey="IdDomicilio" OtherKey="IdDomicilio" Type="Cliente" />
-      <Association Name="Domicilio_PedidoVenta" Member="PedidoVentas" ThisKey="IdDomicilio" OtherKey="IdDomicilio" Type="PedidoVenta" />
     </Type>
   </Table>
   <Table Name="dbo.PedidoVenta" Member="PedidoVentas">
     <Type Name="PedidoVenta">
       <Column Name="IdPedidoVenta" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="FechaEstimadaEntrega" Type="System.DateTime" DbType="Date" CanBeNull="true" />
-      <Column Name="GastosEnvio" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="Editable" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="NroPedido" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
       <Column Name="Estado" Type="System.String" DbType="VarChar(20)" CanBeNull="true" />
       <Column Name="Entregado" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="Pagado" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
       <Column Name="FechaPedido" Type="System.DateTime" DbType="Date" CanBeNull="true" />
-      <Column Name="NroPedido" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="FechaEstimadaEntrega" Type="System.DateTime" DbType="Date" CanBeNull="true" />
       <Column Name="SubTotal" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="GastosEnvio" Type="System.Double" DbType="Float" CanBeNull="true" />
       <Column Name="MontoTotal" Type="System.Double" DbType="Float" CanBeNull="true" />
-      <Column Name="Editable" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Column Name="IdDomicilio" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="IdCliente" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="IdVendedor" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Association Name="PedidoVenta_PedidoVentaDetalle" Member="PedidoVentaDetalles" ThisKey="IdPedidoVenta" OtherKey="IdPedidoVenta" Type="PedidoVentaDetalle" />
       <Association Name="Cliente_PedidoVenta" Member="Cliente" ThisKey="IdCliente" OtherKey="IdCliente" Type="Cliente" IsForeignKey="true" />
-      <Association Name="Domicilio_PedidoVenta" Member="Domicilio" ThisKey="IdDomicilio" OtherKey="IdDomicilio" Type="Domicilio" IsForeignKey="true" />
       <Association Name="Vendedor_PedidoVenta" Member="Vendedor" ThisKey="IdVendedor" OtherKey="IdVendedor" Type="Vendedor" IsForeignKey="true" />
     </Type>
   </Table>
@@ -73,6 +71,7 @@
       <Column Name="Cantidad" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="SubTotal" Type="System.Double" DbType="Float" CanBeNull="true" />
       <Column Name="PorcentajeDescuento" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="Total" Type="System.Double" DbType="Float" CanBeNull="true" />
       <Column Name="IdPedidoVenta" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="IdArticulo" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Association Name="Articulo_PedidoVentaDetalle" Member="Articulo" ThisKey="IdArticulo" OtherKey="IdArticulo" Type="Articulo" IsForeignKey="true" />

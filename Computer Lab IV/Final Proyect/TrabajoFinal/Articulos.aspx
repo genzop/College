@@ -33,9 +33,9 @@
                 <asp:BoundField DataField="Codigo" HeaderText="Codigo" SortExpression="Codigo" ItemStyle-Height="22px"/>            
                 <asp:BoundField DataField="Denominacion" HeaderText="Denominacion" SortExpression="Denominacion" />                
                 <asp:BoundField DataField="Denominacion1" HeaderText="Rubro" SortExpression="Denominacion1" />
-                <asp:BoundField DataField="PrecioCompra" HeaderText="Precio de Compra" SortExpression="PrecioCompra" DataFormatString="{0:C}" />
-                <asp:BoundField DataField="Iva" HeaderText="Iva" SortExpression="Iva" DataFormatString="{0:p}" />
-                <asp:BoundField DataField="PrecioVenta" HeaderText="Precio de Venta" SortExpression="PrecioVenta" DataFormatString="{0:C}" />
+                <asp:BoundField DataField="PrecioCompra" HeaderText="Precio de Compra" SortExpression="PrecioCompra" DataFormatString="{0:C}" ItemStyle-Width="150px"/>
+                <asp:BoundField DataField="Iva" HeaderText="Iva" SortExpression="Iva" DataFormatString="{0:p}" ItemStyle-Width="60px"/>
+                <asp:BoundField DataField="PrecioVenta" HeaderText="Precio de Venta" SortExpression="PrecioVenta" DataFormatString="{0:C}" ItemStyle-Width="150px" />
                 <asp:TemplateField HeaderStyle-BackColor="#17252a" ItemStyle-BackColor="#17252a" ItemStyle-Width="40px">
                     <ItemTemplate>
                         <asp:ImageButton ID="imgEdit" runat="server" ImageUrl="~/img/edit.png" Width="20px" OnCommand="imgEdit_Command" CommandArgument='<%# Eval("IdArticulo") %>' />

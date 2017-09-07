@@ -130,7 +130,7 @@ public partial class Importar : System.Web.UI.Page
                        where cli.IdCliente == idCliente
                        select cli).Single();
 
-        cliente.Saldo = 0 - subtotalCliente;
+        cliente.Saldo = 0 + subtotalCliente;
         bd.SubmitChanges();
     }
 }

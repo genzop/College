@@ -18,6 +18,12 @@ public partial class EditarPedido : System.Web.UI.Page
         }
         else
         {
+            //Si es el administrador, se muestra el campo elegir vendedor
+            if(Convert.ToInt32(Session["IdVendedor"]) == 20)
+            {
+                campoVendedor.Visible = true;
+            }            
+
             //Si no se paso un id como parametro
             if (Request.QueryString["id"] == null)
             {
@@ -38,11 +44,11 @@ public partial class EditarPedido : System.Web.UI.Page
                 if (!IsPostBack)
                 {
                     cargarPedido(Convert.ToInt32(Request.QueryString["id"]));
-                    cargarDetalles(Convert.ToInt32(Request.QueryString["id"]));
+                    cargarDetalles(Convert.ToInt32(Request.QueryString["id"]));                    
                     rellenarTabla();
                     crearListaEliminados();
                 }                
-            }            
+            }  
         }        
     }
         
@@ -53,7 +59,17 @@ public partial class EditarPedido : System.Web.UI.Page
         //Se carga el pedido
         var pedido = (from ped in bd.PedidoVentas
                       where ped.IdPedidoVenta == id
-                      select ped).Single();        
+                      select ped).Single();
+
+        //Se carga el cliente 
+        var cliente = (from cli in bd.Clientes
+                       where cli.IdCliente == pedido.IdCliente
+                       select cli).Single();
+
+        //Se carga el domicilio del cliente 
+        var domicilio = (from dom in bd.Domicilios
+                         where dom.IdDomicilio == cliente.IdDomicilio
+                         select dom).Single();
 
         //Se rellenan los campos del pedido
         hiddenID.Value = pedido.IdPedidoVenta.ToString();
@@ -63,29 +79,24 @@ public partial class EditarPedido : System.Web.UI.Page
         DateTime fecha = (DateTime)pedido.FechaPedido;
         txtFecha.Text = fecha.ToString("yyyy-MM-dd");
         DateTime fechaEntrega = (DateTime)pedido.FechaEstimadaEntrega;
-        txtFechaEntrega.Text = fechaEntrega.ToString("yyyy-MM-dd");
+        txtFechaEntrega.Text = fechaEntrega.ToString("yyyy-MM-dd");        
+        txtCalle.Text = domicilio.Calle;
+        txtNumeroCalle.Text = domicilio.Numero.ToString();
+        txtLocalidad.Text = domicilio.Localidad;
+        txtLatitud.Text = domicilio.Latitud.ToString();
+        txtLongitud.Text = domicilio.Longitud.ToString();
+        if(Convert.ToInt32(Session["IdVendedor"]) == 20)
+        {
+            ddlVendedor.SelectedValue = pedido.IdVendedor.ToString();
+        }
         txtSubTotal.Text = pedido.SubTotal.ToString();
         txtGastosEnvio.Text = pedido.GastosEnvio.ToString();
         txtMontoTotal.Text = pedido.MontoTotal.ToString();
+        cboxPagado.Checked = Convert.ToBoolean(pedido.Pagado);
 
-        //Se carga el domicilio correspondiente
-        var domicilio = (from dom in bd.Domicilios
-                         where dom.IdDomicilio == pedido.IdDomicilio
-                         select dom).Single();
-
-        //Se rellenan los campos del domicilio
-        txtCalle.Text = domicilio.Calle;
-        txtNumeroCalle.Text = domicilio.Numero.ToString();
-        DropDownList ddlLocalidad = (DropDownList)ddlLocalidades.FindControl("ddlLocalidad");
-        ddlLocalidad.SelectedValue = domicilio.Localidad;
-        if(domicilio.Latitud != 0)
-        {
-            txtLatitud.Text = domicilio.Latitud.ToString();
-        }
-        if(domicilio.Longitud != 0)
-        {
-            txtLongitud.Text = domicilio.Longitud.ToString();
-        }
+        //Se guarda el id del cliente anterior en caso de que este cambie y haya que actualizar su saldo
+        Session["ClienteAnterior"] = pedido.IdCliente;
+                 
     }
 
     private void cargarDetalles(int id)
@@ -126,8 +137,9 @@ public partial class EditarPedido : System.Web.UI.Page
                 temp.Articulo = tempArt.Denominacion;
                 temp.PrecioUnitario = Convert.ToDouble(tempArt.PrecioVenta);
                 temp.Cantidad = Convert.ToInt32(detalle.Cantidad);
-                temp.Descuento = Convert.ToDouble(detalle.PorcentajeDescuento);
                 temp.SubTotal = Convert.ToDouble(detalle.SubTotal);
+                temp.Descuento = Convert.ToDouble(detalle.PorcentajeDescuento);
+                temp.Total = Convert.ToDouble(detalle.Total);
                 temp.IdPedidoVenta = Convert.ToInt32(detalle.IdPedidoVenta);
                 temp.IdArticulo = Convert.ToInt32(detalle.IdArticulo);
 
@@ -171,10 +183,10 @@ public partial class EditarPedido : System.Web.UI.Page
     protected void imgbtnAdd_Click(object sender, ImageClickEventArgs e)
     {
         //Se muestra el formulario para detalles en blanco
-        formularioDetalle.Visible = true;
-        lblTituloDetalle.Text = "Agregar Detalle";
+        formularioDetalle.Visible = true;        
         hiddenFila.Value = "";
         txtCantidad.Text = "0";
+        txtSubTotalSinDescuento.Text = "0";
         txtDescuento.Text = "0";
         txtSubTotalDetalle.Text = "0";        
     }
@@ -187,8 +199,7 @@ public partial class EditarPedido : System.Web.UI.Page
         int fila = row.RowIndex;
 
         //Se muestra el formulario de detalle
-        formularioDetalle.Visible = true;
-        lblTituloDetalle.Text = "Editar Detalle";
+        formularioDetalle.Visible = true;        
 
         //Se carga el detalle seleccionado de la lista de detalles
         List<DetalleTemporal> listaDetalles = (List<DetalleTemporal>)Session["Detalles"];
@@ -198,6 +209,7 @@ public partial class EditarPedido : System.Web.UI.Page
         hiddenFila.Value = fila.ToString();
         ddlArticulo.SelectedValue = detalleSeleccionado.IdArticulo.ToString();
         txtCantidad.Text = detalleSeleccionado.Cantidad.ToString();
+        txtSubTotalSinDescuento.Text = (detalleSeleccionado.PrecioUnitario * detalleSeleccionado.Cantidad).ToString();
         txtDescuento.Text = (detalleSeleccionado.Descuento * 100).ToString();
         txtSubTotalDetalle.Text = detalleSeleccionado.SubTotal.ToString();
     }
@@ -269,8 +281,9 @@ public partial class EditarPedido : System.Web.UI.Page
                 temp.Articulo = articulo.Denominacion;
                 temp.PrecioUnitario = Convert.ToDouble(articulo.PrecioVenta);
                 temp.Cantidad = Convert.ToInt32(txtCantidad.Text);
+                temp.SubTotal = Convert.ToDouble(txtSubTotalSinDescuento.Text);
                 temp.Descuento = Convert.ToDouble(txtDescuento.Text) / 100;
-                temp.SubTotal = Convert.ToDouble(txtSubTotalDetalle.Text);                
+                temp.Total = Convert.ToDouble(txtSubTotalDetalle.Text);                
                 temp.IdArticulo = Convert.ToInt32(ddlArticulo.SelectedValue);
 
                 List<DetalleTemporal> listaDetalles = (List<DetalleTemporal>)Session["Detalles"];
@@ -285,8 +298,9 @@ public partial class EditarPedido : System.Web.UI.Page
                 temp.Articulo = articulo.Denominacion;
                 temp.PrecioUnitario = Convert.ToDouble(articulo.PrecioVenta);
                 temp.Cantidad = Convert.ToInt32(txtCantidad.Text);
+                temp.SubTotal = Convert.ToDouble(txtSubTotalSinDescuento.Text);
                 temp.Descuento = Convert.ToDouble(txtDescuento.Text) / 100;
-                temp.SubTotal = Convert.ToDouble(txtSubTotalDetalle.Text);
+                temp.Total = Convert.ToDouble(txtSubTotalDetalle.Text);
                 temp.IdArticulo = Convert.ToInt32(ddlArticulo.SelectedValue);
 
                 listaDetalles[Convert.ToInt32(hiddenFila.Value)] = temp;
@@ -321,6 +335,7 @@ public partial class EditarPedido : System.Web.UI.Page
         }
 
         double subTotal = cantidad * precioVenta;
+        txtSubTotalSinDescuento.Text = subTotal.ToString();
         subTotal = subTotal - subTotal * (descuento / 100);
         txtSubTotalDetalle.Text = subTotal.ToString();
     }
@@ -358,14 +373,12 @@ public partial class EditarPedido : System.Web.UI.Page
         {
             foreach (DetalleTemporal detalle in listaDetalles)
             {
-                subtotal += detalle.SubTotal;
+                subtotal += detalle.Total;
             }
         }
         txtSubTotal.Text = subtotal.ToString();
         sumarGastosEnvio();
-    }
-
-    
+    }    
 
     private void calcularSaldoCliente(int idCliente)
     {
@@ -386,8 +399,12 @@ public partial class EditarPedido : System.Web.UI.Page
                         
             foreach (var pedido in pedidos)
             {
-                //Se suma el monto total de cada pedido
-                subtotalCliente += Convert.ToDouble(pedido.MontoTotal);
+                //Si el pedido no esta pagado
+                if (!Convert.ToBoolean(pedido.Pagado))
+                {
+                    //Se suma el monto total de cada pedido
+                    subtotalCliente += Convert.ToDouble(pedido.MontoTotal);
+                }
             }
         }
 
@@ -395,7 +412,7 @@ public partial class EditarPedido : System.Web.UI.Page
                        where cli.IdCliente == idCliente
                        select cli).Single();
 
-        cliente.Saldo = 0 - subtotalCliente;
+        cliente.Saldo = 0 + subtotalCliente;
         bd.SubmitChanges();
     }    
 
@@ -408,37 +425,17 @@ public partial class EditarPedido : System.Web.UI.Page
     //Se guarda un pedido nuevo en la base de datos
     private void crearPedido()
     {
-        //Se guardan los datos del domicilio
-        Domicilio nuevoDomicilio = new Domicilio();
-        nuevoDomicilio.Calle = txtCalle.Text;
-        nuevoDomicilio.Numero = Convert.ToInt32(txtNumeroCalle.Text);
-        DropDownList ddlLocalidad = (DropDownList)ddlLocalidades.FindControl("ddlLocalidad");
-        nuevoDomicilio.Localidad = ddlLocalidad.SelectedValue;
-        if (txtLatitud.Text != "")
-        {
-            nuevoDomicilio.Latitud = Convert.ToDouble(txtLatitud.Text);
-        }
-        else
-        {
-            nuevoDomicilio.Latitud = 0;
-        }
-
-        if (txtLongitud.Text != "")
-        {
-            nuevoDomicilio.Longitud = Convert.ToDouble(txtLongitud.Text);
-        }
-        else
-        {
-            nuevoDomicilio.Longitud = 0;
-        }
-
-        bd.Domicilios.InsertOnSubmit(nuevoDomicilio);
-        bd.SubmitChanges();
-
         //Se guardan los datos del pedido
         PedidoVenta nuevoPedido = new PedidoVenta();
         nuevoPedido.Editable = false;
-        nuevoPedido.IdVendedor = Convert.ToInt32(Session["IdVendedor"]);
+        if(Convert.ToInt32(Session["IdVendedor"]) != 20)
+        {
+            nuevoPedido.IdVendedor = Convert.ToInt32(Session["IdVendedor"]);
+        }
+        else
+        {
+            nuevoPedido.IdVendedor = Convert.ToInt32(ddlVendedor.SelectedValue);
+        }
         nuevoPedido.NroPedido = Convert.ToInt32(txtNumero.Text);
         nuevoPedido.IdCliente = Convert.ToInt32(ddlCliente.SelectedValue);        
         nuevoPedido.Estado = ddlEstado.SelectedValue;
@@ -455,7 +452,7 @@ public partial class EditarPedido : System.Web.UI.Page
         nuevoPedido.SubTotal = Convert.ToDouble(txtSubTotal.Text);
         nuevoPedido.GastosEnvio = Convert.ToDouble(txtGastosEnvio.Text);
         nuevoPedido.MontoTotal = Convert.ToDouble(txtMontoTotal.Text);
-        nuevoPedido.IdDomicilio = nuevoDomicilio.IdDomicilio;
+        nuevoPedido.Pagado = cboxPagado.Checked;   
         bd.PedidoVentas.InsertOnSubmit(nuevoPedido);
         bd.SubmitChanges();
 
@@ -471,9 +468,7 @@ public partial class EditarPedido : System.Web.UI.Page
                              where ped.IdPedidoVenta == id
                              select ped).Single();
 
-        var domicilioEditar = (from dom in bd.Domicilios
-                               where dom.IdDomicilio == pedidoEditar.IdDomicilio
-                               select dom).Single();
+        
 
         pedidoEditar.NroPedido = Convert.ToInt32(txtNumero.Text);
         pedidoEditar.IdCliente = Convert.ToInt32(ddlCliente.SelectedValue);
@@ -488,37 +483,21 @@ public partial class EditarPedido : System.Web.UI.Page
         }
         pedidoEditar.FechaPedido = Convert.ToDateTime(txtFecha.Text);
         pedidoEditar.FechaEstimadaEntrega = Convert.ToDateTime(txtFechaEntrega.Text);
+        if(Convert.ToInt32(Session["IdVendedor"]) == 20)
+        {
+            pedidoEditar.IdVendedor = Convert.ToInt32(ddlVendedor.SelectedValue);
+        }
         pedidoEditar.SubTotal = Convert.ToDouble(txtSubTotal.Text);
         pedidoEditar.GastosEnvio = Convert.ToDouble(txtGastosEnvio.Text);
         pedidoEditar.MontoTotal = Convert.ToDouble(txtMontoTotal.Text);
-
-        domicilioEditar.Calle = txtCalle.Text;
-        domicilioEditar.Numero = Convert.ToInt32(txtNumeroCalle.Text);
-        DropDownList ddlLocalidad = (DropDownList)ddlLocalidades.FindControl("ddlLocalidad");
-        domicilioEditar.Localidad = ddlLocalidad.SelectedValue;
-        if (txtLatitud.Text != "")
-        {
-            domicilioEditar.Latitud = Convert.ToDouble(txtLatitud.Text);
-        }
-        else
-        {
-            domicilioEditar.Latitud = 0;
-        }
-
-        if (txtLongitud.Text != "")
-        {
-            domicilioEditar.Longitud = Convert.ToDouble(txtLongitud.Text);
-        }
-        else
-        {
-            domicilioEditar.Longitud = 0;
-        }
+        pedidoEditar.Pagado = cboxPagado.Checked;
 
         bd.SubmitChanges();
 
         guardarDetalles(pedidoEditar.IdPedidoVenta);
         eliminarDetalles();
 
+        calcularSaldoCliente(Convert.ToInt32(Session["ClienteAnterior"]));
         calcularSaldoCliente(Convert.ToInt32(pedidoEditar.IdCliente));
 
     }
@@ -540,6 +519,7 @@ public partial class EditarPedido : System.Web.UI.Page
                 detalleNuevo.Cantidad = detalle.Cantidad;
                 detalleNuevo.SubTotal = detalle.SubTotal;
                 detalleNuevo.PorcentajeDescuento = detalle.Descuento;
+                detalleNuevo.Total = detalle.Total;
                 detalleNuevo.IdArticulo = detalle.IdArticulo;
 
                 //Se lo inserta en la base de datos
@@ -558,6 +538,7 @@ public partial class EditarPedido : System.Web.UI.Page
                 detalleEditado.Cantidad = detalle.Cantidad;
                 detalleEditado.SubTotal = detalle.SubTotal;
                 detalleEditado.PorcentajeDescuento = detalle.Descuento;
+                detalleEditado.Total = detalle.Total;
                 detalleEditado.IdArticulo = detalle.IdArticulo;
 
                 //Se aplican los cambios a la base de datos
@@ -579,5 +560,25 @@ public partial class EditarPedido : System.Web.UI.Page
             bd.PedidoVentaDetalles.DeleteOnSubmit(temp);            
         }
         bd.SubmitChanges();
+    }
+
+    protected void ddlCliente_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        //Cargar el cliente
+        var cliente = (from cli in bd.Clientes
+                       where cli.IdCliente == Convert.ToInt32(ddlCliente.SelectedValue)
+                       select cli).Single();
+
+        //Cargar domilicio del cliente        
+        var domicilio = (from dom in bd.Domicilios
+                         where dom.IdDomicilio == cliente.IdDomicilio
+                         select dom).Single();
+
+        //Mostrar los datos por pantalla
+        txtCalle.Text = domicilio.Calle;
+        txtNumeroCalle.Text = domicilio.Numero.ToString();
+        txtLocalidad.Text = domicilio.Localidad;
+        txtLatitud.Text = domicilio.Latitud.ToString();
+        txtLongitud.Text = domicilio.Longitud.ToString();            
     }
 }

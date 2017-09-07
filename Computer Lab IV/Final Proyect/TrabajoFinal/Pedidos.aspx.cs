@@ -22,6 +22,12 @@ public partial class Pedidos : System.Web.UI.Page
         {           
             HyperLink pedidos = (HyperLink)Master.FindControl("hlPedidos");
             pedidos.CssClass = "active";
+            
+            if(Convert.ToInt32(Session["IdVendedor"]) == 20)
+            {
+                SqlDataSource1.SelectCommand = "SELECT PedidoVenta.IdPedidoVenta, PedidoVenta.FechaEstimadaEntrega, PedidoVenta.GastosEnvio, PedidoVenta.Estado, PedidoVenta.FechaPedido, PedidoVenta.NroPedido, PedidoVenta.SubTotal, PedidoVenta.MontoTotal, Cliente.RazonSocial FROM PedidoVenta INNER JOIN Cliente ON PedidoVenta.IdCliente = Cliente.IdCliente";
+            }
+
         }
     }
     
@@ -52,15 +58,10 @@ public partial class Pedidos : System.Web.UI.Page
             //Se borra el pedido y su domicilio correspondiente
             var temp = (from pedido in bd.PedidoVentas
                         where pedido.IdPedidoVenta == Convert.ToInt32(registroSeleccionado)
-                        select pedido).Single();
-            var dom = (from domicilio in bd.Domicilios
-                       where domicilio.IdDomicilio == temp.IdDomicilio
-                       select domicilio).Single();
+                        select pedido).Single();          
 
             int idCliente = Convert.ToInt32(temp.IdCliente);
-
-            bd.PedidoVentas.DeleteOnSubmit(temp);
-            bd.Domicilios.DeleteOnSubmit(dom);
+            bd.PedidoVentas.DeleteOnSubmit(temp);            
             bd.SubmitChanges();
 
             calcularSaldoCliente(idCliente);
