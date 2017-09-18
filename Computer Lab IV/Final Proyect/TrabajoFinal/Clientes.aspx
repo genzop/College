@@ -20,7 +20,9 @@
                 <asp:ListItem Text="Calle" Value="Domicilio.Calle" />
                 <asp:ListItem Text="Localidad" Value="Domicilio.Localidad" />
             </asp:DropDownList>
-            <asp:TextBox ID="txtBuscar" runat="server" Width="300px" Placeholder="Buscar..." OnTextChanged="txtBuscar_TextChanged" AutoPostBack="true" Style="padding-left: 10px" />                        
+            <asp:TextBox ID="txtBuscar" runat="server" Width="300px" Placeholder="Buscar..." Style="padding-left: 10px" />                        
+            <asp:ImageButton ID="imgFind" runat="server" ImageUrl="~/img/find.png" Width="20" ImageAlign="AbsMiddle" style="padding-left: 10px" OnClick="imgFind_Click"/>
+            <asp:ImageButton ID="imgAdd" runat="server" ImageUrl="~/img/add.png" Width="20" ImageAlign="AbsMiddle" style="padding-left: 10px" OnClick="imgAdd_Click"/>       
         </div><br />
 
         <!-- Tabla Clientes -->
@@ -59,13 +61,6 @@
         <asp:SqlDataSource ID="SqlDataSource1" runat="server" ConnectionString="<%$ ConnectionStrings:TrabajoFinalConnectionString %>" SelectCommand="SELECT Cliente.IdCliente, Cliente.RazonSocial, Cliente.Cuit, Cliente.Saldo, Domicilio.Calle, Domicilio.Numero, Domicilio.Localidad FROM Cliente INNER JOIN Domicilio ON Cliente.IdDomicilio = Domicilio.IdDomicilio"></asp:SqlDataSource>
         <br />
 
-        <!-- Agregar Cliente -->
-        <div style="margin: 0 auto; width: 900px">
-            <asp:HyperLink ID="hlAdd" runat="server" NavigateUrl="~/EditarCliente.aspx?id=0" Font-Bold="true" Font-Underline="false" ForeColor="#DEF2F1">
-                <asp:Image ID="imgAdd" runat="server" ImageUrl="~/img/add.png" Width="20px" CssClass="verticalCentered" style="padding: 0 10px 0 0"/>
-                <asp:Label ID="lblAdd" runat="server" Text="Agregar Cliente" />
-            </asp:HyperLink>
-        </div>
     </form>
 </asp:Content>
 

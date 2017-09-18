@@ -26,7 +26,7 @@ public partial class Rubros : System.Web.UI.Page
             {
                 grdRubros.Columns[3].Visible = false;
                 grdRubros.Columns[4].Visible = false;
-                hlAdd.Visible = false;
+                imgAdd.Visible = false;
             }
         }
     }
@@ -68,13 +68,25 @@ public partial class Rubros : System.Web.UI.Page
         catch (Exception) { }           
     }
 
-    protected void txtBuscar_TextChanged(object sender, EventArgs e)
+    protected void imgFind_Click(object sender, ImageClickEventArgs e)
     {
-        string query = "SELECT hijo.IdRubro, hijo.Codigo, hijo.Denominacion, padre.Denominacion FROM Rubro AS hijo " +
-                       "INNER JOIN Rubro AS padre ON hijo.IdRubroSuperior = padre.IdRubro WHERE NOT hijo.Denominacion = '-' " +
-                       "AND " + ddlBuscar.SelectedValue + " LIKE '%" + txtBuscar.Text + "%'";
+        string query = "";
+
+        if (txtBuscar.Text == "")
+        {
+            query = "SELECT hijo.IdRubro, hijo.Codigo, hijo.Denominacion, padre.Denominacion FROM Rubro AS hijo INNER JOIN Rubro AS padre ON hijo.IdRubroSuperior = padre.IdRubro WHERE NOT hijo.Denominacion = '-'";
+        }
+        else
+        {
+            query = "SELECT hijo.IdRubro, hijo.Codigo, hijo.Denominacion, padre.Denominacion FROM Rubro AS hijo INNER JOIN Rubro AS padre ON hijo.IdRubroSuperior = padre.IdRubro WHERE NOT hijo.Denominacion = '-' AND " + ddlBuscar.SelectedValue + " LIKE '%" + txtBuscar.Text + "%'";
+        }
 
         SqlDataSource1.SelectCommand = query;
         grdRubros.DataBind();
+    }
+
+    protected void imgAdd_Click(object sender, ImageClickEventArgs e)
+    {
+        Response.Redirect("EditarRubro.aspx");
     }
 }

@@ -26,7 +26,7 @@ public partial class Clientes : System.Web.UI.Page
             {                
                 grdClientes.Columns[6].Visible = false;
                 grdClientes.Columns[7].Visible = false;
-                hlAdd.Visible = false;                         
+                imgAdd.Visible = false;                         
             }            
         }        
     }
@@ -68,13 +68,25 @@ public partial class Clientes : System.Web.UI.Page
         catch (Exception) { }       
     }
 
-    protected void txtBuscar_TextChanged(object sender, EventArgs e)
+    protected void imgFind_Click(object sender, ImageClickEventArgs e)
     {
-        string query = "SELECT Cliente.IdCliente, Cliente.RazonSocial, Cliente.Cuit, Cliente.Saldo, Domicilio.Calle, Domicilio.Numero, " +
-                       "Domicilio.Localidad FROM Cliente INNER JOIN Domicilio ON Cliente.IdDomicilio = Domicilio.IdDomicilio " +
-                       "WHERE " + ddlBuscar.SelectedValue + " LIKE '%" + txtBuscar.Text + "%'";
+        string query = "";
 
+        if (txtBuscar.Text == "")
+        {
+            query = "SELECT Cliente.IdCliente, Cliente.RazonSocial, Cliente.Cuit, Cliente.Saldo, Domicilio.Calle, Domicilio.Numero, Domicilio.Localidad FROM Cliente INNER JOIN Domicilio ON Cliente.IdDomicilio = Domicilio.IdDomicilio";
+        }
+        else
+        {
+            query = "SELECT Cliente.IdCliente, Cliente.RazonSocial, Cliente.Cuit, Cliente.Saldo, Domicilio.Calle, Domicilio.Numero, Domicilio.Localidad FROM Cliente INNER JOIN Domicilio ON Cliente.IdDomicilio = Domicilio.IdDomicilio WHERE " + ddlBuscar.SelectedValue + " LIKE '%" + txtBuscar.Text + "%'";
+        }
+  
         SqlDataSource1.SelectCommand = query;
         grdClientes.DataBind();
+    }
+
+    protected void imgAdd_Click(object sender, ImageClickEventArgs e)
+    {
+        Response.Redirect("EditarCliente.aspx");
     }
 }

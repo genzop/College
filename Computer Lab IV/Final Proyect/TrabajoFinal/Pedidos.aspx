@@ -20,10 +20,10 @@
                 <asp:ListItem Text="Estado" Value="PedidoVenta.Estado" />
                 <asp:ListItem Text="Fecha" Value="PedidoVenta.FechaPedido" />
                 <asp:ListItem Text="Fecha de Entrega" Value="PedidoVenta.FechaEstimadaEntrega" />
-                <asp:ListItem Text="Calle" Value="Domicilio.Calle" />
-                <asp:ListItem Text="Localidad" Value="Domicilio.Localidad" />
             </asp:DropDownList>
-            <asp:TextBox ID="txtBuscar" runat="server" Width="300px" Placeholder="Buscar..." OnTextChanged="txtBuscar_TextChanged" AutoPostBack="true" Style="padding-left: 10px" />            
+            <asp:TextBox ID="txtBuscar" runat="server" Width="300px" Placeholder="Buscar..." style="margin-left: 10px" />            
+            <asp:ImageButton ID="imgFind" runat="server" ImageUrl="~/img/find.png" Width="20" ImageAlign="AbsMiddle" style="padding-left: 10px" OnClick="imgFind_Click"/>
+            <asp:ImageButton ID="imgAdd" runat="server" ImageUrl="~/img/add.png" Width="20" ImageAlign="AbsMiddle" style="padding-left: 10px" OnClick="imgAdd_Click"/>            
             <br />
         </div>
 
@@ -71,12 +71,5 @@
             <br />         
         </div>
 
-        <!-- Agregar Pedido -->
-        <div style="margin: 0 auto; width: 900px">
-            <asp:HyperLink ID="hlAdd" runat="server" NavigateUrl="~/EditarPedido.aspx" Font-Bold="true" Font-Underline="false" ForeColor="#DEF2F1">
-                <asp:Image ID="imgAdd" runat="server" ImageUrl="~/img/add.png" Width="20px" style="vertical-align:middle; padding-right: 10px"/>
-                <asp:Label ID="lblAdd" runat="server" Text="Agregar Pedido" />
-            </asp:HyperLink>
-        </div>
     </form>
 </asp:Content>

@@ -35,6 +35,23 @@ public partial class EditarPedido : System.Web.UI.Page
                     txtSubTotal.Text = "0";
                     txtGastosEnvio.Text = "0";
                     txtMontoTotal.Text = "0";
+
+                    //Se carga la direccion del cliente
+                    Cliente tempCli = (from cli in bd.Clientes
+                                       select cli).FirstOrDefault();
+
+                    Domicilio tempDom = (from dom in bd.Domicilios
+                                         where dom.IdDomicilio == tempCli.IdDomicilio
+                                         select dom).Single();
+
+                    //Mostrar los datos por pantalla
+                    txtCalle.Text = tempDom.Calle;
+                    txtNumeroCalle.Text = tempDom.Numero.ToString();
+                    txtLocalidad.Text = tempDom.Localidad;
+                    txtLatitud.Text = tempDom.Latitud.ToString();
+                    txtLongitud.Text = tempDom.Longitud.ToString();
+
+
                 }
             }
             //Si se paso un id como parametro
@@ -185,6 +202,14 @@ public partial class EditarPedido : System.Web.UI.Page
         //Se muestra el formulario para detalles en blanco
         formularioDetalle.Visible = true;        
         hiddenFila.Value = "";
+
+        Articulo tempArt = (from art in bd.Articulos
+                            select art).FirstOrDefault();
+
+        ddlArticulo.SelectedValue = tempArt.IdArticulo.ToString();
+
+        //Se muestran los valores
+        txtPrecioUnitario.Text = tempArt.PrecioVenta.ToString();
         txtCantidad.Text = "0";
         txtSubTotalSinDescuento.Text = "0";
         txtDescuento.Text = "0";
@@ -208,10 +233,11 @@ public partial class EditarPedido : System.Web.UI.Page
         //Se cargan los datos del detalle seleccionado en el formulario
         hiddenFila.Value = fila.ToString();
         ddlArticulo.SelectedValue = detalleSeleccionado.IdArticulo.ToString();
+        txtPrecioUnitario.Text = detalleSeleccionado.PrecioUnitario.ToString();
         txtCantidad.Text = detalleSeleccionado.Cantidad.ToString();
         txtSubTotalSinDescuento.Text = (detalleSeleccionado.PrecioUnitario * detalleSeleccionado.Cantidad).ToString();
         txtDescuento.Text = (detalleSeleccionado.Descuento * 100).ToString();
-        txtSubTotalDetalle.Text = detalleSeleccionado.SubTotal.ToString();
+        txtSubTotalDetalle.Text = detalleSeleccionado.Total.ToString();
     }
 
 
@@ -321,6 +347,8 @@ public partial class EditarPedido : System.Web.UI.Page
                         select art).Single();
 
         double precioVenta = Convert.ToDouble(articulo.PrecioVenta);
+        txtPrecioUnitario.Text = precioVenta.ToString();
+
         int cantidad = 0;
         double descuento = 0;
 

@@ -21,7 +21,9 @@
                 <asp:ListItem Text="Denominacion" Value="hijo.Denominacion" />
                 <asp:ListItem Text="Rubro Superior" Value="padre.Denominacion" />
             </asp:DropDownList>
-            <asp:TextBox ID="txtBuscar" runat="server" Width="200px" Placeholder="Buscar..." OnTextChanged="txtBuscar_TextChanged" AutoPostBack="true" Style="padding-left: 10px" />                        
+            <asp:TextBox ID="txtBuscar" runat="server" Width="200px" Placeholder="Buscar..." Style="padding-left: 10px" />                        
+            <asp:ImageButton ID="imgFind" runat="server" ImageUrl="~/img/find.png" Width="20" ImageAlign="AbsMiddle" style="padding-left: 10px" OnClick="imgFind_Click"/>
+            <asp:ImageButton ID="imgAdd" runat="server" ImageUrl="~/img/add.png" Width="20" ImageAlign="AbsMiddle" style="padding-left: 10px" OnClick="imgAdd_Click"/>       
         </div><br />
         
         <!-- Tabla Rubros -->
@@ -56,13 +58,6 @@
         <asp:SqlDataSource ID="SqlDataSource1" runat="server" ConnectionString="<%$ ConnectionStrings:TrabajoFinalConnectionString %>" SelectCommand="SELECT hijo.IdRubro, hijo.Codigo, hijo.Denominacion, padre.Denominacion FROM Rubro AS hijo INNER JOIN Rubro AS padre ON hijo.IdRubroSuperior = padre.IdRubro WHERE NOT hijo.Denominacion='-'"></asp:SqlDataSource>
         <br />
 
-        <!-- Agregar Rubro -->
-        <div style="margin: 0 auto; width: 500px">
-            <asp:HyperLink ID="hlAdd" runat="server" NavigateUrl="~/EditarRubro.aspx?id=0" Font-Bold="true" Font-Underline="false" ForeColor="#DEF2F1">
-                <asp:Image ID="imgAdd" runat="server" ImageUrl="~/img/add.png" Width="20px" CssClass="verticalCentered" style="padding: 0 10px 0 0"/>
-                <asp:Label ID="lblAdd" runat="server" Text="Agregar Rubro" />
-            </asp:HyperLink>
-        </div>
     </form>
 </asp:Content>
 

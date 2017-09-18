@@ -26,7 +26,7 @@ public partial class Articulos : System.Web.UI.Page
             {
                 grdArticulos.Columns[6].Visible = false;
                 grdArticulos.Columns[7].Visible = false;
-                hlAdd.Visible = false;
+                imgAdd.Visible = false;
             }
         }
     }
@@ -64,13 +64,25 @@ public partial class Articulos : System.Web.UI.Page
         catch (Exception) { }                
     }
 
-    protected void txtBuscar_TextChanged(object sender, EventArgs e)
+    protected void imgFind_Click(object sender, ImageClickEventArgs e)
     {
-        string query = "SELECT Articulo.IdArticulo, Articulo.Denominacion, Articulo.Codigo, Articulo.PrecioCompra, Articulo.PrecioVenta, " +
-                       "Articulo.Iva, Rubro.Denominacion FROM Articulo INNER JOIN Rubro ON Articulo.IdRubro = Rubro.IdRubro " +
-                       "WHERE " + ddlBuscar.SelectedValue + " LIKE '%" + txtBuscar.Text + "%'";
+        string query = "";
+
+        if (txtBuscar.Text == "")
+        {
+            query = "SELECT Articulo.IdArticulo, Articulo.Denominacion, Articulo.Codigo, Articulo.PrecioCompra, Articulo.PrecioVenta, Articulo.Iva, Rubro.Denominacion FROM Articulo INNER JOIN Rubro ON Articulo.IdRubro = Rubro.IdRubro";
+        }
+        else
+        {
+            query = "SELECT Articulo.IdArticulo, Articulo.Denominacion, Articulo.Codigo, Articulo.PrecioCompra, Articulo.PrecioVenta, Articulo.Iva, Rubro.Denominacion FROM Articulo INNER JOIN Rubro ON Articulo.IdRubro = Rubro.IdRubro WHERE " + ddlBuscar.SelectedValue + " LIKE '%" + txtBuscar.Text + "%'";
+        }
 
         SqlDataSource1.SelectCommand = query;
         grdArticulos.DataBind();
+    }
+
+    protected void imgAdd_Click(object sender, ImageClickEventArgs e)
+    {
+        Response.Redirect("EditarArticulo.aspx");
     }
 }

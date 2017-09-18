@@ -23,7 +23,9 @@
                 <asp:ListItem Text="Iva" Value="Articulo.Iva" />
                 <asp:ListItem Text="Precio de venta" Value="Articulo.PrecioVenta" />
             </asp:DropDownList>
-            <asp:TextBox ID="txtBuscar" runat="server" Width="300px" Placeholder="Buscar..." OnTextChanged="txtBuscar_TextChanged" AutoPostBack="true" Style="padding-left: 10px" />                        
+            <asp:TextBox ID="txtBuscar" runat="server" Width="300px" Placeholder="Buscar..." Style="padding-left: 10px" />                        
+            <asp:ImageButton ID="imgFind" runat="server" ImageUrl="~/img/find.png" Width="20" ImageAlign="AbsMiddle" style="padding-left: 10px" OnClick="imgFind_Click"/>
+            <asp:ImageButton ID="imgAdd" runat="server" ImageUrl="~/img/add.png" Width="20" ImageAlign="AbsMiddle" style="padding-left: 10px" OnClick="imgAdd_Click"/>       
         </div><br />
 
         <!-- Tabla Articulos -->
@@ -60,14 +62,7 @@
         </asp:GridView>
         <asp:SqlDataSource ID="SqlDataSource1" runat="server" ConnectionString="<%$ ConnectionStrings:TrabajoFinalConnectionString %>" SelectCommand="SELECT Articulo.IdArticulo, Articulo.Denominacion, Articulo.Codigo, Articulo.PrecioCompra, Articulo.PrecioVenta, Articulo.Iva, Rubro.Denominacion FROM Articulo INNER JOIN Rubro ON Articulo.IdRubro = Rubro.IdRubro"></asp:SqlDataSource>
         <br />
-
-        <!-- Agregar Articulo -->
-        <div style="margin: 0 auto; width: 900px">
-            <asp:HyperLink ID="hlAdd" runat="server" NavigateUrl="~/EditarArticulo.aspx?id=0" Font-Bold="true" Font-Underline="false" ForeColor="#DEF2F1">
-                <asp:Image ID="imgAdd" runat="server" ImageUrl="~/img/add.png" Width="20px" CssClass="verticalCentered" Style="padding: 0 10px 0 0" />
-                <asp:Label ID="lblAdd" runat="server" Text="Agregar Artículo" />
-            </asp:HyperLink>
-        </div>
+        
     </form>
 </asp:Content>
 

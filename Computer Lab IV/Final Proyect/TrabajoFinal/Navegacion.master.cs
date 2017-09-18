@@ -16,5 +16,10 @@ public partial class Navegacion : System.Web.UI.MasterPage
                     select vend).Single();
 
         lblNombre.Text = temp.Nombre + " " + temp.Apellido;
+
+        if (Convert.ToInt32(Session["IdVendedor"]) == 20)
+        {
+            hlUsuarios.Visible = true;
+        }
     }
 }

@@ -23,8 +23,7 @@
                 <asp:CustomValidator ID="cvContrasenia" runat="server" OnServerValidate="cvContrasenia_ServerValidate" ErrorMessage="* Contraseña incorrecta" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px"/><br /><br />
 
                 <asp:Button ID="btnIngresar" runat="server" Text="Ingresar" OnClick="btnIngresar_Click" CssClass="botonImportante"/>
-
-                <p class="message">¿No estás registrado? <a href="Registrar.aspx">Crear una cuenta</a></p>
+                
             </form>
         </div>
     </div>

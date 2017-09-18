@@ -147,32 +147,42 @@
 
                     <asp:Table runat="server">
                         <asp:TableRow>
-                            <asp:TableCell Width="20%">
+                            <asp:TableCell Width="16%">
                                 <div class="editContent">
                                     <p class="editContentTitle">Articulo</p>
                                     <asp:DropDownList ID="ddlArticulo" runat="server" DataSourceID="LinqDataSourceArticulos" DataTextField="Denominacion" DataValueField="IdArticulo" Style="margin-right: 0px" CssClass="drownDownList" AutoPostBack="true" OnSelectedIndexChanged="cambiaSubTotalDetalle"></asp:DropDownList>
                                     <asp:LinqDataSource ID="LinqDataSourceArticulos" runat="server" ContextTypeName="BaseDatosDataContext" EntityTypeName="" OrderBy="Denominacion" Select="new (IdArticulo, Denominacion)" TableName="Articulos"></asp:LinqDataSource>
                                 </div>
-                            </asp:TableCell><asp:TableCell Width="20%">
+                            </asp:TableCell>
+                            <asp:TableCell Width="16%">
+                                <div class="editContent">
+                                    <p class="editContentTitle">Precio Unitario</p>
+                                    <asp:TextBox ID="txtPrecioUnitario" runat="server" Enabled="false" />
+                                </div>
+                            </asp:TableCell>
+                            <asp:TableCell Width="16%">
                                 <div class="editContent">
                                     <p class="editContentTitle">Cantidad</p>
                                     <asp:TextBox ID="txtCantidad" runat="server" AutoPostBack="true" OnTextChanged="cambiaSubTotalDetalle" />
                                     <asp:RequiredFieldValidator ID="rfvCantidad" runat="server" ValidationGroup="Detalle" ControlToValidate="txtCantidad" ErrorMessage="* Este campo es obligatorio" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
                                     <asp:RegularExpressionValidator ID="revCantidad" runat="server" ValidationGroup="Detalle" ControlToValidate="txtCantidad" ValidationExpression="[0-9]+" ErrorMessage="* Debe ser un numero entero" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
                                 </div>
-                            </asp:TableCell><asp:TableCell Width="20%">
+                            </asp:TableCell>
+                            <asp:TableCell Width="16%">
                                 <div class="editContent">
                                     <p class="editContentTitle">Sub Total</p>
                                     <asp:TextBox ID="txtSubTotalSinDescuento" runat="server" Enabled="false" />
                                 </div>
-                            </asp:TableCell><asp:TableCell Width="20%">
+                            </asp:TableCell>
+                            <asp:TableCell Width="16%">
                                 <div class="editContent">
                                     <p class="editContentTitle">Descuento</p>
                                     <asp:TextBox ID="txtDescuento" runat="server" AutoPostBack="true" OnTextChanged="cambiaSubTotalDetalle" />
                                     <asp:RequiredFieldValidator ID="rfvDescuento" runat="server" ValidationGroup="Detalle" ControlToValidate="txtDescuento" ErrorMessage="* Este campo es obligatorio" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
                                     <asp:RangeValidator ID="rngvDescuento" runat="server" ValidationGroup="Detalle" ControlToValidate="txtDescuento" Type="Double" MinimumValue="0,0" MaximumValue="100,0" ErrorMessage="* El descuento debe ser un numero decimal entre 0 y 100" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
                                 </div>
-                            </asp:TableCell><asp:TableCell Width="20%">
+                            </asp:TableCell>
+                            <asp:TableCell Width="16%">
                                 <div class="editContent">
                                     <p class="editContentTitle">Total</p>
                                     <asp:TextBox ID="txtSubTotalDetalle" runat="server" ReadOnly="true" />

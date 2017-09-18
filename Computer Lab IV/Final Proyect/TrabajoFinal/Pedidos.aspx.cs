@@ -104,13 +104,39 @@ public partial class Pedidos : System.Web.UI.Page
     }
 
     //Se busca los pedidos que cumplan con el criterio indicado
-    protected void txtBuscar_TextChanged(object sender, EventArgs e)
+    protected void imgFind_Click(object sender, ImageClickEventArgs e)
     {
-        string query = "SELECT PedidoVenta.IdPedidoVenta, PedidoVenta.FechaEstimadaEntrega, PedidoVenta.GastosEnvio, PedidoVenta.Estado," +
-            "PedidoVenta.FechaPedido, PedidoVenta.NroPedido, PedidoVenta.SubTotal, PedidoVenta.MontoTotal, Cliente.RazonSocial, Domicilio.Calle," +
-            "Domicilio.Numero, Domicilio.Localidad FROM ((PedidoVenta INNER JOIN Cliente ON PedidoVenta.IdCliente = Cliente.IdCliente)" +
-            "INNER JOIN Domicilio ON PedidoVenta.IdDomicilio = Domicilio.IdDomicilio) WHERE PedidoVenta.IdVendedor=@vendedor AND " + ddlBuscar.SelectedValue + " LIKE '%" + txtBuscar.Text + "%'";        
+        string query = "";
+
+        if (Convert.ToInt32(Session["IdVendedor"]) == 20)
+        {
+            if (txtBuscar.Text == "")
+            {
+                query = "SELECT PedidoVenta.IdPedidoVenta, PedidoVenta.FechaEstimadaEntrega, PedidoVenta.GastosEnvio, PedidoVenta.Estado, PedidoVenta.FechaPedido, PedidoVenta.NroPedido, PedidoVenta.SubTotal, PedidoVenta.MontoTotal, Cliente.RazonSocial FROM PedidoVenta INNER JOIN Cliente ON PedidoVenta.IdCliente = Cliente.IdCliente";
+            }
+            else
+            {
+                query = "SELECT PedidoVenta.IdPedidoVenta, PedidoVenta.FechaEstimadaEntrega, PedidoVenta.GastosEnvio, PedidoVenta.Estado, PedidoVenta.FechaPedido, PedidoVenta.NroPedido, PedidoVenta.SubTotal, PedidoVenta.MontoTotal, Cliente.RazonSocial FROM PedidoVenta INNER JOIN Cliente ON PedidoVenta.IdCliente = Cliente.IdCliente WHERE " + ddlBuscar.SelectedValue + " LIKE '%" + txtBuscar.Text + "%'";
+            }
+        }
+        else
+        {
+            if (txtBuscar.Text == "")
+            {
+                query = "SELECT PedidoVenta.IdPedidoVenta, PedidoVenta.FechaEstimadaEntrega, PedidoVenta.GastosEnvio, PedidoVenta.Estado, PedidoVenta.FechaPedido, PedidoVenta.NroPedido, PedidoVenta.SubTotal, PedidoVenta.MontoTotal, Cliente.RazonSocial FROM PedidoVenta INNER JOIN Cliente ON PedidoVenta.IdCliente = Cliente.IdCliente WHERE PedidoVenta.IdVendedor=@vendedor";
+            }
+            else
+            {
+                query = "SELECT PedidoVenta.IdPedidoVenta, PedidoVenta.FechaEstimadaEntrega, PedidoVenta.GastosEnvio, PedidoVenta.Estado, PedidoVenta.FechaPedido, PedidoVenta.NroPedido, PedidoVenta.SubTotal, PedidoVenta.MontoTotal, Cliente.RazonSocial FROM PedidoVenta INNER JOIN Cliente ON PedidoVenta.IdCliente = Cliente.IdCliente WHERE PedidoVenta.IdVendedor=@vendedor AND " + ddlBuscar.SelectedValue + " LIKE '%" + txtBuscar.Text + "%'";
+            }
+        }
+
         SqlDataSource1.SelectCommand = query;
         grdPedidos.DataBind();
+    }
+
+    protected void imgAdd_Click(object sender, ImageClickEventArgs e)
+    {
+        Response.Redirect("EditarPedido.aspx");
     }
 }
