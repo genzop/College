@@ -28,7 +28,6 @@
         </div>
 
         <div>
-
             <!-- Tabla Pedidos -->
             <asp:GridView ID="grdPedidos" runat="server" AutoGenerateColumns="False" CellPadding="6" DataSourceID="SqlDataSource1" ForeColor="#333333" GridLines="None" Font-Size="14px" AllowPaging="True" AllowSorting="True" BorderWidth="0px" Style="margin: 0 auto; margin-top: 20px; text-align: center; width: 900px" DataKeyNames="IdPedidoVenta">
                 <AlternatingRowStyle BackColor="#F2F2F2" />
@@ -40,14 +39,19 @@
                     <asp:BoundField DataField="SubTotal" HeaderText="Sub Total" SortExpression="SubTotal" DataFormatString="{0:C}"/>  
                     <asp:BoundField DataField="GastosEnvio" HeaderText="Gastos de Envio" SortExpression="GastosEnvio" DataFormatString="{0:C}"/>                  
                     <asp:BoundField DataField="MontoTotal" HeaderText="Total" SortExpression="MontoTotal" DataFormatString="{0:C}"/>
-                    <asp:TemplateField HeaderStyle-BackColor="#17252a" ItemStyle-BackColor="#17252a" ItemStyle-Width="40px">
+                    <asp:TemplateField HeaderStyle-BackColor="#17252a" ItemStyle-BackColor="#17252a" ItemStyle-Width="30px">
+                        <ItemTemplate>
+                            <asp:ImageButton ID="imgPDF" runat="server" ImageUrl="~/img/pdf.png" Width="20px" OnCommand="imgPDF_Command" CommandArgument='<%# Eval("IdPedidoVenta") %>' />
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                    <asp:TemplateField HeaderStyle-BackColor="#17252a" ItemStyle-BackColor="#17252a" ItemStyle-Width="30px">
                         <ItemTemplate>
                             <asp:ImageButton ID="imgEdit" runat="server" ImageUrl="~/img/edit.png" Width="20px" OnCommand="imgEdit_Command" CommandArgument='<%# Eval("IdPedidoVenta") %>' />
                         </ItemTemplate>
                     </asp:TemplateField>
                     <asp:TemplateField HeaderStyle-BackColor="#17252a" ItemStyle-BackColor="#17252a" ItemStyle-Width="30px">
                         <ItemTemplate>
-                            <asp:ImageButton ID="imgDelete" runat="server" ImageUrl="~/img/delete.png" Width="18px" OnClientClick="return confirm('¿Esta seguro que quiere borrar este pedido?')" OnCommand="imgDelete_Command" CommandArgument='<%# Eval("IdPedidoVenta") %>' ImageAlign="Left" />
+                            <asp:ImageButton ID="imgDelete" runat="server" ImageUrl="~/img/delete.png" Width="20px" OnClientClick="return confirm('¿Esta seguro que quiere borrar este pedido?')" OnCommand="imgDelete_Command" CommandArgument='<%# Eval("IdPedidoVenta") %>' ImageAlign="Left" />
                         </ItemTemplate>
                     </asp:TemplateField>
                 </Columns>

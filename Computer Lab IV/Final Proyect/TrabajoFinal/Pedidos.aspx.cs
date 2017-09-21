@@ -139,4 +139,9 @@ public partial class Pedidos : System.Web.UI.Page
     {
         Response.Redirect("EditarPedido.aspx");
     }
+
+    protected void imgPDF_Command(object sender, CommandEventArgs e)
+    {
+        Response.Redirect("ReportePedido.ashx?id=" + e.CommandArgument);
+    }
 }
