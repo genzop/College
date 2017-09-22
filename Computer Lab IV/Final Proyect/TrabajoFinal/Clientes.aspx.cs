@@ -89,4 +89,9 @@ public partial class Clientes : System.Web.UI.Page
     {
         Response.Redirect("EditarCliente.aspx");
     }
+
+    protected void imgPDF_Click(object sender, ImageClickEventArgs e)
+    {
+        Response.Redirect("ReporteClientes.ashx?id=" + Session["IdVendedor"]);
+    }
 }

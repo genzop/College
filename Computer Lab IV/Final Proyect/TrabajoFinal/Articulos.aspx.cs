@@ -85,4 +85,9 @@ public partial class Articulos : System.Web.UI.Page
     {
         Response.Redirect("EditarArticulo.aspx");
     }
+
+    protected void imgPDF_Click(object sender, ImageClickEventArgs e)
+    {
+        Response.Redirect("ReporteArticulos.ashx");
+    }
 }

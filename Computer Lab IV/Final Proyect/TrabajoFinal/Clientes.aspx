@@ -22,6 +22,7 @@
             </asp:DropDownList>
             <asp:TextBox ID="txtBuscar" runat="server" Width="300px" Placeholder="Buscar..." Style="padding-left: 10px" />                        
             <asp:ImageButton ID="imgFind" runat="server" ImageUrl="~/img/find.png" Width="20" ImageAlign="AbsMiddle" style="padding-left: 10px" OnClick="imgFind_Click"/>
+            <asp:ImageButton ID="imgPDF" runat="server" ImageUrl="~/img/pdf.png" Width="20px" ImageAlign="AbsMiddle" style="padding-left: 10px" OnClick="imgPDF_Click" />
             <asp:ImageButton ID="imgAdd" runat="server" ImageUrl="~/img/add.png" Width="20" ImageAlign="AbsMiddle" style="padding-left: 10px" OnClick="imgAdd_Click"/>       
         </div><br />
 
