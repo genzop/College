@@ -15,6 +15,7 @@ namespace TrabajoFinalApp.Modelo
         public int Cantidad { get; set; }
         public double SubTotal { get; set; }
         public double PorcentajeDescuento { get; set; }
+        public double Total { get; set; }
 
         [ForeignKey(typeof(PedidoVenta))]
         public int IdPedidoVenta { get; set; }

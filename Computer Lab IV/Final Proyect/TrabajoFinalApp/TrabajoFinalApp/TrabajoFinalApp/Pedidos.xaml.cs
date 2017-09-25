@@ -87,14 +87,7 @@ namespace TrabajoFinalApp
                     using (var pControlador = new ControladorPedidoVenta())
                     {
                         pControlador.Update(pedExportar);
-                    }
-
-                    //Se guarda el domicilio
-                    Domicilio domExportar;
-                    using (var cDomicilio = new ControladorDomicilio())
-                    {
-                        domExportar = cDomicilio.FindById(pedExportar.IdDomicilio);
-                    }
+                    }                    
 
                     //Se guardan sus detalles
                     List<PedidoVentaDetalle> detExportar;
@@ -104,22 +97,20 @@ namespace TrabajoFinalApp
                     }
 
                     //Se pasan a formato JSON
-                    var pedidoJson = JsonConvert.SerializeObject(pedExportar, Newtonsoft.Json.Formatting.Indented);
-                    var domicilioJson = JsonConvert.SerializeObject(domExportar, Newtonsoft.Json.Formatting.Indented);
+                    var pedidoJson = JsonConvert.SerializeObject(pedExportar, Newtonsoft.Json.Formatting.Indented);                    
                     var detallesJson = JsonConvert.SerializeObject(detExportar, Newtonsoft.Json.Formatting.Indented);
 
                     //Se crea una lista de parejas
                     var parejas = new List<KeyValuePair<string, string>>
                     {
                         new KeyValuePair<string, string>("pedido", pedidoJson),
-                        new KeyValuePair<string, string>("domicilio", domicilioJson),
                         new KeyValuePair<string, string>("detalles", detallesJson)
                     };
 
                     //Se le da formato de formulario
                     var contenido = new FormUrlEncodedContent(parejas);
 
-                    //Se envia el pedido, su domicilio y sus detalles correspondientes al servidor
+                    //Se envia el pedido y sus detalles correspondientes al servidor
                     HttpClient clienteHttp = new HttpClient();
                     clienteHttp.BaseAddress = new Uri(this.Direccion);
                     string url = string.Format("/Importar.aspx");

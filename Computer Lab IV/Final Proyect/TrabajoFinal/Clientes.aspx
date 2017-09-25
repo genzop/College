@@ -12,7 +12,10 @@
     </div>     
     <form id="form1" runat="server">
 
-        <!-- Buscador -->
+        <asp:ScriptManager ID="scriptManager" runat="server" EnablePartialRendering="true" />
+        <asp:UpdatePanel ID="updatePanel" runat="server" UpdateMode="Conditional">
+            <ContentTemplate>
+                <!-- Buscador -->
         <div style="width: 900px; margin: 0 auto">
             <asp:DropDownList ID="ddlBuscar" runat="server" Style="padding-left: 5px" Height="37px" BackColor="#f2f2f2">
                 <asp:ListItem Text="Razon Social" Value="Cliente.RazonSocial" />
@@ -61,7 +64,8 @@
 
         <asp:SqlDataSource ID="SqlDataSource1" runat="server" ConnectionString="<%$ ConnectionStrings:TrabajoFinalConnectionString %>" SelectCommand="SELECT Cliente.IdCliente, Cliente.RazonSocial, Cliente.Cuit, Cliente.Saldo, Domicilio.Calle, Domicilio.Numero, Domicilio.Localidad FROM Cliente INNER JOIN Domicilio ON Cliente.IdDomicilio = Domicilio.IdDomicilio"></asp:SqlDataSource>
         <br />
-
+            </ContentTemplate>
+        </asp:UpdatePanel>
     </form>
 </asp:Content>
 

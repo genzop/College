@@ -51,7 +51,7 @@ public class ReporteArticulos : IHttpHandler
             documento.Add(logo);
 
             //Titulo
-            Paragraph titulo = new Paragraph("Cantidad de articulos vendidos", fuente14Negrita);
+            Paragraph titulo = new Paragraph("Articulos vendidos", fuente14Negrita);
             titulo.Alignment = Element.ALIGN_CENTER;
             titulo.SpacingAfter = 30f;
             documento.Add(titulo);

@@ -25,6 +25,9 @@ public class ReporteClientes : IHttpHandler
 
         //Se cargan los clientes
         List<Cliente> clientes = cargarClientes(pedidos);
+        clientes = (from cli in bd.Clientes
+                    orderby cli.RazonSocial
+                    select cli).ToList();
 
         //Se asigna el tipo de contenido
         context.Response.ContentType = "application/pdf";
@@ -54,10 +57,17 @@ public class ReporteClientes : IHttpHandler
             documento.Add(logo);
 
             //Titulo
-            Paragraph titulo = new Paragraph("Listado de clientes", fuente14Negrita);
+            Paragraph titulo = new Paragraph("Clientes", fuente14Negrita);
             titulo.Alignment = Element.ALIGN_CENTER;
-            titulo.SpacingAfter = 30f;
             documento.Add(titulo);
+
+            //Vendedor
+            Vendedor vendedor = (from vend in bd.Vendedors
+                                 where vend.IdVendedor == Convert.ToInt32(idVendedor)
+                                 select vend).FirstOrDefault();
+            Paragraph vendedorNombre = new Paragraph(vendedor.Nombre + " " + vendedor.Apellido, fuente11);
+            vendedorNombre.Alignment = Element.ALIGN_RIGHT;
+            documento.Add(vendedorNombre);
 
             foreach (Cliente cli in clientes)
             {

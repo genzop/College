@@ -9,11 +9,11 @@
             <Image Source="utnGrande" WidthRequest="250" Margin="0, 70, 0 ,0"/>
 
             <Frame Padding="20, 5, 20, 5" HorizontalOptions="FillAndExpand" Margin="0, 30, 0 ,0">
-                <Entry x:Name="txtUsuario" FontSize="17" Placeholder="Usuario" HorizontalOptions="FillAndExpand"/>
+                <Entry x:Name="txtUsuario" FontSize="17" Placeholder="Usuario" HorizontalOptions="FillAndExpand" Text="enzo"/>
             </Frame>
 
             <Frame Padding="20, 5, 20, 5" HorizontalOptions="FillAndExpand">
-                <Entry x:Name="txtContrasenia" IsPassword="True" FontSize="17"  Placeholder="Contraseña" HorizontalOptions="FillAndExpand"/>
+                <Entry x:Name="txtContrasenia" IsPassword="True" FontSize="17"  Placeholder="Contraseña" HorizontalOptions="FillAndExpand" Text="enzo"/>
             </Frame>
 
             <Button x:Name="btnLogIn" Text="Ingresar" BackgroundColor="#3AAFA9" TextColor="#FEFFFF" FontAttributes="Bold" Margin="0, 30, 0, 0" Clicked="btnLogIn_Clicked" HeightRequest="55"/>
@@ -27,7 +27,7 @@
             </StackLayout>
 
             <!-- Entry invisible que sirve para especificar la direccion del servidor -->
-            <Label x:Name="lblDireccion" Text="http://192.168.35.84:63942/" IsVisible="False"/>
+            <Label x:Name="lblDireccion" Text="http://192.168.1.38:63942/" IsVisible="False"/>
 
         </StackLayout>            
     </ContentPage.Content>

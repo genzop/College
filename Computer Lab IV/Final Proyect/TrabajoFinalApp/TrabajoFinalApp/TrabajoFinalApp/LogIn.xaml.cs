@@ -93,19 +93,40 @@ namespace TrabajoFinalApp
 
         private async Task importarClientes()
         {
+            //Se eliminan todos los domicilios
+            using (var cDomicilio = new ControladorDomicilio())
+            {
+                cDomicilio.DeleteAll();
+            }
+
             //Se eliminan todos los clientes
             using (var cCliente = new ControladorCliente())
             {
                 cCliente.DeleteAll();
             }
 
-            //Se hace el request al servidor
+            //Se importan los clientes
             HttpClient clienteHttp = new HttpClient();
             clienteHttp.BaseAddress = new Uri(lblDireccion.Text);
             string url = string.Format("/Exportar.aspx?exportar=clientes");
             var respuesta = await clienteHttp.GetAsync(url);
             var resultado = respuesta.Content.ReadAsStringAsync().Result;
             List<Cliente> clientes = JsonConvert.DeserializeObject<List<Cliente>>(resultado);
+
+            //Se importan todos domicilios
+            url = string.Format("/Exportar.aspx?exportar=domicilios");
+            respuesta = await clienteHttp.GetAsync(url);
+            resultado = respuesta.Content.ReadAsStringAsync().Result;
+            List<Domicilio> domicilios = JsonConvert.DeserializeObject<List<Domicilio>>(resultado);
+
+            //Se persisten los domicilios
+            using(var cDomicilios = new ControladorDomicilio())
+            {
+                foreach (Domicilio dom in domicilios)
+                {
+                    cDomicilios.Insert(dom);
+                }
+            }
 
             //Se persisten a la base de datos
             using (var cCliente = new ControladorCliente())
@@ -144,8 +165,7 @@ namespace TrabajoFinalApp
         }
 
         private async Task importarPedidos()
-        {
-            
+        {            
             //Se eliminan todos los detalles
             using (var cDetalle = new ControladorPedidoVentaDetalle())
             {
@@ -156,13 +176,7 @@ namespace TrabajoFinalApp
             using (var cPedido = new ControladorPedidoVenta())
             {
                 cPedido.DeleteAll();
-            }
-
-            //Se eliminan todos los domicilios
-            using (var cDomicilio = new ControladorDomicilio())
-            {
-                cDomicilio.DeleteAll();
-            }
+            }            
             
             //Se importan todos los pedidos
             HttpClient clienteHttp = new HttpClient();
@@ -170,13 +184,7 @@ namespace TrabajoFinalApp
             string url = string.Format("/Exportar.aspx?exportar=pedidos");
             var respuesta = await clienteHttp.GetAsync(url);
             var resultado = respuesta.Content.ReadAsStringAsync().Result;
-            List<PedidoVenta> pedidos = JsonConvert.DeserializeObject<List<PedidoVenta>>(resultado);
-                        
-            //Se importan todos domicilios
-            url = string.Format("/Exportar.aspx?exportar=domicilios");
-            respuesta = await clienteHttp.GetAsync(url);
-            resultado = respuesta.Content.ReadAsStringAsync().Result;
-            List<Domicilio> domicilios = JsonConvert.DeserializeObject<List<Domicilio>>(resultado);
+            List<PedidoVenta> pedidos = JsonConvert.DeserializeObject<List<PedidoVenta>>(resultado);           
             
             //Se importan todos los detalles
             url = string.Format("/Exportar.aspx?exportar=detalles");
@@ -188,26 +196,7 @@ namespace TrabajoFinalApp
             foreach (PedidoVenta pedido in pedidos)
             {
                 int idPedidoSeleccionado = pedido.IdPedidoVenta;
-
-                //Se guarda el domicilio correspondiente
-                Domicilio domCorrespondiente = new Domicilio();
-                foreach (Domicilio dom in domicilios)
-                {
-                    if(dom.IdDomicilio == pedido.IdDomicilio)
-                    {
-                        domCorrespondiente = dom;
-                    }
-                }
-
-                //Se persiste el domicilio
-                using (var cDomicilio = new ControladorDomicilio())
-                {
-                    cDomicilio.Insert(domCorrespondiente);
-                }
-
-                //Se actualiza el IdDomicilio en el pedido
-                pedido.IdDomicilio = domCorrespondiente.IdDomicilio;
-
+                
                 using (var cCliente = new ControladorCliente())
                 {
                     var clienteCorrespondiente = cCliente.FindById(pedido.IdCliente);

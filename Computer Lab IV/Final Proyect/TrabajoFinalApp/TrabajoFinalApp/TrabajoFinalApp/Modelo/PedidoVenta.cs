@@ -12,19 +12,17 @@ namespace TrabajoFinalApp.Modelo
     {
         [PrimaryKey, AutoIncrement]
         public int IdPedidoVenta { get; set; }
+        public bool Editable { get; set; }
         public long NroPedido { get; set; }
         public string Estado { get; set; }
         public bool Entregado { get; set; }
+        public bool Pagado { get; set; }
         public DateTime FechaPedido { get; set; }
         public DateTime FechaEstimadaEntrega { get; set; }
         public double SubTotal { get; set; }
         public double GastosEnvio { get; set; }        
         public double MontoTotal { get; set; }
-        public bool Editable { get; set; }
-
-        [ForeignKey(typeof(Domicilio))]
-        public int IdDomicilio { get; set; }
-
+    
         [ForeignKey(typeof(Cliente))]
         public int IdCliente { get; set; }
 

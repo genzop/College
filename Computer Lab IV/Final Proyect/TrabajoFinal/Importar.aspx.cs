@@ -11,20 +11,14 @@ public partial class Importar : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        var domicilio = recibirDomicilio(Request["domicilio"]);
         var pedido = recibirPedido(Request["pedido"]);
         var detalles = recibirDetalles(Request["detalles"]);
 
-        if(domicilio != null || pedido != null || detalles != null)
+        if(pedido != null && detalles != null)
         {
             BaseDatosDataContext bd = new BaseDatosDataContext();
-            domicilio.IdDomicilio = 0;
-
-            bd.Domicilios.InsertOnSubmit(domicilio);
-            bd.SubmitChanges();
-                        
+            
             pedido.IdPedidoVenta = 0;
-            pedido.IdDomicilio = domicilio.IdDomicilio;
 
             bd.PedidoVentas.InsertOnSubmit(pedido);
             bd.SubmitChanges();

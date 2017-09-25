@@ -13,13 +13,15 @@
                     <StackLayout Orientation="Horizontal">
                         <Label Text="Numero:" TextColor="Black" FontSize="15" FontAttributes="Bold"  VerticalOptions="Center"/>
                         <Entry x:Name="txtNumero" FontSize="17" HorizontalOptions="FillAndExpand" Keyboard="Numeric"/>
+                        <Label x:Name="lblNumero" FontSize="17" HorizontalOptions="FillAndExpand" IsVisible="False" Margin="0, 10, 0, 10" />
                     </StackLayout>                    
                 </Frame>
 
                 <Frame Padding="20, 5, 20, 5" HorizontalOptions="FillAndExpand" >
                     <StackLayout Orientation="Horizontal">
-                        <Label Text="Cliente:" TextColor="Black" FontSize="15" FontAttributes="Bold"  VerticalOptions="Center"/>
-                        <Picker x:Name="pickerCliente" HorizontalOptions="FillAndExpand" ></Picker>
+                        <Label Text="Cliente:" TextColor="Black" FontSize="15" FontAttributes="Bold"  VerticalOptions="Center" WidthRequest="60"/>
+                        <Picker x:Name="pickerCliente" HorizontalOptions="FillAndExpand" WidthRequest="200" SelectedIndexChanged="pickerCliente_SelectedIndexChanged" ></Picker>
+                        <Label x:Name="lblCliente" FontSize="17" HorizontalOptions="FillAndExpand" IsVisible="False" Margin="0, 10, 0, 10" />
                     </StackLayout>
                 </Frame>
 
@@ -34,86 +36,62 @@
                                 <x:String>Anulado</x:String>
                             </Picker.Items>
                         </Picker>
+                        <Label x:Name="lblEstado" FontSize="17" HorizontalOptions="FillAndExpand" IsVisible="False" Margin="0, 10, 0, 10" />
                     </StackLayout>
                 </Frame>
 
                 <Frame Padding="20, 5, 20, 5" HorizontalOptions="FillAndExpand" >
                     <StackLayout Orientation="Horizontal">
                         <Label Text="Fecha:" TextColor="Black" FontSize="15" FontAttributes="Bold"  VerticalOptions="Center"/>
-                        <DatePicker x:Name="dateFechaPedido" Format="dd-MM-yyyy" HorizontalOptions="FillAndExpand"></DatePicker>
+                        <DatePicker x:Name="dateFechaPedido" Format="dd-MM-yyyy" HorizontalOptions="FillAndExpand" />
+                        <Label x:Name="lblFecha" FontSize="17" HorizontalOptions="FillAndExpand" IsVisible="False" Margin="0, 10, 0, 10" />
                     </StackLayout>
                 </Frame>
 
                 <Frame Padding="20, 5, 20, 5" HorizontalOptions="FillAndExpand" >
                     <StackLayout Orientation="Horizontal">
                         <Label Text="Fecha de entrega:" TextColor="Black" FontSize="15" FontAttributes="Bold"  VerticalOptions="Center"/>
-                        <DatePicker x:Name="dateFechaEntrega" Format="dd-MM-yyyy" HorizontalOptions="FillAndExpand"></DatePicker>
-                    </StackLayout>
+                        <DatePicker x:Name="dateFechaEntrega" Format="dd-MM-yyyy" HorizontalOptions="FillAndExpand" />
+                        <Label x:Name="lblFechaEntrega" FontSize="17" HorizontalOptions="FillAndExpand" IsVisible="False" Margin="0, 10, 0, 10" />
+                    </StackLayout>                    
                 </Frame>
 
                 <Frame Padding="20, 5, 20, 5" HorizontalOptions="FillAndExpand" >
                     <StackLayout Orientation="Horizontal">
                         <Label Text="Gastos de envio:    $" TextColor="Black" FontSize="15" FontAttributes="Bold"  VerticalOptions="Center"/>
                         <Entry x:Name="txtGastosEnvio" FontSize="17" HorizontalOptions="FillAndExpand" Keyboard="Numeric" TextChanged="txtGastosEnvio_TextChanged" Text="0"/>
-                    </StackLayout>
+                        <Label x:Name="lblGastosEnvio" FontSize="17" HorizontalOptions="FillAndExpand" IsVisible="False" Margin="0, 10, 0, 10" />
+                    </StackLayout>                    
                 </Frame>
                 
                 <!-- Domicilio -->
                 <Label Text="Domicilio" FontSize="23" FontAttributes="Bold" TextColor="White" HorizontalOptions="Center" Margin="0, 30, 0, 10"/>
 
-                <Frame Padding="20, 5, 20, 5" HorizontalOptions="FillAndExpand" >
+                <Frame Padding="20, 15, 20, 15" HorizontalOptions="FillAndExpand" >
                     <StackLayout Orientation="Horizontal">
                         <Label Text="Calle:" TextColor="Black" FontSize="15" FontAttributes="Bold"  VerticalOptions="Center"/>
-                        <Entry x:Name="txtCalle" FontSize="17" HorizontalOptions="FillAndExpand"/>
+                        <Label x:Name="lblCalle" FontSize="17" HorizontalOptions="FillAndExpand"/>                        
                     </StackLayout>
                 </Frame>
-                
-                <Frame Padding="20, 5, 20, 5" HorizontalOptions="FillAndExpand" >
-                    <StackLayout Orientation="Horizontal">
-                        <Label Text="Numero:" TextColor="Black" FontSize="15" FontAttributes="Bold"  VerticalOptions="Center"/>
-                        <Entry x:Name="txtCalleNumero" FontSize="17" HorizontalOptions="FillAndExpand" Keyboard="Numeric"/>
-                    </StackLayout>
-                </Frame>
-                
-                <Frame Padding="20, 5, 20, 5" HorizontalOptions="FillAndExpand" >
+
+                <Frame Padding="20, 15, 20, 15" HorizontalOptions="FillAndExpand" >
                     <StackLayout Orientation="Horizontal">
                         <Label Text="Localidad:" TextColor="Black" FontSize="15" FontAttributes="Bold"  VerticalOptions="Center"/>
-                        <Picker x:Name="pickerLocalidad" HorizontalOptions="FillAndExpand" >
-                            <Picker.Items>
-                                <x:String>Capital</x:String>
-                                <x:String>General Alvear</x:String>
-                                <x:String>Godoy Cruz</x:String>
-                                <x:String>Guaymallen</x:String>
-                                <x:String>Junin</x:String>
-                                <x:String>La Paz</x:String>
-                                <x:String>Las Heras</x:String>
-                                <x:String>Lavalle</x:String>
-                                <x:String>Lujan de Cuyo</x:String>
-                                <x:String>Maipu</x:String>
-                                <x:String>Malargue</x:String>
-                                <x:String>Rivadavia</x:String>
-                                <x:String>San Carlos</x:String>
-                                <x:String>San Martin</x:String>
-                                <x:String>San Rafael</x:String>
-                                <x:String>Santa Rosa</x:String>
-                                <x:String>Tunuyan</x:String>
-                                <x:String>Tupungato</x:String>
-                            </Picker.Items>
-                        </Picker>
+                        <Label x:Name="lblLocalidad" FontSize="17" HorizontalOptions="FillAndExpand"/>
                     </StackLayout>
                 </Frame>
-                
-                <Frame Padding="20, 5, 20, 5" HorizontalOptions="FillAndExpand" >
+
+                <Frame Padding="20, 15, 20, 15" HorizontalOptions="FillAndExpand" >
                     <StackLayout Orientation="Horizontal">
                         <Label Text="Latitud:" TextColor="Black" FontSize="15" FontAttributes="Bold"  VerticalOptions="Center"/>
-                        <Entry x:Name="txtLatitud" FontSize="17" HorizontalOptions="FillAndExpand"/>
+                        <Label x:Name="lblLatitud" FontSize="17" HorizontalOptions="FillAndExpand"/>
                     </StackLayout>
                 </Frame>
-                
-                <Frame Padding="20, 5, 20, 5" HorizontalOptions="FillAndExpand" >
+
+                <Frame Padding="20, 15, 20, 15" HorizontalOptions="FillAndExpand" >
                     <StackLayout Orientation="Horizontal">
                         <Label Text="Longitud:" TextColor="Black" FontSize="15" FontAttributes="Bold"  VerticalOptions="Center"/>
-                        <Entry x:Name="txtLongitud" FontSize="17" HorizontalOptions="FillAndExpand"/>
+                        <Label x:Name="lblLongitud" FontSize="17" HorizontalOptions="FillAndExpand"/>
                     </StackLayout>
                 </Frame>
                 
@@ -123,17 +101,14 @@
                 <StackLayout x:Name="tablaDetalles" Spacing="0">
                     <Frame Padding="0" HasShadow="False" BackgroundColor="#3AAFA9" HeightRequest="30">
                         <StackLayout Orientation="Horizontal" VerticalOptions="Center">
-                            <StackLayout Orientation="Horizontal" WidthRequest="110">
+                            <StackLayout Orientation="Horizontal" WidthRequest="180">
                                 <Label Text="Articulo" TextColor="White" FontSize="12" FontAttributes="Bold" HorizontalOptions="CenterAndExpand"/>
                             </StackLayout>
-                            <StackLayout Orientation="Horizontal" WidthRequest="60" Margin="8, 0, 0, 0">
+                            <StackLayout Orientation="Horizontal" WidthRequest="70" Margin="8, 0, 0, 0">
                                 <Label Text="Cantidad" TextColor="White" FontSize="12" FontAttributes="Bold" HorizontalOptions="CenterAndExpand"/>
-                            </StackLayout>                            
+                            </StackLayout>  
                             <StackLayout Orientation="Horizontal" WidthRequest="70">
-                                <Label Text="Precio" TextColor="White" FontSize="12" FontAttributes="Bold" HorizontalOptions="CenterAndExpand"/>
-                            </StackLayout>
-                            <StackLayout Orientation="Horizontal" WidthRequest="70">
-                                <Label Text="SubTotal" TextColor="White" FontSize="12" FontAttributes="Bold" HorizontalOptions="CenterAndExpand"/>
+                                <Label Text="Total" TextColor="White" FontSize="12" FontAttributes="Bold" HorizontalOptions="CenterAndExpand"/>
                             </StackLayout>
                         </StackLayout>
                     </Frame>
@@ -144,22 +119,16 @@
                                 <ViewCell>
                                     <Frame Padding="0">
                                         <StackLayout Orientation="Horizontal" VerticalOptions="Center" HeightRequest="40">                                            
-                                            <StackLayout Orientation="Horizontal" WidthRequest="110" VerticalOptions="Center">
+                                            <StackLayout Orientation="Horizontal" WidthRequest="180" VerticalOptions="Center">
                                                 <Label Text="{Binding Articulo}" TextColor="Black" FontSize="15" HorizontalOptions="CenterAndExpand"/>
                                             </StackLayout>
-                                            <StackLayout Orientation="Horizontal" WidthRequest="60" Margin="8, 0, 0, 0" VerticalOptions="Center">
+                                            <StackLayout Orientation="Horizontal" WidthRequest="70" Margin="8, 0, 0, 0" VerticalOptions="Center">
                                                 <Label Text="{Binding Cantidad}" TextColor="Black" FontSize="15" HorizontalOptions="CenterAndExpand"/>
-                                            </StackLayout>
+                                            </StackLayout>                                            
                                             <StackLayout WidthRequest="70" VerticalOptions="CenterAndExpand">
                                                 <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand" Spacing="0">
                                                     <Label Text="$ " TextColor="Black" FontSize="15" HorizontalOptions="Center"/>
-                                                    <Label Text="{Binding PrecioUnitario}" TextColor="Black" FontSize="15" HorizontalOptions="Center"/>
-                                                </StackLayout>                                                
-                                            </StackLayout>
-                                            <StackLayout WidthRequest="70" VerticalOptions="CenterAndExpand">
-                                                <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand" Spacing="0">
-                                                    <Label Text="$ " TextColor="Black" FontSize="15" HorizontalOptions="Center"/>
-                                                    <Label Text="{Binding SubTotal}" TextColor="Black" FontSize="15" HorizontalOptions="Center"/>
+                                                    <Label Text="{Binding Total}" TextColor="Black" FontSize="15" HorizontalOptions="Center"/>
                                                 </StackLayout>                                                
                                             </StackLayout>
                                         </StackLayout>
@@ -182,19 +151,29 @@
                                 <Picker x:Name="pickerArticulo" HorizontalOptions="FillAndExpand" SelectedIndexChanged="pickerArticulo_SelectedIndexChanged" />
                             </StackLayout>
 
+                            <StackLayout Spacing="0" Orientation="Horizontal" Margin="0, 10, 0, 10">
+                                <Label Text="Precio unitario:  $ " TextColor="Black" FontSize="15" FontAttributes="Bold"  VerticalOptions="Center"/>
+                                <Label x:Name="lblPrecioUnitario" FontSize="17" TextColor="Black" Text="0"/>
+                            </StackLayout>
+
                             <StackLayout Orientation="Horizontal">
                                 <Label Text="Cantidad:" TextColor="Black" FontSize="15" FontAttributes="Bold"  VerticalOptions="Center"/>
                                 <Entry x:Name="txtCantidad" FontSize="17" HorizontalOptions="FillAndExpand" Keyboard="Numeric" Text="0" TextChanged="txtCantidad_TextChanged"/>
                             </StackLayout>
 
+                            <StackLayout Spacing="0" Orientation="Horizontal" Margin="0, 10, 0, 10">
+                                <Label Text="SubTotal:  $ " TextColor="Black" FontSize="15" FontAttributes="Bold"  VerticalOptions="Center"/>
+                                <Label x:Name="lblSubTotalDetalle" FontSize="17" TextColor="Black" Text="0"/>
+                            </StackLayout>
+                            
                             <StackLayout Orientation="Horizontal">
                                 <Label Text="Descuento:" TextColor="Black" FontSize="15" FontAttributes="Bold"  VerticalOptions="Center"/>
                                 <Entry x:Name="txtDescuento" FontSize="17" HorizontalOptions="FillAndExpand" Keyboard="Numeric" Text="0" TextChanged="txtDescuento_TextChanged"/>
                             </StackLayout>
 
                             <StackLayout Spacing="0" Orientation="Horizontal" Margin="0, 10, 0, 10">
-                                <Label Text="SubTotal:  $ " TextColor="Black" FontSize="15" FontAttributes="Bold"  VerticalOptions="Center"/>
-                                <Label x:Name="lblSubTotalDetalle" FontSize="17" TextColor="Black" Text="0"/>
+                                <Label Text="Total:  $ " TextColor="Black" FontSize="15" FontAttributes="Bold" VerticalOptions="Center"/>
+                                <Label x:Name="lblTotalDetalle" FontSize="17" TextColor="Black" Text="0"/>
                             </StackLayout>
 
                             <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand" Spacing="20" Margin="0, 10, 0, 20">

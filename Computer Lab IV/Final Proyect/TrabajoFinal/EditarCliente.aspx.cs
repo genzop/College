@@ -21,6 +21,9 @@ public partial class EditarCliente : System.Web.UI.Page
         }
         else
         {
+            //Actualiza el mapa de JavaScript en el UpdatePanel
+            ScriptManager.RegisterClientScriptBlock(updatePanel, GetType(), "InitMap", "initMap()", true);
+
             if (Convert.ToInt32(Request.QueryString["id"]) == 0)
             {
                 lblTitulo.Text = "Agregar Cliente";

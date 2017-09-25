@@ -18,8 +18,11 @@ public partial class EditarPedido : System.Web.UI.Page
         }
         else
         {
+            //Actualiza el mapa de JavaScript en el UpdatePanel
+            ScriptManager.RegisterClientScriptBlock(updatePanel, GetType(), "InitMap", "initMap()", true);
+
             //Si es el administrador, se muestra el campo elegir vendedor
-            if(Convert.ToInt32(Session["IdVendedor"]) == 20)
+            if (Convert.ToInt32(Session["IdVendedor"]) == 20)
             {
                 campoVendedor.Visible = true;
             }            
