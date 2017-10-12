@@ -115,8 +115,12 @@ public partial class Importar : System.Web.UI.Page
 
             foreach (var pedido in pedidos)
             {
-                //Se suma el monto total de cada pedido
-                subtotalCliente += Convert.ToDouble(pedido.MontoTotal);
+                //Sino esta pagado el pedido
+                if (!Convert.ToBoolean(pedido.Pagado))
+                {
+                    //Se suma el monto total de cada pedido
+                    subtotalCliente += Convert.ToDouble(pedido.MontoTotal);
+                }                
             }
         }
 

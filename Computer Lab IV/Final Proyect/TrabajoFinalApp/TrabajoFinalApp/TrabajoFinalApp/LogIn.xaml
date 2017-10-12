@@ -27,7 +27,7 @@
             </StackLayout>
 
             <!-- Entry invisible que sirve para especificar la direccion del servidor -->
-            <Label x:Name="lblDireccion" Text="http://192.168.1.38:63942/" IsVisible="False"/>
+            <Label x:Name="lblDireccion" Text="http://192.168.1.36:63942/" IsVisible="False"/>
 
         </StackLayout>            
     </ContentPage.Content>

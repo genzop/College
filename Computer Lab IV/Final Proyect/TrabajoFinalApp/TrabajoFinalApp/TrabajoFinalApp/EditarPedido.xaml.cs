@@ -71,7 +71,8 @@ namespace TrabajoFinalApp
                 btnEliminar.Text = "Cancelar";
                 this.detalles = new ObservableCollection<PedidoVentaDetalle>();
                 listDetalles.ItemsSource = this.detalles;
-                this.detallesEliminados = new List<PedidoVentaDetalle>();               
+                this.detallesEliminados = new List<PedidoVentaDetalle>();
+                switchPagado.IsToggled = false;             
             }
             else
             {
@@ -193,6 +194,7 @@ namespace TrabajoFinalApp
                     tempPedido.SubTotal = Convert.ToDouble(lblSubTotal.Text);
                     tempPedido.GastosEnvio = Convert.ToDouble(txtGastosEnvio.Text);
                     tempPedido.MontoTotal = Convert.ToDouble(lblTotal.Text);
+                    tempPedido.Pagado = switchPagado.IsToggled;
 
                     //Se persiste el pedido a la base de datos
                     using (var pedControlador = new ControladorPedidoVenta())
@@ -225,6 +227,7 @@ namespace TrabajoFinalApp
                     tempPedido.SubTotal = Convert.ToDouble(lblSubTotal.Text);
                     tempPedido.GastosEnvio = Convert.ToDouble(txtGastosEnvio.Text);
                     tempPedido.MontoTotal = Convert.ToDouble(lblTotal.Text);
+                    tempPedido.Pagado = switchPagado.IsToggled;
 
                     //Se persiste el pedido a la base de datos
                     using (var pedControlador = new ControladorPedidoVenta())
@@ -398,7 +401,7 @@ namespace TrabajoFinalApp
                 dateFechaPedido.Date = this.tempPedido.FechaPedido;
                 dateFechaEntrega.Date = this.tempPedido.FechaEstimadaEntrega;
                 txtGastosEnvio.Text = this.tempPedido.GastosEnvio.ToString();
-
+                switchPagado.IsToggled = this.tempPedido.Pagado;
             }
             else
             {
@@ -431,6 +434,7 @@ namespace TrabajoFinalApp
                 lblFecha.Text = this.tempPedido.FechaPedido.ToString("dd/MM/yyyy");
                 lblFechaEntrega.Text = this.tempPedido.FechaEstimadaEntrega.ToString("dd/MM/yyyy");
                 lblGastosEnvio.Text = this.tempPedido.GastosEnvio.ToString();
+                switchPagado.IsToggled = this.tempPedido.Pagado;                
             }           
             
             //Domicilio

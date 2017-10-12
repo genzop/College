@@ -26,7 +26,7 @@
                         <asp:ListItem Text="Fecha" Value="PedidoVenta.FechaPedido" />
                         <asp:ListItem Text="Fecha de Entrega" Value="PedidoVenta.FechaEstimadaEntrega" />
                     </asp:DropDownList>
-                    <asp:TextBox ID="txtBuscar" runat="server" Width="300px" Placeholder="Buscar..." Style="margin-left: 10px" />
+                    <asp:TextBox ID="txtBuscar" runat="server" Width="300px" Placeholder="Buscar..."  />
                     <asp:ImageButton ID="imgFind" runat="server" ImageUrl="~/img/find.png" Width="20" ImageAlign="AbsMiddle" Style="padding-left: 10px" OnClick="imgFind_Click" />
                     <asp:ImageButton ID="imgAdd" runat="server" ImageUrl="~/img/add.png" Width="20" ImageAlign="AbsMiddle" Style="padding-left: 10px" OnClick="imgAdd_Click" />
                     <br />
