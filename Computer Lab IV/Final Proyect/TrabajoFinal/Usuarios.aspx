@@ -19,15 +19,15 @@
                 <!-- Buscador -->
                 <div style="width: 400px; margin: 0 auto">
                     <asp:TextBox ID="txtBuscar" runat="server" Width="300px" Placeholder="Buscar..." Style="margin-left: 10px" />
-                    <asp:ImageButton ID="imgFind" runat="server" ImageUrl="~/img/find.png" Width="20" ImageAlign="AbsMiddle" Style="padding-left: 10px" OnClick="imgFind_Click" CausesValidation="false" />
-                    <asp:ImageButton ID="imgAdd" runat="server" ImageUrl="~/img/add.png" Width="20" ImageAlign="AbsMiddle" Style="padding-left: 10px" OnClick="imgAdd_Click" CausesValidation="false" />
+                    <asp:ImageButton ID="imgFind" runat="server" ImageUrl="~/img/find.png" Width="20" ImageAlign="AbsMiddle" Style="margin-left: 10px" OnClick="imgFind_Click" CausesValidation="false" />
+                    <asp:ImageButton ID="imgAdd" runat="server" ImageUrl="~/img/add.png" Width="20" ImageAlign="AbsMiddle" Style="margin-left: 10px" OnClick="imgAdd_Click" CausesValidation="false" />
                 </div>
                 <br />
 
                 <asp:TextBox ID="txtError" runat="server" Text="ERROR: El usuario buscado no existe" Visible="false" />
 
                 <!-- Formulario Usuario -->
-                <div id="formUsuario" runat="server" class="create-page" style="padding-top: 0">
+                <div id="formUsuario" runat="server" class="create-page" style="padding-top: 0" visible="false">
                     <div class="create-form" style="padding-bottom: 30px">
 
                         <asp:HiddenField ID="hdnID" runat="server" />
@@ -46,10 +46,10 @@
 
                         <div class="editContent">
                             <p class="editContentTitle" style="font-weight: bold">Nombre de usuario</p>
-                            <asp:TextBox ID="txtUsuario" runat="server" CssClass="inputCentrado" CausesValidation="true" />
-                            <asp:RequiredFieldValidator ID="rfvUsuario" runat="server" ControlToValidate="txtUsuario" ErrorMessage="*No puedes dejar este campo en blanco." Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
-                            <asp:CustomValidator ID="cvUsuario" runat="server" OnServerValidate="cvUsuario_ServerValidate" ErrorMessage="*Ese nombre de usuario ya está en uso" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
-                            <asp:RegularExpressionValidator ID="revUsuario" runat="server" ControlToValidate="txtUsuario" ValidationExpression="^[\w]{0,8}" ErrorMessage="* El nombre de usuario puede contener hasta un máximo de 12 caracteres alfanuméricos" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
+                            <asp:TextBox ID="txtUsuario" runat="server" CssClass="inputCentrado" CausesValidation="true" />                            
+                            <asp:RequiredFieldValidator ID="rfvUsuario" runat="server" ControlToValidate="txtUsuario" ErrorMessage="*No puedes dejar este campo en blanco." Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />                                                                                    
+                            <asp:RegularExpressionValidator ID="revUsuario" runat="server" ControlToValidate="txtUsuario" ValidationExpression="^[\w]{0,8}" ErrorMessage="* El nombre de usuario puede contener hasta un máximo de 12 caracteres alfanuméricos" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />                            
+                            <asp:CustomValidator ID="cvUsuarioUnico" runat="server" OnServerValidate="cvUsuarioUnico_ServerValidate" ErrorMessage="*El nombre de usuario ya esta en uso" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />                                                                                    
                         </div>
 
                         <div class="editContent">

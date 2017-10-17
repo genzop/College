@@ -7,7 +7,7 @@
 
     <!-- Titulo -->
     <div style="text-align: center; padding: 40px 0px 0px 0px">
-        <asp:Label ID="lblTitulo" runat="server" Text="Titulo Temporal" ForeColor="#FEFFFF" Font-Names="Arial" Font-Bold="true" Font-Size="30px " />
+        <asp:Label ID="lblTitulo" runat="server" Text="Agregar Rubro" ForeColor="#FEFFFF" Font-Names="Arial" Font-Bold="true" Font-Size="30px " />
     </div>
     <br />
 
@@ -19,9 +19,7 @@
 
                 <div class="editContent">
                     <p class="editContentTitle" style="font-weight: bold">Codigo</p>
-                    <asp:TextBox ID="txtCodigo" runat="server" CssClass="inputCentrado" />
-                    <asp:RequiredFieldValidator ID="rfvCodigo" runat="server" ControlToValidate="txtCodigo" ErrorMessage="* Este campo es obligatorio" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
-                    <asp:RegularExpressionValidator ID="revCodigo" runat="server" ControlToValidate="txtCodigo" ValidationExpression="^(\s|.){1,20}$" ErrorMessage="* El codigo puede contener hasta un máximo de 20 caracteres" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
+                    <asp:TextBox ID="txtCodigo" runat="server" CssClass="inputCentrado" ReadOnly="true"/>                    
                 </div>
 
                 <div class="editContent">
@@ -29,16 +27,17 @@
                     <asp:TextBox id="txtDenominacion" runat="server" TextMode="MultiLine" Rows="4" cssclass="inputCentrado" style="resize: none"></asp:TextBox>
                     <asp:RequiredFieldValidator ID="rfvDenominacion" runat="server" ControlToValidate="txtDenominacion" ErrorMessage="* Este campo es obligatorio" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px"/>         
                     <asp:RegularExpressionValidator ID="revDenominacion" runat="server" ControlToValidate="txtDenominacion" ValidationExpression="^(\s|.){1,200}$" ErrorMessage="* La denominacion puede contener hasta un máximo de 200 caracteres" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px"/>    
+                    <asp:CustomValidator ID="cvRubroUnico" runat="server" OnServerValidate="cvRubroUnico_ServerValidate" ErrorMessage="*Esta denominacion ya esta en uso" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px"/>         
                 </div>
 
                 <div class="editContent">
                     <p class="editContentTitle" style="font-weight: bold">Rubro Superior</p>
-                    <asp:DropDownList ID="ddlRubroSuperior" runat="server" CssClass="drownDownList" DataSourceID="LinqDataSource1" DataTextField="Denominacion" DataValueField="IdRubro" style="margin-bottom: 10px"></asp:DropDownList>
-                    <asp:LinqDataSource ID="LinqDataSource1" runat="server" ContextTypeName="BaseDatosDataContext" EntityTypeName="" Select="new (IdRubro, Denominacion)" TableName="Rubros">
-                    </asp:LinqDataSource>
+                    <asp:DropDownList ID="ddlRubroSuperior" runat="server" CssClass="drownDownList" DataSourceID="LinqDataSource1" DataTextField="Denominacion" DataValueField="IdRubro" style="margin-bottom: 10px"/>
+                    <asp:LinqDataSource ID="LinqDataSource1" runat="server" ContextTypeName="BaseDatosDataContext" EntityTypeName="" Select="new (IdRubro, Denominacion)" TableName="Rubros" />
+                    <asp:CustomValidator ID="cvRubroSuperior" runat="server" OnServerValidate="cvRubroSuperior_ServerValidate" ErrorMessage="* Este rubro no puede ser asignado como rubro superior" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px"/>
                 </div>               
                 
-                <asp:button id="btnAccion" runat="server" text="Texto temporal" cssclass="botonImportante" OnClick="btnAccion_Click"/>
+                <asp:button id="btnAccion" runat="server" text="Guardar" cssclass="botonImportante" OnClick="btnAccion_Click"/>
             </form>
         </div>
     </div>

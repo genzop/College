@@ -19,39 +19,39 @@
         <asp:UpdatePanel ID="updatePanel" runat="server" UpdateMode="Conditional">
             <ContentTemplate>
                 <!-- Buscar -->
-                <div style="width: 900px; margin: 0 auto">
+                <div style="width: 1000px; margin: 0 auto">
                     <asp:DropDownList ID="ddlBuscar" runat="server" Style="padding-left: 5px" Height="37px" BackColor="#f2f2f2">
+                        <asp:ListItem Text="Numero" Value="Pedido.IdCliente" />
                         <asp:ListItem Text="Cliente" Value="Cliente.RazonSocial" />
-                        <asp:ListItem Text="Estado" Value="PedidoVenta.Estado" />
-                        <asp:ListItem Text="Fecha" Value="PedidoVenta.FechaPedido" />
-                        <asp:ListItem Text="Fecha de Entrega" Value="PedidoVenta.FechaEstimadaEntrega" />
+                        <asp:ListItem Text="Estado" Value="Pedido.Estado" />
+                        <asp:ListItem Text="Fecha" Value="Pedido.FechaPedido" />
                     </asp:DropDownList>
                     <asp:TextBox ID="txtBuscar" runat="server" Width="300px" Placeholder="Buscar..."  />
-                    <asp:ImageButton ID="imgFind" runat="server" ImageUrl="~/img/find.png" Width="20" ImageAlign="AbsMiddle" Style="padding-left: 10px" OnClick="imgFind_Click" />
-                    <asp:ImageButton ID="imgAdd" runat="server" ImageUrl="~/img/add.png" Width="20" ImageAlign="AbsMiddle" Style="padding-left: 10px" OnClick="imgAdd_Click" />
+                    <asp:ImageButton ID="imgFind" runat="server" ImageUrl="~/img/find.png" Width="20" ImageAlign="AbsMiddle" Style="margin-left: 10px" OnClick="imgFind_Click" />
+                    <asp:ImageButton ID="imgAdd" runat="server" ImageUrl="~/img/add.png" Width="20" ImageAlign="AbsMiddle" Style="margin-left: 10px" OnClick="imgAdd_Click" />
                     <br />
                 </div>
 
                 <div>
                     <!-- Tabla Pedidos -->
-                    <asp:GridView ID="grdPedidos" runat="server" AutoGenerateColumns="False" CellPadding="6" DataSourceID="SqlDataSource1" ForeColor="#333333" GridLines="None" Font-Size="14px" AllowPaging="True" AllowSorting="True" BorderWidth="0px" Style="margin: 0 auto; margin-top: 20px; text-align: center; width: 900px" DataKeyNames="IdPedidoVenta">
+                    <asp:GridView ID="grdPedidos" runat="server" AutoGenerateColumns="False" CellPadding="6" DataSourceID="SqlDataSource1" ForeColor="#333333" GridLines="None" Font-Size="14px" AllowPaging="True" AllowSorting="True" BorderWidth="0px" Style="margin: 0 auto; margin-top: 20px; text-align: center; width: 1000px" DataKeyNames="IdPedido">
                         <AlternatingRowStyle BackColor="#F2F2F2" />
                         <Columns>
-                            <asp:BoundField DataField="NroPedido" HeaderText="N°" SortExpression="NroPedido" />
+                            <asp:BoundField DataField="IdPedido" HeaderText="N°" SortExpression="IdPedido" />
                             <asp:BoundField DataField="RazonSocial" HeaderText="Cliente" SortExpression="RazonSocial" ItemStyle-Width="200px" />
                             <asp:BoundField DataField="Estado" HeaderText="Estado" SortExpression="Estado" />
                             <asp:BoundField DataField="FechaPedido" HeaderText="Fecha" SortExpression="FechaPedido" DataFormatString="{0:d}" />
-                            <asp:BoundField DataField="SubTotal" HeaderText="Sub Total" SortExpression="SubTotal" DataFormatString="{0:C}" />
-                            <asp:BoundField DataField="GastosEnvio" HeaderText="Gastos de Envio" SortExpression="GastosEnvio" DataFormatString="{0:C}" />
+                            <asp:BoundField DataField="SubTotal" HeaderText="Subtotal" SortExpression="SubTotal" DataFormatString="{0:C}" />
+                            <asp:BoundField DataField="GastosEnvio" HeaderText="Gastos de envio" SortExpression="GastosEnvio" DataFormatString="{0:C}" />
                             <asp:BoundField DataField="MontoTotal" HeaderText="Total" SortExpression="MontoTotal" DataFormatString="{0:C}" />
                             <asp:TemplateField HeaderStyle-BackColor="#17252a" ItemStyle-BackColor="#17252a" ItemStyle-Width="30px">
                                 <ItemTemplate>
-                                    <asp:ImageButton ID="imgPDF" runat="server" ImageUrl="~/img/pdf.png" Width="20px" OnCommand="imgPDF_Command" CommandArgument='<%# Eval("IdPedidoVenta") %>' />
+                                    <asp:ImageButton ID="imgPDF" runat="server" ImageUrl="~/img/pdf.png" Width="20px" OnCommand="imgPDF_Command" CommandArgument='<%# Eval("IdPedido") %>' />
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderStyle-BackColor="#17252a" ItemStyle-BackColor="#17252a" ItemStyle-Width="30px">
                                 <ItemTemplate>
-                                    <asp:ImageButton ID="imgEdit" runat="server" ImageUrl="~/img/edit.png" Width="20px" OnCommand="imgEdit_Command" CommandArgument='<%# Eval("IdPedidoVenta") %>' />
+                                    <asp:ImageButton ID="imgEdit" runat="server" ImageUrl="~/img/edit.png" Width="20px" OnCommand="imgEdit_Command" CommandArgument='<%# Eval("IdPedido") %>' />
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderStyle-BackColor="#17252a" ItemStyle-BackColor="#17252a" ItemStyle-Width="30px">
@@ -72,7 +72,7 @@
                         <SortedDescendingHeaderStyle BackColor="#2b7a78" />
                     </asp:GridView>
 
-                    <asp:SqlDataSource ID="SqlDataSource1" runat="server" ConnectionString="<%$ ConnectionStrings:TrabajoFinalConnectionString %>" SelectCommand="SELECT PedidoVenta.IdPedidoVenta, PedidoVenta.FechaEstimadaEntrega, PedidoVenta.GastosEnvio, PedidoVenta.Estado, PedidoVenta.FechaPedido, PedidoVenta.NroPedido, PedidoVenta.SubTotal, PedidoVenta.MontoTotal, Cliente.RazonSocial FROM PedidoVenta INNER JOIN Cliente ON PedidoVenta.IdCliente = Cliente.IdCliente WHERE PedidoVenta.IdVendedor=@vendedor">
+                    <asp:SqlDataSource ID="SqlDataSource1" runat="server" ConnectionString="<%$ ConnectionStrings:TrabajoFinalConnectionString %>" SelectCommand="SELECT Pedido.IdPedido, Pedido.FechaEntrega, Pedido.GastosEnvio, Pedido.Estado, Pedido.FechaPedido, PedidoVenta.SubTotal, PedidoVenta.Total, Cliente.RazonSocial FROM Pedido INNER JOIN Cliente ON Pedido.IdCliente = Cliente.IdCliente WHERE Pedido.IdVendedor=@vendedor">
                         <SelectParameters>
                             <asp:SessionParameter Name="vendedor" Type="String" SessionField="IdVendedor" />
                         </SelectParameters>

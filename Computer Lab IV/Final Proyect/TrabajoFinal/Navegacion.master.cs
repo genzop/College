@@ -12,14 +12,15 @@ public partial class Navegacion : System.Web.UI.MasterPage
         BaseDatosDataContext bd = new BaseDatosDataContext();
 
         var temp = (from vend in bd.Vendedors
-                    where vend.IdVendedor == Int32.Parse(Session["IdVendedor"].ToString())
+                    where vend.IdVendedor == Convert.ToInt32(Session["IdVendedor"].ToString())
                     select vend).Single();
 
         lblNombre.Text = temp.Nombre + " " + temp.Apellido;
 
-        if (Convert.ToInt32(Session["IdVendedor"]) == 20)
+        if (temp.Administrador)
         {
             hlUsuarios.Visible = true;
+            hlLocalidades.Visible = true;
         }
     }
 }

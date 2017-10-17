@@ -8,8 +8,7 @@ using System.Web.UI.WebControls;
 public partial class EditarPedido : System.Web.UI.Page
 {
     private BaseDatosDataContext bd = new BaseDatosDataContext();    
-
-    //Cuando se carga la pagina
+        
     protected void Page_Load(object sender, EventArgs e)
     {
         if (Session["IdVendedor"] == null)
@@ -21,8 +20,12 @@ public partial class EditarPedido : System.Web.UI.Page
             //Actualiza el mapa de JavaScript en el UpdatePanel
             ScriptManager.RegisterClientScriptBlock(updatePanel, GetType(), "InitMap", "initMap()", true);
 
+            var usuario = (from vend in bd.Vendedors
+                           where vend.IdVendedor == Convert.ToInt32(Session["IdVendedor"])
+                           select vend).FirstOrDefault();                 
+
             //Si es el administrador, se muestra el campo elegir vendedor
-            if (Convert.ToInt32(Session["IdVendedor"]) == 20)
+            if (usuario.Administrador)
             {
                 campoVendedor.Visible = true;
             }            
@@ -34,13 +37,11 @@ public partial class EditarPedido : System.Web.UI.Page
                 if (!IsPostBack)
                 {
                     List<DetalleTemporal> listaDetalles = new List<DetalleTemporal>();
-                    Session["Detalles"] = listaDetalles;
-                    txtSubTotal.Text = "0";
-                    txtGastosEnvio.Text = "0";
-                    txtMontoTotal.Text = "0";
+                    Session["Detalles"] = listaDetalles;                    
 
                     //Se carga la direccion del cliente
                     Cliente tempCli = (from cli in bd.Clientes
+                                       orderby cli.RazonSocial
                                        select cli).FirstOrDefault();
 
                     Domicilio tempDom = (from dom in bd.Domicilios
@@ -50,7 +51,7 @@ public partial class EditarPedido : System.Web.UI.Page
                     //Mostrar los datos por pantalla
                     txtCalle.Text = tempDom.Calle;
                     txtNumeroCalle.Text = tempDom.Numero.ToString();
-                    txtLocalidad.Text = tempDom.Localidad;
+                    
                     txtLatitud.Text = tempDom.Latitud.ToString();
                     txtLongitud.Text = tempDom.Longitud.ToString();
 

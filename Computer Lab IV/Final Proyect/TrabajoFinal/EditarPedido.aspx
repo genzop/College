@@ -231,20 +231,20 @@
                                 <asp:TableCell>
                                     <div class="editContent">
                                         <p class="editContentTitle">Sub Total</p>
-                                        <asp:TextBox ID="txtSubTotal" runat="server" ReadOnly="true" CssClass="inputCentrado" Style="text-align: right" />
+                                        <asp:TextBox ID="txtSubTotal" runat="server" Text="0" ReadOnly="true" CssClass="inputCentrado" Style="text-align: right" />
                                     </div>
                                 </asp:TableCell>
                                 <asp:TableCell>
                                     <div class="editContent">
                                         <p class="editContentTitle">Gastos de envio</p>
-                                        <asp:TextBox ID="txtGastosEnvio" runat="server" AutoPostBack="true" OnTextChanged="cambiarGastosEnvio" Style="text-align: right" />
+                                        <asp:TextBox ID="txtGastosEnvio" runat="server" Text="0" AutoPostBack="true" OnTextChanged="cambiarGastosEnvio" Style="text-align: right" />
                                         <asp:RegularExpressionValidator ID="revGastosEnvio" runat="server" ValidationGroup="Pedido" ControlToValidate="txtGastosEnvio" ValidationExpression="[+-]?([0-9]*[,])?[0-9]+" ErrorMessage="* EL gasto de envio solo puede ser un numero" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
                                     </div>
                                 </asp:TableCell>
                                 <asp:TableCell>
                                     <div class="editContent">
                                         <p class="editContentTitle">Total</p>
-                                        <asp:TextBox ID="txtMontoTotal" runat="server" ReadOnly="true" CssClass="inputCentrado" Style="text-align: right" />
+                                        <asp:TextBox ID="txtMontoTotal" runat="server" Text="0" ReadOnly="true" CssClass="inputCentrado" Style="text-align: right" />
                                     </div>
                                 </asp:TableCell>
                             </asp:TableRow>

@@ -7,13 +7,15 @@ using System.Web.UI.WebControls;
 
 public partial class Usuarios : System.Web.UI.Page
 {
-    private BaseDatosDataContext bd;
+    private BaseDatosDataContext bd = new BaseDatosDataContext();
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        bd = new BaseDatosDataContext();
+        var usuario = (from vend in bd.Vendedors
+                       where vend.IdVendedor == Convert.ToInt32(Session["IdVendedor"])
+                       select vend).FirstOrDefault();
 
-        if(Convert.ToInt32(Session["IdVendedor"]) != 20)
+        if (!usuario.Administrador)
         {
             Response.Redirect("Ingresar.aspx");
         }
@@ -21,9 +23,7 @@ public partial class Usuarios : System.Web.UI.Page
         {
             HyperLink usuarios = (HyperLink)Master.FindControl("hlUsuarios");
             usuarios.CssClass = "active";
-        }
-
-        formUsuario.Visible = false;
+        }        
     }
 
     //Se valida que el nombre de usuario ingresado no este en uso
@@ -48,25 +48,31 @@ public partial class Usuarios : System.Web.UI.Page
     }
     
     protected void imgFind_Click(object sender, ImageClickEventArgs e)
-    {   
-        Vendedor tempVend = (from vend in bd.Vendedors
-                             where vend.Usuario == txtBuscar.Text
-                             select vend).FirstOrDefault();
-        if(tempVend != null)
+    {
+        if (txtBuscar.Text == "admin")
         {
-            formUsuario.Visible = true;
-            hdnID.Value = tempVend.IdVendedor.ToString();
-            txtNombre.Text = tempVend.Nombre;
-            txtApellido.Text = tempVend.Apellido;
-            txtUsuario.Text = tempVend.Usuario;
-            txtContrasenia.Text = tempVend.Contrasenia;
-            txtConfirmarContrasenia.Text = tempVend.Contrasenia;
+            ScriptManager.RegisterClientScriptBlock(updatePanel, GetType(), "errorBuscarAdmin", "alert('ERROR: No se puede modificar la informacion del administrador')", true);
         }
         else
         {
-            Response.Write("<script>alert('ERROR: El usuario buscado no existe');</script>");
+            Vendedor tempVend = (from vend in bd.Vendedors
+                                 where vend.Usuario == txtBuscar.Text
+                                 select vend).FirstOrDefault();
+            if (tempVend != null)
+            {
+                formUsuario.Visible = true;
+                hdnID.Value = tempVend.IdVendedor.ToString();
+                txtNombre.Text = tempVend.Nombre;
+                txtApellido.Text = tempVend.Apellido;
+                txtUsuario.Text = tempVend.Usuario;
+                txtContrasenia.Text = tempVend.Contrasenia;
+                txtConfirmarContrasenia.Text = tempVend.Contrasenia;
+            }
+            else
+            {
+                ScriptManager.RegisterClientScriptBlock(updatePanel, GetType(), "errorBuscarUsuario", "alert('ERROR: El usuario buscado no existe')", true);
+            }
         }
-        
     }
 
     protected void imgAdd_Click(object sender, ImageClickEventArgs e)
@@ -84,7 +90,7 @@ public partial class Usuarios : System.Web.UI.Page
     {
         formUsuario.Visible = false;
     }
-
+    
     protected void btnGuardar_Click(object sender, EventArgs e)
     {
         if (Page.IsValid)
@@ -121,7 +127,45 @@ public partial class Usuarios : System.Web.UI.Page
                 }
                 catch (Exception) { }
             }
-            
+            formUsuario.Visible = false;
+        }
+    }
+
+    //Valida que el nombre de usuario no este en uso
+    protected void cvUsuarioUnico_ServerValidate(object source, ServerValidateEventArgs args)
+    {
+        //Si se esta creando un Vendedor
+        if (hdnID.Value == "")
+        {
+            //Revisa si ya existe un Vendedor con ese nombre de usuario
+            var usuario = (from vend in bd.Vendedors
+                           where vend.Usuario == txtUsuario.Text
+                           select vend).FirstOrDefault();
+
+            if (usuario == null)
+            {
+                args.IsValid = true;
+            }
+            else
+            {
+                args.IsValid = false;
+            }
+        }
+        //Si se esta editando un Vendedor
+        else{
+            //Revisa si otro Vendedor esta utilizando ese nombre de usuario
+            var usuario = (from vend in bd.Vendedors
+                           where vend.Usuario == txtUsuario.Text && vend.IdVendedor != Convert.ToInt32(hdnID.Value)
+                           select vend).FirstOrDefault();
+
+            if (usuario == null)
+            {
+                args.IsValid = true;
+            }
+            else
+            {
+                args.IsValid = false;
+            }
         }
     }
 }

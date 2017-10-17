@@ -7,12 +7,10 @@ using System.Web.UI.WebControls;
 
 public partial class Rubros : System.Web.UI.Page
 {
-    BaseDatosDataContext bd;
+    BaseDatosDataContext bd = new BaseDatosDataContext();
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        bd = new BaseDatosDataContext();
-
         if (Session["IdVendedor"] == null)
         {
             Response.Redirect("Ingresar.aspx");
@@ -22,13 +20,22 @@ public partial class Rubros : System.Web.UI.Page
             HyperLink rubros = (HyperLink)Master.FindControl("hlRubros");
             rubros.CssClass = "active";
 
-            if(Convert.ToInt32(Session["IdVendedor"]) != 20)
+            var usuario = (from vend in bd.Vendedors
+                           where vend.IdVendedor == Convert.ToInt32(Session["IdVendedor"])
+                           select vend).FirstOrDefault();
+
+            if(!usuario.Administrador)
             {
                 grdRubros.Columns[3].Visible = false;
                 grdRubros.Columns[4].Visible = false;
                 imgAdd.Visible = false;
             }
         }
+    }
+
+    protected void imgAdd_Click(object sender, ImageClickEventArgs e)
+    {
+        Response.Redirect("EditarRubro.aspx");
     }
 
     protected void imgEdit_Command(object sender, CommandEventArgs e)
@@ -40,24 +47,26 @@ public partial class Rubros : System.Web.UI.Page
     {
         try
         {
-            string idSeleccionado = e.CommandArgument.ToString();
+            int idSeleccionado = Convert.ToInt32(e.CommandArgument.ToString());
 
+            //Se verifica si el rubro tiene Articulos asociados
             bool tieneArticulos = (from art in bd.Articulos
-                                   where art.IdRubro == Convert.ToInt32(idSeleccionado)
+                                   where art.IdRubro == idSeleccionado
                                    select art).Any();
 
+            //Se verifica si el rubro tiene otros Rubros asociados
             bool tieneSubRubros = (from rub in bd.Rubros
-                                   where rub.IdRubroSuperior == Convert.ToInt32(idSeleccionado)
+                                   where rub.IdRubroSuperior == idSeleccionado
                                    select rub).Any();
 
             if (tieneArticulos || tieneSubRubros)
-            {
-                Response.Write("<script language=\"JavaScript\">alert(\"El rubro no puede ser eliminado ya que hay articulos o subrubros asociados con el\")</script>");
+            {                
+                ScriptManager.RegisterClientScriptBlock(updatePanel, GetType(), "errorEliminarRubro", "alert('ERROR: El rubro no puede ser eliminado ya que hay otros rubros y/o articulos asociados a el')", true);                
             }
             else
             {
                 var temp = (from rub in bd.Rubros
-                            where rub.IdRubro == Convert.ToInt32(idSeleccionado)
+                            where rub.IdRubro == idSeleccionado
                             select rub).Single();
 
                 bd.Rubros.DeleteOnSubmit(temp);
@@ -71,22 +80,15 @@ public partial class Rubros : System.Web.UI.Page
     protected void imgFind_Click(object sender, ImageClickEventArgs e)
     {
         string query = "";
-
         if (txtBuscar.Text == "")
         {
-            query = "SELECT hijo.IdRubro, hijo.Codigo, hijo.Denominacion, padre.Denominacion FROM Rubro AS hijo INNER JOIN Rubro AS padre ON hijo.IdRubroSuperior = padre.IdRubro WHERE NOT hijo.Denominacion = '-'";
+            query = "SELECT hijo.IdRubro, hijo.Denominacion, padre.Denominacion FROM Rubro AS hijo INNER JOIN Rubro AS padre ON hijo.IdRubroSuperior = padre.IdRubro WHERE NOT hijo.Denominacion = '-'";
         }
         else
         {
-            query = "SELECT hijo.IdRubro, hijo.Codigo, hijo.Denominacion, padre.Denominacion FROM Rubro AS hijo INNER JOIN Rubro AS padre ON hijo.IdRubroSuperior = padre.IdRubro WHERE NOT hijo.Denominacion = '-' AND " + ddlBuscar.SelectedValue + " LIKE '%" + txtBuscar.Text + "%'";
+            query = "SELECT hijo.IdRubro, hijo.Denominacion, padre.Denominacion FROM Rubro AS hijo INNER JOIN Rubro AS padre ON hijo.IdRubroSuperior = padre.IdRubro WHERE NOT hijo.Denominacion = '-' AND " + ddlBuscar.SelectedValue + " LIKE '%" + txtBuscar.Text + "%'";
         }
-
         SqlDataSource1.SelectCommand = query;
         grdRubros.DataBind();
-    }
-
-    protected void imgAdd_Click(object sender, ImageClickEventArgs e)
-    {
-        Response.Redirect("EditarRubro.aspx");
-    }
+    }    
 }

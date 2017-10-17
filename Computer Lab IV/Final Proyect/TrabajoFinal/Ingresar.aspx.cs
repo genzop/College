@@ -5,25 +5,18 @@ using System.Web.UI.WebControls;
 
 public partial class Ingresar : System.Web.UI.Page
 {
-    BaseDatosDataContext bd;
-
-    //Si llega a haber una sesion iniciada, se vacia
+    BaseDatosDataContext bd = new BaseDatosDataContext();
+        
     protected void Page_Load(object sender, EventArgs e)
-    {   
-        bd = new BaseDatosDataContext();
-
+    {           
+        //Si hay una sesion iniciada, se cierra
         if (Session["IdVendedor"] != null)
         {
             Session["IdVendedor"] = null;
-        }
-
-        if(Request.QueryString["user"] != null)
-        {
-            txtUsuario.Text = Request.QueryString["user"].ToString();
-        }
+        }        
     }
 
-    //Se valida que el usuario ingresado exista en la base de datos
+    //Valida que el usuario ingresado exista en la base de datos
     protected void cvUsuario_ServerValidate(object source, ServerValidateEventArgs args)
     {
         try
@@ -43,7 +36,7 @@ public partial class Ingresar : System.Web.UI.Page
         catch (Exception) { }
     }
 
-    //Se valida que la contraseña ingresada sea la correcta
+    //Valida que la contraseña ingresada sea la correcta
     protected void cvContrasenia_ServerValidate(object source, ServerValidateEventArgs args)
     {
         try
@@ -67,7 +60,7 @@ public partial class Ingresar : System.Web.UI.Page
         catch (Exception) { }
     }
 
-    //Si la pagina es valida se inicia sesion con la cuenta ingresada y se redirecciona a la pagina de pedidos
+    //Si las validaciones fueron correctas, se loguea al usuario y se redirecciona a la pagina de pedidos
     protected void btnIngresar_Click(object sender, EventArgs e)
     {
         try

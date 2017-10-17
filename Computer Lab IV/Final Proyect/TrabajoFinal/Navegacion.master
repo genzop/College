@@ -17,8 +17,10 @@
                 <li><asp:HyperLink ID="hlPedidos" runat="server" Text="Pedidos" NavigateUrl="~/Pedidos.aspx" /></li>
                 <li><asp:HyperLink ID="hlClientes" runat="server" Text="Clientes" NavigateUrl="~/Clientes.aspx"/></li>
                 <li><asp:HyperLink ID="hlArticulos" runat="server" Text="Articulos" NavigateUrl="~/Articulos.aspx" /></li>
-                <li><asp:HyperLink ID="hlRubros" runat="server" Text="Rubros" NavigateUrl="~/Rubros.aspx" /></li>
+                <li><asp:HyperLink ID="hlRubros" runat="server" Text="Rubros" NavigateUrl="~/Rubros.aspx" /></li>                
                 <li><asp:HyperLink ID="hlUsuarios" runat="server" Text="Usuarios" NavigateUrl="~/Usuarios.aspx" Visible="false" /></li>
+                <li><asp:HyperLink ID="hlLocalidades" runat="server" Text="Localidades" NavigateUrl="~/Localidades.aspx" Visible="false"/></li>                
+                <li><asp:HyperLink ID="hlReportes" runat="server" Text="Reportes" NavigateUrl="~/Reportes.aspx" /></li>
                 <li style="float: right">   
                     <asp:Label ID="lblNombre" runat="server"/>                 
                     <asp:HyperLink ID="hlCerrarSesion" runat="server" Text="Cerrar Sesion" NavigateUrl="~/Ingresar.aspx"/>

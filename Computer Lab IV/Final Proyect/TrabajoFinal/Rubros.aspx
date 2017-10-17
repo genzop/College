@@ -19,23 +19,23 @@
         <asp:UpdatePanel ID="updatePanel" runat="server" UpdateMode="Conditional">
             <ContentTemplate>
                 <!-- Buscador -->
-                <div style="width: 500px; margin: 0 auto">
+                <div style="width: 700px; margin: 0 auto">
                     <asp:DropDownList ID="ddlBuscar" runat="server" Style="padding-left: 5px" Height="37px" BackColor="#f2f2f2">
-                        <asp:ListItem Text="Codigo" Value="hijo.Codigo" />
+                        <asp:ListItem Text="Codigo" Value="hijo.IdRubro" />
                         <asp:ListItem Text="Denominacion" Value="hijo.Denominacion" />
                         <asp:ListItem Text="Rubro Superior" Value="padre.Denominacion" />
                     </asp:DropDownList>
-                    <asp:TextBox ID="txtBuscar" runat="server" Width="200px" Placeholder="Buscar..." Style="padding-left: 10px" />
-                    <asp:ImageButton ID="imgFind" runat="server" ImageUrl="~/img/find.png" Width="20" ImageAlign="AbsMiddle" Style="padding-left: 10px" OnClick="imgFind_Click" />
-                    <asp:ImageButton ID="imgAdd" runat="server" ImageUrl="~/img/add.png" Width="20" ImageAlign="AbsMiddle" Style="padding-left: 10px" OnClick="imgAdd_Click" />
+                    <asp:TextBox ID="txtBuscar" runat="server" Width="300px" Placeholder="Buscar..." Style="padding-left: 10px" />
+                    <asp:ImageButton ID="imgFind" runat="server" ImageUrl="~/img/find.png" Width="20" ImageAlign="AbsMiddle" Style="margin-left: 10px" OnClick="imgFind_Click" />
+                    <asp:ImageButton ID="imgAdd" runat="server" ImageUrl="~/img/add.png" Width="20" ImageAlign="AbsMiddle" Style="margin-left: 10px" OnClick="imgAdd_Click" />
                 </div>
                 <br />
 
                 <!-- Tabla Rubros -->
-                <asp:GridView ID="grdRubros" runat="server" AllowPaging="True" AllowSorting="True" AutoGenerateColumns="False" DataSourceID="SqlDataSource1" CellPadding="6" ForeColor="#333333" GridLines="None" Font-Size="14px" Style="margin: 0 auto; text-align: center; width: 500px">
+                <asp:GridView ID="grdRubros" runat="server" AllowPaging="True" AllowSorting="True" AutoGenerateColumns="False" DataSourceID="SqlDataSource1" CellPadding="6" ForeColor="#333333" GridLines="None" Font-Size="14px" Style="margin: 0 auto; text-align: center; width: 700px">
                     <AlternatingRowStyle BackColor="#F2F2F2" />
                     <Columns>
-                        <asp:BoundField DataField="Codigo" HeaderText="Codigo" SortExpression="Codigo" ItemStyle-Height="22" />
+                        <asp:BoundField DataField="IdRubro" HeaderText="Codigo" SortExpression="IdRubro" ItemStyle-Height="22" />
                         <asp:BoundField DataField="Denominacion" HeaderText="Denominacion" SortExpression="Denominacion" />
                         <asp:BoundField DataField="Denominacion1" HeaderText="Rubro Superior" SortExpression="Denominacion1" />
                         <asp:TemplateField HeaderStyle-BackColor="#17252a" ItemStyle-BackColor="#17252a" ItemStyle-Width="40px">
@@ -60,7 +60,7 @@
                     <SortedDescendingCellStyle BackColor="#E9EBEF" />
                     <SortedDescendingHeaderStyle BackColor="#2b7a78" />
                 </asp:GridView>
-                <asp:SqlDataSource ID="SqlDataSource1" runat="server" ConnectionString="<%$ ConnectionStrings:TrabajoFinalConnectionString %>" SelectCommand="SELECT hijo.IdRubro, hijo.Codigo, hijo.Denominacion, padre.Denominacion FROM Rubro AS hijo INNER JOIN Rubro AS padre ON hijo.IdRubroSuperior = padre.IdRubro WHERE NOT hijo.Denominacion='-'"></asp:SqlDataSource>
+                <asp:SqlDataSource ID="SqlDataSource1" runat="server" ConnectionString="<%$ ConnectionStrings:TrabajoFinalConnectionString %>" SelectCommand="SELECT hijo.IdRubro, hijo.Denominacion, padre.Denominacion FROM Rubro AS hijo INNER JOIN Rubro AS padre ON hijo.IdRubroSuperior = padre.IdRubro WHERE NOT hijo.Denominacion='-'"></asp:SqlDataSource>
                 <br />
             </ContentTemplate>
         </asp:UpdatePanel>
