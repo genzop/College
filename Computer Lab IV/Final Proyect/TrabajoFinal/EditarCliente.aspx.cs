@@ -8,13 +8,16 @@ using System.Web.UI.WebControls;
 
 public partial class EditarCliente : System.Web.UI.Page
 {
-    BaseDatosDataContext bd;
+    BaseDatosDataContext bd = new BaseDatosDataContext();
+    Cliente tempCliente = null;
+    Domicilio tempDomicilio = null;
+    Localidad tempLocalidad = null;
+    Provincia tempProvincia = null;
+    bool datosCargados = false;
 
     //Si se recibe un id de parametro, se cargan los datos del cliente seleccionado, sino se muestra el formulario vacio
     protected void Page_Load(object sender, EventArgs e)
     {
-        bd = new BaseDatosDataContext();
-
         if (Session["IdVendedor"] == null)
         {
             Response.Redirect("Ingresar.aspx");
@@ -23,43 +26,63 @@ public partial class EditarCliente : System.Web.UI.Page
         {
             //Actualiza el mapa de JavaScript en el UpdatePanel
             ScriptManager.RegisterClientScriptBlock(updatePanel, GetType(), "InitMap", "initMap()", true);
-
+                        
             if (Convert.ToInt32(Request.QueryString["id"]) == 0)
             {
                 lblTitulo.Text = "Agregar Cliente";
                 txtSaldo.Text = "$ 0,0";
-                btnAccion.Text = "AGREGAR";
+                if (!IsPostBack)
+                {
+                    txtLatitud.Text = "0";
+                    txtLongitud.Text = "0";
+                }                         
             }
             else
             {
                 lblTitulo.Text = "Editar Cliente";
-                btnAccion.Text = "GUARDAR";
 
                 try
                 {
-                    Cliente temp = (from cliente in bd.Clientes
+                    tempCliente = (from cliente in bd.Clientes
                                     where cliente.IdCliente == Convert.ToInt32(Request.QueryString["id"])
-                                    select cliente).Single();
-                    Domicilio tempDom = (from dom in bd.Domicilios
-                                         where dom.IdDomicilio == temp.IdDomicilio
-                                         select dom).Single();
+                                    select cliente).FirstOrDefault();
+
+                    tempDomicilio = (from dom in bd.Domicilios
+                                     where dom.IdDomicilio == tempCliente.IdDomicilio
+                                     select dom).FirstOrDefault();
+
+                    tempLocalidad = (from loc in bd.Localidads
+                                     where loc.IdLocalidad == tempDomicilio.IdLocalidad
+                                     select loc).FirstOrDefault();
+
+                    tempProvincia = (from prov in bd.Provincias
+                                     where prov.IdProvincia == tempLocalidad.IdProvincia
+                                     select prov).FirstOrDefault();
+
                     if (!IsPostBack)
                     {
-                        txtRazonSocial.Text = temp.RazonSocial;
-                        txtCuit.Text = temp.Cuit;
-                        txtSaldo.Text = temp.Saldo.ToString();
-                        txtCalle.Text = tempDom.Calle;
-                        txtNumero.Text = tempDom.Numero.ToString();
-                        DropDownList ddlLocalidad = (DropDownList)ddlLocalidades.FindControl("ddlLocalidad");
-                        ddlLocalidad.SelectedValue = tempDom.Localidad;
-                        if (tempDom.Latitud != null)
+                        txtRazonSocial.Text = tempCliente.RazonSocial;
+                        txtCuit.Text = tempCliente.Cuit;
+                        txtSaldo.Text = "$ " + tempCliente.Saldo.ToString();
+                        txtCalle.Text = tempDomicilio.Calle;
+                        txtNumero.Text = tempDomicilio.Numero.ToString();
+                        if (tempDomicilio.Latitud == null)
                         {
-                            txtLatitud.Text = tempDom.Latitud.ToString();
+                            txtLatitud.Text = "0";
                         }
-                        if (tempDom.Longitud != null)
+                        else
                         {
-                            txtLongitud.Text = tempDom.Longitud.ToString();
+                            txtLatitud.Text = tempDomicilio.Latitud.ToString();
+                        }   
+                        
+                        if(tempDomicilio.Longitud == null)
+                        {
+                            txtLongitud.Text = "0";
                         }
+                        else
+                        {
+                            txtLongitud.Text = tempDomicilio.Longitud.ToString();
+                        }      
                     }
                 }
                 catch (Exception) { }
@@ -74,72 +97,65 @@ public partial class EditarCliente : System.Web.UI.Page
         {
             try
             {
-                DropDownList ddlLocalidad = (DropDownList)ddlLocalidades.FindControl("ddlLocalidad");
-
+                //Si se esta agregando un Cliente
                 if (Convert.ToInt32(Request.QueryString["id"]) == 0)
                 {
-                    Domicilio tempDom = new Domicilio();
-                    tempDom.Calle = txtCalle.Text;
-                    tempDom.Numero = Convert.ToInt32(txtNumero.Text);
-                    tempDom.Localidad = ddlLocalidad.SelectedValue;
+                    //Guarda el Domicilio
+                    tempDomicilio = new Domicilio();
+                    tempDomicilio.Calle = txtCalle.Text;
+                    tempDomicilio.Numero = Convert.ToInt32(txtNumero.Text);
+                    tempDomicilio.IdLocalidad = Convert.ToInt32(ddlLocalidades.SelectedValue);
                     if (txtLatitud.Text != "")
                     {
-                        tempDom.Latitud = Convert.ToDouble(txtLatitud.Text);
+                        tempDomicilio.Latitud = Convert.ToDouble(txtLatitud.Text);
                     }
                     else
                     {
-                        tempDom.Latitud = 0;
+                        tempDomicilio.Latitud = 0;
                     }
                     if (txtLongitud.Text != "")
                     {
-                        tempDom.Longitud = Convert.ToDouble(txtLongitud.Text);
+                        tempDomicilio.Longitud = Convert.ToDouble(txtLongitud.Text);
                     }
                     else
                     {
-                        tempDom.Longitud = 0;
+                        tempDomicilio.Longitud = 0;
                     }
-                    bd.Domicilios.InsertOnSubmit(tempDom);
+                    bd.Domicilios.InsertOnSubmit(tempDomicilio);
                     bd.SubmitChanges();
 
-                    Cliente tempCliente = new Cliente();
+                    //Guarda al Cliente
+                    tempCliente = new Cliente();
                     tempCliente.RazonSocial = txtRazonSocial.Text;
                     tempCliente.Cuit = txtCuit.Text;
                     tempCliente.Saldo = 0.0;
-                    tempCliente.IdDomicilio = tempDom.IdDomicilio;
+                    tempCliente.IdDomicilio = tempDomicilio.IdDomicilio;
                     bd.Clientes.InsertOnSubmit(tempCliente);
                     bd.SubmitChanges();
                     Response.Redirect("Clientes.aspx");
                 }
                 else
                 {
-                    Cliente tempCliente = (from cliente in bd.Clientes
-                                           where cliente.IdCliente == Convert.ToInt32(Request.QueryString["id"])
-                                           select cliente).Single();
-                    Domicilio tempDom = (from dom in bd.Domicilios
-                                         where dom.IdDomicilio == tempCliente.IdDomicilio
-                                         select dom).Single();
-
                     tempCliente.RazonSocial = txtRazonSocial.Text;
                     tempCliente.Cuit = txtCuit.Text;
-                    tempDom.Calle = txtCalle.Text;
-                    tempDom.Numero = Convert.ToInt32(txtNumero.Text);
-
-                    tempDom.Localidad = ddlLocalidad.SelectedValue;
+                    tempDomicilio.Calle = txtCalle.Text;
+                    tempDomicilio.Numero = Convert.ToInt32(txtNumero.Text);
+                    tempDomicilio.IdLocalidad = Convert.ToInt32(ddlLocalidades.SelectedValue);
                     if (txtLatitud.Text != "")
                     {
-                        tempDom.Latitud = Convert.ToDouble(txtLatitud.Text);
+                        tempDomicilio.Latitud = Convert.ToDouble(txtLatitud.Text);
                     }
                     else
                     {
-                        tempDom.Latitud = 0;
+                        tempDomicilio.Latitud = 0;
                     }
                     if (txtLongitud.Text != "")
                     {
-                        tempDom.Longitud = Convert.ToDouble(txtLongitud.Text);
+                        tempDomicilio.Longitud = Convert.ToDouble(txtLongitud.Text);
                     }
                     else
                     {
-                        tempDom.Longitud = 0;
+                        tempDomicilio.Longitud = 0;
                     }
                     bd.SubmitChanges();
                     Response.Redirect("Clientes.aspx");
@@ -147,5 +163,140 @@ public partial class EditarCliente : System.Web.UI.Page
             }
             catch (Exception) { }            
         }       
+    }    
+
+    //Valida que la Razon Social ingresada no este en uso
+    protected void cvRazonSocialUnica_ServerValidate(object source, ServerValidateEventArgs args)
+    {
+        //Si se esta agregando un Cliente
+        if (Request.QueryString["id"] == null)  
+        {
+            var cliente = (from cli in bd.Clientes
+                           where cli.RazonSocial == txtRazonSocial.Text
+                           select cli).FirstOrDefault();
+            if(cliente == null)
+            {
+                args.IsValid = true;
+            }
+            else
+            {
+                args.IsValid = false;
+            }
+        }
+        //Si se esta editando un Cliente
+        else
+        {
+            var cliente = (from cli in bd.Clientes
+                           where cli.RazonSocial == txtRazonSocial.Text && cli.IdCliente != Convert.ToInt32(Request.QueryString["id"])
+                           select cli).FirstOrDefault();
+            if (cliente == null)
+            {
+                args.IsValid = true;
+            }
+            else
+            {
+                args.IsValid = false;
+            }
+        }
+    }
+
+    //Valida que el Cuit ingresado no este en uso
+    protected void cvCuitUnico_ServerValidate(object source, ServerValidateEventArgs args)
+    {
+        //Si se esta agregando un Cliente
+        if (Request.QueryString["id"] == null)
+        {
+            var cliente = (from cli in bd.Clientes
+                           where cli.Cuit == txtCuit.Text
+                           select cli).FirstOrDefault();
+            if (cliente == null)
+            {
+                args.IsValid = true;
+            }
+            else
+            {
+                args.IsValid = false;
+            }
+        }
+        //Si se esta editando un Cliente
+        else
+        {
+            var cliente = (from cli in bd.Clientes
+                           where cli.Cuit == txtCuit.Text && cli.IdCliente != Convert.ToInt32(Request.QueryString["id"])
+                           select cli).FirstOrDefault();
+            if (cliente == null)
+            {
+                args.IsValid = true;
+            }
+            else
+            {
+                args.IsValid = false;
+            }
+        }
+    }
+
+    //Valida que el usuario haya seleccionado un pais
+    protected void cvPaisVacio_ServerValidate(object source, ServerValidateEventArgs args)
+    {
+        if (ddlPaises.SelectedValue == "")
+        {
+            args.IsValid = false;
+        }
+        else
+        {
+            args.IsValid = true;
+        }
+    }
+
+    //Valida que el usuario haya seleccionado una provincia
+    protected void cvProvinciaVacia_ServerValidate(object source, ServerValidateEventArgs args)
+    {
+        if (ddlProvincias.SelectedValue == "")
+        {
+            args.IsValid = false;
+        }
+        else
+        {
+            args.IsValid = true;
+        }
+    }
+
+    //Valida que el usuario haya seleccionado una localidad
+    protected void cvLocalidadVacia_ServerValidate(object source, ServerValidateEventArgs args)
+    {
+        if (ddlLocalidades.SelectedValue == "")
+        {
+            args.IsValid = false;
+        }
+        else
+        {
+            args.IsValid = true;
+        }
+    }   
+
+    protected void ddlProvincias_DataBound(object sender, EventArgs e)
+    {
+        if (ddlProvincias.Items.Count == 0)
+        {
+            ddlLocalidades.Items.Clear();
+        }
+        else
+        {
+            ddlLocalidades.DataBind();
+        }
+    }
+
+    protected void ddlLocalidades_DataBound(object sender, EventArgs e)
+    {
+        if(Request.QueryString["id"] != null && !datosCargados)
+        {
+            if (!IsPostBack)
+            {
+                ddlPaises.SelectedValue = tempProvincia.IdPais.ToString();
+                ddlProvincias.SelectedValue = tempLocalidad.IdProvincia.ToString();
+                ddlLocalidades.SelectedValue = tempLocalidad.IdLocalidad.ToString();
+                datosCargados = true;
+            }            
+        }
     }
 }

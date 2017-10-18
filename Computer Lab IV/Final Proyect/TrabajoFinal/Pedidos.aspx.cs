@@ -8,6 +8,7 @@ using System.Web.UI.WebControls;
 public partial class Pedidos : System.Web.UI.Page
 {
     BaseDatosDataContext bd = new BaseDatosDataContext();
+    Vendedor usuario = null;
 
     
     protected void Page_Load(object sender, EventArgs e)
@@ -22,14 +23,16 @@ public partial class Pedidos : System.Web.UI.Page
             HyperLink pedidos = (HyperLink)Master.FindControl("hlPedidos");
             pedidos.CssClass = "active";
             
-            var usuario = (from vend in bd.Vendedors
-                           where vend.IdVendedor == Convert.ToInt32(Session["IdVendedor"])
-                           select vend).FirstOrDefault();
+            usuario = (from vend in bd.Vendedors
+                       where vend.IdVendedor == Convert.ToInt32(Session["IdVendedor"])
+                       select vend).FirstOrDefault();
 
             //Si el usuario es administrador, se muestran cargan todos los pedidos en la tabla
             if (usuario.Administrador)
-            {
-                SqlDataSource1.SelectCommand = "SELECT Pedido.IdPedido, Pedido.FechaEntrega, Pedido.GastosEnvio, Pedido.Estado, Pedido.FechaPedido, Pedido.SubTotal, Pedido.Total, Cliente.RazonSocial FROM Pedido INNER JOIN Cliente ON Pedido.IdCliente = Cliente.IdCliente";
+            {             
+                if(!IsPostBack){
+                    SqlDataSource1.SelectCommand = "SELECT Pedido.IdPedido, Pedido.Editable, Pedido.Pagado, Pedido.FechaEntrega, Pedido.GastosEnvio, Pedido.Estado, Pedido.FechaPedido, Pedido.SubTotal, Pedido.Total, Cliente.RazonSocial, Vendedor.Nombre + ' ' + Vendedor.Apellido AS Vendedor FROM Pedido INNER JOIN Cliente ON Pedido.IdCliente = Cliente.IdCliente INNER JOIN Vendedor ON Pedido.IdVendedor = Vendedor.IdVendedor";                    
+                }
             }
         }
     }
@@ -67,7 +70,7 @@ public partial class Pedidos : System.Web.UI.Page
             bd.SubmitChanges();
 
             calcularSaldoCliente(idCliente);
-            grdPedidos.DataBind();
+            imgFind_Click(null, null);
         }
         catch (Exception) { }
     }
@@ -114,26 +117,26 @@ public partial class Pedidos : System.Web.UI.Page
     {
         string query = "";
 
-        if (Convert.ToInt32(Session["IdVendedor"]) == 20)
+        if (usuario.Administrador)
         {
             if (txtBuscar.Text == "")
             {
-                query = "SELECT Pedido.IdPedido, Pedido.FechaEntrega, Pedido.GastosEnvio, Pedido.Estado, Pedido.FechaPedido, Pedido.SubTotal, PedidoTotal, Cliente.RazonSocial FROM Pedido INNER JOIN Cliente ON Pedido.IdCliente = Cliente.IdCliente";
+                query = "SELECT Pedido.IdPedido, Pedido.Editable, Pedido.Pagado, Pedido.FechaEntrega, Pedido.GastosEnvio, Pedido.Estado, Pedido.FechaPedido, Pedido.SubTotal, Pedido.Total, Cliente.RazonSocial, Vendedor.Nombre + ' ' + Vendedor.Apellido AS Vendedor FROM Pedido INNER JOIN Cliente ON Pedido.IdCliente = Cliente.IdCliente INNER JOIN Vendedor ON Pedido.IdVendedor = Vendedor.IdVendedor";
             }
             else
             {
-                query = "SELECT Pedido.IdPedido, Pedido.FechaEntrega, Pedido.GastosEnvio, Pedido.Estado, Pedido.FechaPedido, Pedido.SubTotal, Pedido.Total, Cliente.RazonSocial FROM Pedido INNER JOIN Cliente ON Pedido.IdCliente = Cliente.IdCliente WHERE " + ddlBuscar.SelectedValue + " LIKE '%" + txtBuscar.Text + "%'";
+                query = "SELECT Pedido.IdPedido, Pedido.Editable, Pedido.Pagado, Pedido.FechaEntrega, Pedido.GastosEnvio, Pedido.Estado, Pedido.FechaPedido, Pedido.SubTotal, Pedido.Total, Cliente.RazonSocial, Vendedor.Nombre + ' ' + Vendedor.Apellido AS Vendedor FROM Pedido INNER JOIN Cliente ON Pedido.IdCliente = Cliente.IdCliente INNER JOIN Vendedor ON Pedido.IdVendedor = Vendedor.IdVendedor WHERE " + ddlBuscar.SelectedValue + " LIKE '%" + txtBuscar.Text + "%'";
             }
         }
         else
         {
             if (txtBuscar.Text == "")
             {
-                query = "SELECT Pedido.IdPedido, Pedido.FechaEntrega, Pedido.GastosEnvio, Pedido.Estado, Pedido.FechaPedido, Pedido.SubTotal, Pedido.Total, Cliente.RazonSocial FROM Pedido INNER JOIN Cliente ON Pedido.IdCliente = Cliente.IdCliente WHERE Pedido.IdVendedor=@vendedor";
+                query = "SELECT Pedido.IdPedido, Pedido.Editable, Pedido.Pagado,Pedido.FechaEntrega, Pedido.GastosEnvio, Pedido.Estado, Pedido.FechaPedido, Pedido.SubTotal, Pedido.Total, Cliente.RazonSocial FROM Pedido INNER JOIN Cliente ON Pedido.IdCliente = Cliente.IdCliente WHERE Pedido.IdVendedor=@vendedor";
             }
             else
             {
-                query = "SELECT Pedido.IdPedido, Pedido.FechaEntrega, Pedido.GastosEnvio, Pedido.Estado, Pedido.FechaPedido, Pedido.SubTotal, Pedido.Total, Cliente.RazonSocial FROM Pedido INNER JOIN Cliente ON Pedido.IdCliente = Cliente.IdCliente WHERE Pedido.IdVendedor=@vendedor AND " + ddlBuscar.SelectedValue + " LIKE '%" + txtBuscar.Text + "%'";
+                query = "SELECT Pedido.IdPedido, Pedido.Editable, Pedido.Pagado,Pedido.FechaEntrega, Pedido.GastosEnvio, Pedido.Estado, Pedido.FechaPedido, Pedido.SubTotal, Pedido.Total, Cliente.RazonSocial FROM Pedido INNER JOIN Cliente ON Pedido.IdCliente = Cliente.IdCliente WHERE Pedido.IdVendedor=@vendedor AND " + ddlBuscar.SelectedValue + " LIKE '%" + txtBuscar.Text + "%'";
             }
         }
 
@@ -150,4 +153,5 @@ public partial class Pedidos : System.Web.UI.Page
     {
         Response.Redirect("ReportePedido.ashx?id=" + e.CommandArgument);
     }
+    
 }

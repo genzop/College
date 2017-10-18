@@ -7,22 +7,26 @@ using System.Web.UI.WebControls;
 
 public partial class Clientes : System.Web.UI.Page
 {
-    BaseDatosDataContext bd;
-    
+    BaseDatosDataContext bd = new BaseDatosDataContext();
+
     protected void Page_Load(object sender, EventArgs e)
     {
-        bd = new BaseDatosDataContext();
-
+        //Valida que haya un usuario logueado
         if (Session["IdVendedor"] == null)
         {
             Response.Redirect("Ingresar.aspx");
         }
         else
-        {
+        {            
             HyperLink clientes = (HyperLink)Master.FindControl("hlClientes");
             clientes.CssClass = "active";
 
-            if (Convert.ToInt32(Session["IdVendedor"]) != 20)
+            //Si el usuario no es Administrador, se ocultan algunas funcionalidades
+            var usuario = (from vend in bd.Vendedors
+                           where vend.IdVendedor == Convert.ToInt32(Session["IdVendedor"])
+                           select vend).FirstOrDefault();
+
+            if (!usuario.Administrador)
             {                
                 grdClientes.Columns[6].Visible = false;
                 grdClientes.Columns[7].Visible = false;
@@ -40,21 +44,23 @@ public partial class Clientes : System.Web.UI.Page
     {
         try
         {
-            string idSeleccionado = e.CommandArgument.ToString();
-
-            bool tienePedidos = (from ped in bd.PedidoVentas
-                                 where ped.IdCliente == Convert.ToInt32(idSeleccionado)
+            //Verifica si el Cliente tiene Pedidos asociados
+            int idSeleccionado = Convert.ToInt32(e.CommandArgument.ToString());
+            bool tienePedidos = (from ped in bd.Pedidos
+                                 where ped.IdCliente == idSeleccionado
                                  select ped).Any();
 
             if (tienePedidos)
-            {
-                Response.Write("<script language=\"JavaScript\">alert(\"El cliente no puede ser eliminado ya que tiene pedidos asociados a su cuenta\")</script>");
+            {                
+                ScriptManager.RegisterClientScriptBlock(updatePanel, GetType(), "errorEliminarRubro", "alert('ERROR: El cliente no puede ser eliminado ya que aun tiene pedidos asociados a su cuenta')", true);
             }
+            //Sino tiene ningun Pedido asociado, se elimina el Cliente y su Domicilio
             else
             {
                 var temp = (from cli in bd.Clientes
-                            where cli.IdCliente == Convert.ToInt32(idSeleccionado)
+                            where cli.IdCliente == idSeleccionado
                             select cli).Single();
+
                 var tempDom = (from dom in bd.Domicilios
                                where dom.IdDomicilio == temp.IdDomicilio
                                select dom).Single();
@@ -71,16 +77,14 @@ public partial class Clientes : System.Web.UI.Page
     protected void imgFind_Click(object sender, ImageClickEventArgs e)
     {
         string query = "";
-
         if (txtBuscar.Text == "")
         {
-            query = "SELECT Cliente.IdCliente, Cliente.RazonSocial, Cliente.Cuit, Cliente.Saldo, Domicilio.Calle, Domicilio.Numero, Domicilio.Localidad FROM Cliente INNER JOIN Domicilio ON Cliente.IdDomicilio = Domicilio.IdDomicilio";
+            query = "SELECT Cliente.IdCliente, Cliente.RazonSocial, Cliente.Cuit, Cliente.Saldo, Domicilio.Calle + ' ' + CAST(Domicilio.Numero AS nvarchar) AS Calle, Localidad.Denominacion, Provincia.Denominacion, Pais.Denominacion FROM Cliente INNER JOIN Domicilio ON Cliente.IdDomicilio = Domicilio.IdDomicilio INNER JOIN Localidad ON Domicilio.IdLocalidad = Localidad.IdLocalidad INNER JOIN Provincia ON Localidad.IdProvincia = Provincia.IdProvincia INNER JOIN Pais ON Provincia.IdPais = Pais.IdPais";
         }
         else
         {
-            query = "SELECT Cliente.IdCliente, Cliente.RazonSocial, Cliente.Cuit, Cliente.Saldo, Domicilio.Calle, Domicilio.Numero, Domicilio.Localidad FROM Cliente INNER JOIN Domicilio ON Cliente.IdDomicilio = Domicilio.IdDomicilio WHERE " + ddlBuscar.SelectedValue + " LIKE '%" + txtBuscar.Text + "%'";
-        }
-  
+            query = "SELECT Cliente.IdCliente, Cliente.RazonSocial, Cliente.Cuit, Cliente.Saldo, Domicilio.Calle + ' ' + CAST(Domicilio.Numero AS nvarchar) AS Calle, Localidad.Denominacion, Provincia.Denominacion, Pais.Denominacion FROM Cliente INNER JOIN Domicilio ON Cliente.IdDomicilio = Domicilio.IdDomicilio INNER JOIN Localidad ON Domicilio.IdLocalidad = Localidad.IdLocalidad INNER JOIN Provincia ON Localidad.IdProvincia = Provincia.IdProvincia INNER JOIN Pais ON Provincia.IdPais = Pais.IdPais WHERE " + ddlBuscar.SelectedValue + " LIKE '%" + txtBuscar.Text + "%'";
+        }  
         SqlDataSource1.SelectCommand = query;
         grdClientes.DataBind();
     }

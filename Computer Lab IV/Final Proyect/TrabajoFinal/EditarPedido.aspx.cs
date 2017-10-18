@@ -7,10 +7,12 @@ using System.Web.UI.WebControls;
 
 public partial class EditarPedido : System.Web.UI.Page
 {
-    private BaseDatosDataContext bd = new BaseDatosDataContext();    
+    private BaseDatosDataContext bd = new BaseDatosDataContext();
+    Vendedor usuario = null;   
         
     protected void Page_Load(object sender, EventArgs e)
     {
+        //Si no hay un usuario logueado se lo redirecciona a la pagina de LogIn
         if (Session["IdVendedor"] == null)
         {            
             Response.Redirect("Ingresar.aspx");
@@ -20,9 +22,10 @@ public partial class EditarPedido : System.Web.UI.Page
             //Actualiza el mapa de JavaScript en el UpdatePanel
             ScriptManager.RegisterClientScriptBlock(updatePanel, GetType(), "InitMap", "initMap()", true);
 
-            var usuario = (from vend in bd.Vendedors
-                           where vend.IdVendedor == Convert.ToInt32(Session["IdVendedor"])
-                           select vend).FirstOrDefault();                 
+            //Guarda al usuario en una variable global
+            usuario = (from vend in bd.Vendedors
+                       where vend.IdVendedor == Convert.ToInt32(Session["IdVendedor"])
+                       select vend).FirstOrDefault();                 
 
             //Si es el administrador, se muestra el campo elegir vendedor
             if (usuario.Administrador)
@@ -30,35 +33,30 @@ public partial class EditarPedido : System.Web.UI.Page
                 campoVendedor.Visible = true;
             }            
 
-            //Si no se paso un id como parametro
+            //Si se quiere agregar un Pedido
             if (Request.QueryString["id"] == null)
             {
                 lblTitulo.Text = "Agregar Pedido";                
                 if (!IsPostBack)
                 {
                     List<DetalleTemporal> listaDetalles = new List<DetalleTemporal>();
-                    Session["Detalles"] = listaDetalles;                    
+                    Session["Detalles"] = listaDetalles;
+
+                    //Carga el ID que deberia tener en la base de datos
+                    var ultimoID = (from num in bd.GetIdentityPedido()
+                                    select num.Column1).FirstOrDefault();
+                    txtNumero.Text = (Convert.ToInt32(ultimoID) + 1).ToString();
 
                     //Se carga la direccion del cliente
-                    Cliente tempCli = (from cli in bd.Clientes
-                                       orderby cli.RazonSocial
-                                       select cli).FirstOrDefault();
+                    rellenarDomicilio(0);
 
-                    Domicilio tempDom = (from dom in bd.Domicilios
-                                         where dom.IdDomicilio == tempCli.IdDomicilio
-                                         select dom).Single();
-
-                    //Mostrar los datos por pantalla
-                    txtCalle.Text = tempDom.Calle;
-                    txtNumeroCalle.Text = tempDom.Numero.ToString();
-                    
-                    txtLatitud.Text = tempDom.Latitud.ToString();
-                    txtLongitud.Text = tempDom.Longitud.ToString();
-
-
+                    //Resetea los Totales a 0
+                    txtSubTotal.Text = String.Format("{0:C}", 0);
+                    txtGastosEnvio.Text = String.Format("{0:C}", 0);
+                    txtMontoTotal.Text = String.Format("{0:C}", 0);
                 }
             }
-            //Si se paso un id como parametro
+            //Si se quiere editar un Pedido
             else
             {
                 lblTitulo.Text = "Editar Pedido";
@@ -66,131 +64,118 @@ public partial class EditarPedido : System.Web.UI.Page
                 {
                     cargarPedido(Convert.ToInt32(Request.QueryString["id"]));
                     cargarDetalles(Convert.ToInt32(Request.QueryString["id"]));                    
-                    rellenarTabla();
-                    crearListaEliminados();
+                    rellenarTablaDetalles();
+                    List<DetalleTemporal> listaEliminados = new List<DetalleTemporal>();
+                    Session["Eliminados"] = listaEliminados;
                 }                
             }  
         }        
     }
         
-
-    //Se rellena el formulario con los datos del pedido seleccionado
-    private void cargarPedido(int id)
+    //Rellena el formulario con los datos del Pedido
+    private void cargarPedido(int idPedido)
     {
         //Se carga el pedido
-        var pedido = (from ped in bd.PedidoVentas
-                      where ped.IdPedidoVenta == id
+        var pedido = (from ped in bd.Pedidos
+                      where ped.IdPedido == idPedido
                       select ped).Single();
-
-        //Se carga el cliente 
-        var cliente = (from cli in bd.Clientes
-                       where cli.IdCliente == pedido.IdCliente
-                       select cli).Single();
-
-        //Se carga el domicilio del cliente 
-        var domicilio = (from dom in bd.Domicilios
-                         where dom.IdDomicilio == cliente.IdDomicilio
-                         select dom).Single();
-
-        //Se rellenan los campos del pedido
-        hiddenID.Value = pedido.IdPedidoVenta.ToString();
-        txtNumero.Text = pedido.NroPedido.ToString();
+                
+        //Rellena los campos del pedido
+        txtNumero.Text = pedido.IdPedido.ToString();        
         ddlCliente.SelectedValue = pedido.IdCliente.ToString();
         ddlEstado.SelectedValue = pedido.Estado;
         DateTime fecha = (DateTime)pedido.FechaPedido;
         txtFecha.Text = fecha.ToString("yyyy-MM-dd");
-        DateTime fechaEntrega = (DateTime)pedido.FechaEstimadaEntrega;
-        txtFechaEntrega.Text = fechaEntrega.ToString("yyyy-MM-dd");        
-        txtCalle.Text = domicilio.Calle;
-        txtNumeroCalle.Text = domicilio.Numero.ToString();
-        txtLocalidad.Text = domicilio.Localidad;
-        txtLatitud.Text = domicilio.Latitud.ToString();
-        txtLongitud.Text = domicilio.Longitud.ToString();
-        if(Convert.ToInt32(Session["IdVendedor"]) == 20)
+        DateTime fechaEntrega = (DateTime)pedido.FechaEntrega;
+        txtFechaEntrega.Text = fechaEntrega.ToString("yyyy-MM-dd");
+        txtSubTotal.Text = String.Format("{0:C}", pedido.SubTotal);
+        txtGastosEnvio.Text = String.Format("{0:C}", pedido.GastosEnvio);
+        txtMontoTotal.Text = String.Format("{0:C}", pedido.Total);
+        cboxPagado.Checked = Convert.ToBoolean(pedido.Pagado);
+
+        //Rellena los campos del domicilio
+        rellenarDomicilio(pedido.IdCliente);
+
+        //Si es el Administrador, muestra el DropDownList de Vendedores
+        if(usuario.Administrador)
         {
             ddlVendedor.SelectedValue = pedido.IdVendedor.ToString();
         }
-        txtSubTotal.Text = pedido.SubTotal.ToString();
-        txtGastosEnvio.Text = pedido.GastosEnvio.ToString();
-        txtMontoTotal.Text = pedido.MontoTotal.ToString();
-        cboxPagado.Checked = Convert.ToBoolean(pedido.Pagado);
 
-        //Se guarda el id del cliente anterior en caso de que este cambie y haya que actualizar su saldo
+        //Guarda el ID del Cliente anterior en caso de que este cambie y tenga que actualizar su saldo
         Session["ClienteAnterior"] = pedido.IdCliente;
                  
     }
 
-    private void cargarDetalles(int id)
+    private void cargarDetalles(int idPedido)
     {
-        //Si ya esta ocupada la sesion de detalles, se vacia
+        //Vacia la sesion de Detalles
         if(Session["Detalles"] != null)
         {
             Session["Detalles"] = null;
         }
 
-        //Se crea una lista de detalles
+        //Crea una lista de Detalles
         List<DetalleTemporal> listaDetalles = new List<DetalleTemporal>();
 
-        //Se verifica si el pedido tiene detalles
-        bool tieneDetalles = (from det in bd.PedidoVentaDetalles
-                              where det.IdPedidoVenta == id
+        //Verifica si el Pedido tiene Detalles
+        bool tieneDetalles = (from det in bd.Detalles
+                              where det.IdPedido == idPedido
                               select det).Any();
-
-        //Si tiene detalles
+        
         if (tieneDetalles)
         {
-            //Se cargan los detalles
-            var detalles = from det in bd.PedidoVentaDetalles
-                           where det.IdPedidoVenta == id
+            //Cargan los Detalles
+            var detalles = from det in bd.Detalles
+                           where det.IdPedido == idPedido
                            select det;
-            
-            //Por cada detalle en detalles
+                       
             foreach (var detalle in detalles)
             {
-                //Se carga el articulo correspondiente a ese detalle
+                //Carga el articulo correspondiente a ese detalle
                 var tempArt = (from art in bd.Articulos
                                where art.IdArticulo == detalle.IdArticulo
                                select art).Single();
 
-                //Se crea un DetalleTemporal con sus respectivos datos
+                //Crea un DetalleTemporal con sus respectivos datos
                 DetalleTemporal temp = new DetalleTemporal();
-                temp.IdPedidoVentaDetalle = detalle.IdPedidoVentaDetalle;
-                temp.Articulo = tempArt.Denominacion;
-                temp.PrecioUnitario = Convert.ToDouble(tempArt.PrecioVenta);
+                temp.IdDetalle = detalle.IdDetalle;                
                 temp.Cantidad = Convert.ToInt32(detalle.Cantidad);
                 temp.SubTotal = Convert.ToDouble(detalle.SubTotal);
-                temp.Descuento = Convert.ToDouble(detalle.PorcentajeDescuento);
+                temp.Descuento = Convert.ToDouble(detalle.Descuento);
                 temp.Total = Convert.ToDouble(detalle.Total);
-                temp.IdPedidoVenta = Convert.ToInt32(detalle.IdPedidoVenta);
+                temp.IdPedido = Convert.ToInt32(detalle.IdPedido);
                 temp.IdArticulo = Convert.ToInt32(detalle.IdArticulo);
+                temp.Articulo = tempArt.Denominacion;
+                temp.PrecioUnitario = Convert.ToDouble(tempArt.PrecioVenta);
 
-                //Se agrega el DetalleTemporal a la listaDetalles
+                //Agrega el DetalleTemporal a la listaDetalles
                 listaDetalles.Add(temp);
             }
         }
 
-        //Se guarda la listaDetalles en una sesion
+        //Guarda la listaDetalles en una sesion
         Session["Detalles"] = listaDetalles;
     }
 
-    private void rellenarTabla()
+    private void rellenarTablaDetalles()
     {
         List<DetalleTemporal> listaDetalles = (List<DetalleTemporal>)Session["Detalles"];
         grdDetalles.DataSource = listaDetalles;
         grdDetalles.DataBind();
     }
-    
-    //Se hace click en el boton Guardar
+        
+    //Boton Guardar
     protected void btnAccion_Click(object sender, EventArgs e)
     {
         if (Page.IsValid)
         {
-            //Si se esta creando un nuevo pedido
+            //Si se quiere guardar un nuevo Pedido
             if (Request.QueryString["id"] == null)
             {
                 crearPedido();
             }
-            //Si se esta editando un pedido ya existente
+            //Si se quiere editar un Pedido 
             else
             {
                 editarPedido(Convert.ToInt32(Request.QueryString["id"]));
@@ -200,24 +185,21 @@ public partial class EditarPedido : System.Web.UI.Page
         }        
     }
     
-    //Se hace click en Agregar Detalle
+    //Boton Agregar Detalle
     protected void imgbtnAdd_Click(object sender, ImageClickEventArgs e)
     {
-        //Se muestra el formulario para detalles en blanco
+        //Muestra el formulario
         formularioDetalle.Visible = true;        
         hiddenFila.Value = "";
-
         Articulo tempArt = (from art in bd.Articulos
+                            orderby art.Denominacion
                             select art).FirstOrDefault();
-
-        ddlArticulo.SelectedValue = tempArt.IdArticulo.ToString();
-
-        //Se muestran los valores
-        txtPrecioUnitario.Text = tempArt.PrecioVenta.ToString();
+        ddlArticulo.SelectedValue = tempArt.IdArticulo.ToString();        
+        txtPrecioUnitario.Text = String.Format("{0:C}", tempArt.PrecioVenta);
         txtCantidad.Text = "0";
-        txtSubTotalSinDescuento.Text = "0";
-        txtDescuento.Text = "0";
-        txtSubTotalDetalle.Text = "0";        
+        txtSubTotalSinDescuento.Text = String.Format("{0:C}", 0);
+        txtDescuento.Text = String.Format("{0:P}", 0);
+        txtSubTotalDetalle.Text = String.Format("{0:C}", 0);        
     }
 
     protected void imgEdit_Command(object sender, CommandEventArgs e)
@@ -237,11 +219,11 @@ public partial class EditarPedido : System.Web.UI.Page
         //Se cargan los datos del detalle seleccionado en el formulario
         hiddenFila.Value = fila.ToString();
         ddlArticulo.SelectedValue = detalleSeleccionado.IdArticulo.ToString();
-        txtPrecioUnitario.Text = detalleSeleccionado.PrecioUnitario.ToString();
+        txtPrecioUnitario.Text = String.Format("{0:C}", detalleSeleccionado.PrecioUnitario);
         txtCantidad.Text = detalleSeleccionado.Cantidad.ToString();
-        txtSubTotalSinDescuento.Text = (detalleSeleccionado.PrecioUnitario * detalleSeleccionado.Cantidad).ToString();
-        txtDescuento.Text = (detalleSeleccionado.Descuento * 100).ToString();
-        txtSubTotalDetalle.Text = detalleSeleccionado.Total.ToString();
+        txtSubTotalSinDescuento.Text = String.Format("{0:C}", (detalleSeleccionado.PrecioUnitario * detalleSeleccionado.Cantidad));
+        txtDescuento.Text = String.Format("{0:P}", detalleSeleccionado.Descuento);
+        txtSubTotalDetalle.Text = String.Format("{0:C}", detalleSeleccionado.Total);
     }
 
 
@@ -259,7 +241,7 @@ public partial class EditarPedido : System.Web.UI.Page
         DetalleTemporal detalleSeleccionado = listaDetalles[fila];
 
         //Si el detalle seleccionado, no ha sido persistido
-        if(detalleSeleccionado.IdPedidoVentaDetalle == 0)
+        if(detalleSeleccionado.IdDetalle == 0)
         {
             //Se lo elimina del list de detalles
             listaDetalles.RemoveAt(fila);
@@ -282,7 +264,7 @@ public partial class EditarPedido : System.Web.UI.Page
             Session["Eliminados"] = listaEliminados;
         }
                 
-        rellenarTabla();
+        rellenarTablaDetalles();
         calcularTotales();
     }
 
@@ -306,15 +288,15 @@ public partial class EditarPedido : System.Web.UI.Page
             if (hiddenFila.Value == "")
             {
                 DetalleTemporal temp = new DetalleTemporal();
-                temp.IdPedidoVenta = Convert.ToInt32(Request.QueryString["id"]);
-                temp.IdPedidoVentaDetalle = 0;
+                temp.IdPedido = Convert.ToInt32(Request.QueryString["id"]);                
+                temp.Cantidad = Convert.ToInt32(txtCantidad.Text);
+                temp.SubTotal = Convert.ToDouble(txtSubTotalSinDescuento.Text.Replace("$", "").Replace(".", ""));
+                temp.Descuento = Convert.ToDouble(txtDescuento.Text.Replace(" %" , "")) / 100;
+                temp.Total = Convert.ToDouble(txtSubTotalDetalle.Text.Replace("$", "").Replace(".", ""));                
+                temp.IdArticulo = Convert.ToInt32(ddlArticulo.SelectedValue);
+                temp.IdDetalle = 0;
                 temp.Articulo = articulo.Denominacion;
                 temp.PrecioUnitario = Convert.ToDouble(articulo.PrecioVenta);
-                temp.Cantidad = Convert.ToInt32(txtCantidad.Text);
-                temp.SubTotal = Convert.ToDouble(txtSubTotalSinDescuento.Text);
-                temp.Descuento = Convert.ToDouble(txtDescuento.Text) / 100;
-                temp.Total = Convert.ToDouble(txtSubTotalDetalle.Text);                
-                temp.IdArticulo = Convert.ToInt32(ddlArticulo.SelectedValue);
 
                 List<DetalleTemporal> listaDetalles = (List<DetalleTemporal>)Session["Detalles"];
                 listaDetalles.Add(temp);
@@ -328,15 +310,15 @@ public partial class EditarPedido : System.Web.UI.Page
                 temp.Articulo = articulo.Denominacion;
                 temp.PrecioUnitario = Convert.ToDouble(articulo.PrecioVenta);
                 temp.Cantidad = Convert.ToInt32(txtCantidad.Text);
-                temp.SubTotal = Convert.ToDouble(txtSubTotalSinDescuento.Text);
-                temp.Descuento = Convert.ToDouble(txtDescuento.Text) / 100;
-                temp.Total = Convert.ToDouble(txtSubTotalDetalle.Text);
+                temp.SubTotal = Convert.ToDouble(txtSubTotalSinDescuento.Text.Replace("$", "").Replace(".", ""));
+                temp.Descuento = Convert.ToDouble(txtDescuento.Text.Replace(" %", "")) / 100;
+                temp.Total = Convert.ToDouble(txtSubTotalDetalle.Text.Replace("$", "").Replace(".", ""));
                 temp.IdArticulo = Convert.ToInt32(ddlArticulo.SelectedValue);
 
                 listaDetalles[Convert.ToInt32(hiddenFila.Value)] = temp;
                 Session["Detalles"] = listaDetalles;
             }
-            rellenarTabla();
+            rellenarTablaDetalles();
             formularioDetalle.Visible = false;
             calcularTotales();
         }
@@ -345,31 +327,31 @@ public partial class EditarPedido : System.Web.UI.Page
     //Cuando cambia alguno de los valores del formulario de detalles, se recalcula el subtotal de ese detalle
     protected void cambiaSubTotalDetalle(object sender, EventArgs e)
     {
+        //
         int idArticulo = Convert.ToInt32(ddlArticulo.SelectedValue);
         var articulo = (from art in bd.Articulos
                         where art.IdArticulo == idArticulo
                         select art).Single();
 
         double precioVenta = Convert.ToDouble(articulo.PrecioVenta);
-        txtPrecioUnitario.Text = precioVenta.ToString();
+        txtPrecioUnitario.Text = String.Format("{0:C}", precioVenta);
 
         int cantidad = 0;
-        double descuento = 0;
-
         if(txtCantidad.Text != "")
         {
             cantidad = Convert.ToInt32(txtCantidad.Text);
-        } 
-
-        if(txtDescuento.Text != "")
-        {
-            descuento = Convert.ToDouble(txtDescuento.Text);
         }
 
+        double descuento = 0;
+        if(txtDescuento.Text != "")
+        {
+            descuento = Convert.ToDouble(txtDescuento.Text.Replace(" %", ""));
+        }
+                
         double subTotal = cantidad * precioVenta;
-        txtSubTotalSinDescuento.Text = subTotal.ToString();
+        txtSubTotalSinDescuento.Text = String.Format("{0:C}", subTotal);
         subTotal = subTotal - subTotal * (descuento / 100);
-        txtSubTotalDetalle.Text = subTotal.ToString();
+        txtSubTotalDetalle.Text = String.Format("{0:C}", subTotal);
     }
 
 
@@ -380,18 +362,18 @@ public partial class EditarPedido : System.Web.UI.Page
 
     private void sumarGastosEnvio()
     {
-        double subtotal = Convert.ToDouble(txtSubTotal.Text);
-
-        //Se suman los gastos de envio
+        double subtotal = Convert.ToDouble(txtSubTotal.Text.Replace("$", ""));
         double gastosEnvio = 0;
-        if (txtGastosEnvio.Text != "")
+
+        //Se suman los gastos de envio            
+        if(txtGastosEnvio.Text != "" && txtGastosEnvio.Text.Contains("$") && txtGastosEnvio.Text.Contains(","))
         {
-            gastosEnvio = Convert.ToDouble(txtGastosEnvio.Text);
-        }
+            gastosEnvio = Convert.ToDouble(txtGastosEnvio.Text.Replace("$", ""));
+        }   
 
         //Se calcula el total del pedido
         double total = subtotal + gastosEnvio;
-        txtMontoTotal.Text = total.ToString();
+        txtMontoTotal.Text = String.Format("{0:C}", total);
     }
 
     private void calcularTotales()
@@ -408,7 +390,7 @@ public partial class EditarPedido : System.Web.UI.Page
                 subtotal += detalle.Total;
             }
         }
-        txtSubTotal.Text = subtotal.ToString();
+        txtSubTotal.Text = String.Format("{0:C}", subtotal);
         sumarGastosEnvio();
     }    
 
@@ -417,7 +399,7 @@ public partial class EditarPedido : System.Web.UI.Page
         double subtotalCliente = 0;
 
         //Se verifica si ese cliente tiene pedidos a su nombre
-        bool tienePedidos = (from ped in bd.PedidoVentas
+        bool tienePedidos = (from ped in bd.Pedidos
                              where ped.IdCliente == idCliente
                              select ped).Any();
 
@@ -425,7 +407,7 @@ public partial class EditarPedido : System.Web.UI.Page
         if (tienePedidos)
         {
             //Se cargan los pedidos
-            var pedidos = from ped in bd.PedidoVentas
+            var pedidos = from ped in bd.Pedidos
                           where ped.IdCliente == idCliente
                           select ped;
                         
@@ -435,7 +417,7 @@ public partial class EditarPedido : System.Web.UI.Page
                 if (!Convert.ToBoolean(pedido.Pagado))
                 {
                     //Se suma el monto total de cada pedido
-                    subtotalCliente += Convert.ToDouble(pedido.MontoTotal);
+                    subtotalCliente += Convert.ToDouble(pedido.Total);
                 }
             }
         }
@@ -447,20 +429,22 @@ public partial class EditarPedido : System.Web.UI.Page
         cliente.Saldo = 0 + subtotalCliente;
         bd.SubmitChanges();
     }    
-
-    private void crearListaEliminados()
-    {
-        List<DetalleTemporal> listaEliminados = new List<DetalleTemporal>();
-        Session["Eliminados"] = listaEliminados;
-    }
-
+    
     //Se guarda un pedido nuevo en la base de datos
     private void crearPedido()
     {
         //Se guardan los datos del pedido
-        PedidoVenta nuevoPedido = new PedidoVenta();
+        Pedido nuevoPedido = new Pedido();
         nuevoPedido.Editable = false;
-        if(Convert.ToInt32(Session["IdVendedor"]) != 20)
+        nuevoPedido.Estado = ddlEstado.SelectedValue;
+        nuevoPedido.Pagado = cboxPagado.Checked;
+        nuevoPedido.FechaPedido = Convert.ToDateTime(txtFecha.Text);
+        nuevoPedido.FechaEntrega = Convert.ToDateTime(txtFechaEntrega.Text);
+        nuevoPedido.SubTotal = Convert.ToDouble(txtSubTotal.Text.Replace("$", ""));
+        nuevoPedido.GastosEnvio = Convert.ToDouble(txtGastosEnvio.Text.Replace("$", ""));
+        nuevoPedido.Total = Convert.ToDouble(txtMontoTotal.Text.Replace("$", ""));        
+        nuevoPedido.IdCliente = Convert.ToInt32(ddlCliente.SelectedValue);
+        if (!usuario.Administrador)
         {
             nuevoPedido.IdVendedor = Convert.ToInt32(Session["IdVendedor"]);
         }
@@ -468,68 +452,43 @@ public partial class EditarPedido : System.Web.UI.Page
         {
             nuevoPedido.IdVendedor = Convert.ToInt32(ddlVendedor.SelectedValue);
         }
-        nuevoPedido.NroPedido = Convert.ToInt32(txtNumero.Text);
-        nuevoPedido.IdCliente = Convert.ToInt32(ddlCliente.SelectedValue);        
-        nuevoPedido.Estado = ddlEstado.SelectedValue;
-        if (ddlEstado.SelectedValue == "Entregado")
-        {
-            nuevoPedido.Entregado = true;
-        }
-        else
-        {
-            nuevoPedido.Entregado = false;
-        }        
-        nuevoPedido.FechaPedido = Convert.ToDateTime(txtFecha.Text);
-        nuevoPedido.FechaEstimadaEntrega = Convert.ToDateTime(txtFechaEntrega.Text);
-        nuevoPedido.SubTotal = Convert.ToDouble(txtSubTotal.Text);
-        nuevoPedido.GastosEnvio = Convert.ToDouble(txtGastosEnvio.Text);
-        nuevoPedido.MontoTotal = Convert.ToDouble(txtMontoTotal.Text);
-        nuevoPedido.Pagado = cboxPagado.Checked;   
-        bd.PedidoVentas.InsertOnSubmit(nuevoPedido);
+        bd.Pedidos.InsertOnSubmit(nuevoPedido);
         bd.SubmitChanges();
 
-        guardarDetalles(nuevoPedido.IdPedidoVenta);
+        //Persiste los detalles
+        guardarDetalles(nuevoPedido.IdPedido);
 
+        //Calcula el saldo del Cliente
         calcularSaldoCliente(Convert.ToInt32(nuevoPedido.IdCliente));                       
     }
 
     //Se edita un pedido ya existente en la base de datos
     private void editarPedido(int id)
     {
-        var pedidoEditar = (from ped in bd.PedidoVentas
-                             where ped.IdPedidoVenta == id
+        var pedidoEditar = (from ped in bd.Pedidos
+                             where ped.IdPedido == id
                              select ped).Single();
 
-        
-
-        pedidoEditar.NroPedido = Convert.ToInt32(txtNumero.Text);
-        pedidoEditar.IdCliente = Convert.ToInt32(ddlCliente.SelectedValue);
         pedidoEditar.Estado = ddlEstado.SelectedValue;
-        if (ddlEstado.SelectedValue == "Entregado")
-        {
-            pedidoEditar.Entregado = true;
-        }
-        else
-        {
-            pedidoEditar.Entregado = false;
-        }
+        pedidoEditar.Pagado = cboxPagado.Checked;
         pedidoEditar.FechaPedido = Convert.ToDateTime(txtFecha.Text);
-        pedidoEditar.FechaEstimadaEntrega = Convert.ToDateTime(txtFechaEntrega.Text);
-        if(Convert.ToInt32(Session["IdVendedor"]) == 20)
+        pedidoEditar.FechaEntrega = Convert.ToDateTime(txtFechaEntrega.Text);        
+        pedidoEditar.SubTotal = Convert.ToDouble(txtSubTotal.Text.Replace("$", ""));
+        pedidoEditar.GastosEnvio = Convert.ToDouble(txtGastosEnvio.Text.Replace("$", ""));
+        pedidoEditar.Total = Convert.ToDouble(txtMontoTotal.Text.Replace("$", ""));        
+        pedidoEditar.IdCliente = Convert.ToInt32(ddlCliente.SelectedValue);
+        if (usuario.Administrador)
         {
             pedidoEditar.IdVendedor = Convert.ToInt32(ddlVendedor.SelectedValue);
         }
-        pedidoEditar.SubTotal = Convert.ToDouble(txtSubTotal.Text);
-        pedidoEditar.GastosEnvio = Convert.ToDouble(txtGastosEnvio.Text);
-        pedidoEditar.MontoTotal = Convert.ToDouble(txtMontoTotal.Text);
-        pedidoEditar.Pagado = cboxPagado.Checked;
 
         bd.SubmitChanges();
 
-        guardarDetalles(pedidoEditar.IdPedidoVenta);
+        guardarDetalles(pedidoEditar.IdPedido);
         eliminarDetalles();
 
         calcularSaldoCliente(Convert.ToInt32(Session["ClienteAnterior"]));
+        Session["ClienteAnterior"] = null;
         calcularSaldoCliente(Convert.ToInt32(pedidoEditar.IdCliente));
 
     }
@@ -543,33 +502,33 @@ public partial class EditarPedido : System.Web.UI.Page
         foreach (DetalleTemporal detalle in listaDetalles)
         {
             //Si el detalle aun no ha sido persistido
-            if (detalle.IdPedidoVentaDetalle == 0)
+            if (detalle.IdDetalle == 0)
             {
                 //Se crea un nuevo detalle
-                PedidoVentaDetalle detalleNuevo = new PedidoVentaDetalle();
-                detalleNuevo.IdPedidoVenta = idPedido;
+                Detalle detalleNuevo = new Detalle();
+                detalleNuevo.IdPedido = idPedido;
                 detalleNuevo.Cantidad = detalle.Cantidad;
                 detalleNuevo.SubTotal = detalle.SubTotal;
-                detalleNuevo.PorcentajeDescuento = detalle.Descuento;
+                detalleNuevo.Descuento = detalle.Descuento;
                 detalleNuevo.Total = detalle.Total;
                 detalleNuevo.IdArticulo = detalle.IdArticulo;
 
                 //Se lo inserta en la base de datos
-                bd.PedidoVentaDetalles.InsertOnSubmit(detalleNuevo);
+                bd.Detalles.InsertOnSubmit(detalleNuevo);
                 bd.SubmitChanges();
             }
             //Si el detalle ya ha sido persistido
             else
             {
                 //Se carga el detalle seleccionado
-                var detalleEditado = (from det in bd.PedidoVentaDetalles
-                                      where det.IdPedidoVentaDetalle == detalle.IdPedidoVentaDetalle
+                var detalleEditado = (from det in bd.Detalles
+                                      where det.IdDetalle == detalle.IdDetalle
                                       select det).Single();
 
                 //Se cambian los datos
                 detalleEditado.Cantidad = detalle.Cantidad;
                 detalleEditado.SubTotal = detalle.SubTotal;
-                detalleEditado.PorcentajeDescuento = detalle.Descuento;
+                detalleEditado.Descuento = detalle.Descuento;
                 detalleEditado.Total = detalle.Total;
                 detalleEditado.IdArticulo = detalle.IdArticulo;
 
@@ -585,32 +544,105 @@ public partial class EditarPedido : System.Web.UI.Page
 
         foreach (DetalleTemporal detalle in listaElminados)
         {
-            var temp = (from det in bd.PedidoVentaDetalles
-                        where det.IdPedidoVentaDetalle == detalle.IdPedidoVentaDetalle
+            var temp = (from det in bd.Detalles
+                        where det.IdDetalle == detalle.IdDetalle
                         select det).Single();
 
-            bd.PedidoVentaDetalles.DeleteOnSubmit(temp);            
+            bd.Detalles.DeleteOnSubmit(temp);            
         }
         bd.SubmitChanges();
     }
 
     protected void ddlCliente_SelectedIndexChanged(object sender, EventArgs e)
     {
-        //Cargar el cliente
-        var cliente = (from cli in bd.Clientes
-                       where cli.IdCliente == Convert.ToInt32(ddlCliente.SelectedValue)
-                       select cli).Single();
+        rellenarDomicilio(Convert.ToInt32(ddlCliente.SelectedValue));        
+    }    
+    
+    //Rellena los campos del domicilio
+    private void rellenarDomicilio(int idCliente)
+    {
+        var cliente = new Cliente();
+        
+        if (idCliente == 0)
+        {
+            cliente = (from cli in bd.Clientes
+                       orderby cli.RazonSocial ascending
+                       select cli).FirstOrDefault();
+        }
+        else
+        {
+            cliente = (from cli in bd.Clientes
+                       where cli.IdCliente == idCliente
+                       select cli).FirstOrDefault();
+        }        
 
-        //Cargar domilicio del cliente        
         var domicilio = (from dom in bd.Domicilios
                          where dom.IdDomicilio == cliente.IdDomicilio
-                         select dom).Single();
+                         select dom).FirstOrDefault();
 
-        //Mostrar los datos por pantalla
+        var localidad = (from loc in bd.Localidads
+                         where loc.IdLocalidad == domicilio.IdLocalidad
+                         select loc).FirstOrDefault();
+
+        var provincia = (from prov in bd.Provincias
+                         where prov.IdProvincia == localidad.IdProvincia
+                         select prov).FirstOrDefault();
+
+        var pais = (from p in bd.Pais
+                    where p.IdPais == provincia.IdPais
+                    select p).FirstOrDefault();
+
         txtCalle.Text = domicilio.Calle;
         txtNumeroCalle.Text = domicilio.Numero.ToString();
-        txtLocalidad.Text = domicilio.Localidad;
-        txtLatitud.Text = domicilio.Latitud.ToString();
-        txtLongitud.Text = domicilio.Longitud.ToString();            
+        txtPais.Text = pais.Denominacion;
+        txtProvincia.Text = provincia.Denominacion;
+        txtLocalidad.Text = localidad.Denominacion;
+        txtLatitud.Value = domicilio.Latitud.ToString();
+        txtLongitud.Value = domicilio.Longitud.ToString();
+    }
+
+    protected void cstvDescuento_ServerValidate(object source, ServerValidateEventArgs args)
+    {
+        double descuento = Convert.ToDouble(txtDescuento.Text.Replace(" %", ""));
+        if (descuento < 0 || descuento > 100)
+        {
+            args.IsValid = false;
+        }
+        else
+        {
+            args.IsValid = true;
+        }
+    }
+
+    protected void cstvMinimoDetalles_ServerValidate(object source, ServerValidateEventArgs args)
+    {
+        List<DetalleTemporal> listaDetalles = (List<DetalleTemporal>)Session["Detalles"];
+        if (listaDetalles.Count == 0)
+        {
+            args.IsValid = false;
+        }
+        else
+        {
+            args.IsValid = true;
+        }
+    }
+
+    protected void cstvVendedor_ServerValidate(object source, ServerValidateEventArgs args)
+    {
+        if (usuario.Administrador)
+        {
+            if(ddlVendedor.SelectedValue == "1")
+            {
+                args.IsValid = false;
+            }
+            else
+            {
+                args.IsValid = true;
+            }
+        }
+        else
+        {
+            args.IsValid = true;
+        }
     }
 }
