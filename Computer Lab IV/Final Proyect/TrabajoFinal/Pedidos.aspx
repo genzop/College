@@ -45,12 +45,7 @@
                             <asp:BoundField DataField="FechaEntrega" HeaderText="Fecha de entrega" SortExpression="FechaEntrega" DataFormatString="{0:d}" ItemStyle-Width="70px"  />
                             <asp:BoundField DataField="SubTotal" HeaderText="Subtotal" SortExpression="SubTotal" DataFormatString="{0:C}" ItemStyle-Width="80px"  />
                             <asp:BoundField DataField="GastosEnvio" HeaderText="Gastos de envio" SortExpression="GastosEnvio" DataFormatString="{0:C}" ItemStyle-Width="80px"  />
-                            <asp:BoundField DataField="Total" HeaderText="Total" SortExpression="Total" DataFormatString="{0:C}" ItemStyle-Width="80px"  />                            
-                            <asp:TemplateField HeaderStyle-BackColor="#17252a" ItemStyle-BackColor="#17252a" ItemStyle-Width="30px">
-                                <ItemTemplate>
-                                    <asp:ImageButton ID="imgPDF" runat="server" ImageUrl="~/img/pdf.png" Width="20px" OnCommand="imgPDF_Command" CommandArgument='<%# Eval("IdPedido") %>' />
-                                </ItemTemplate>
-                            </asp:TemplateField>
+                            <asp:BoundField DataField="Total" HeaderText="Total" SortExpression="Total" DataFormatString="{0:C}" ItemStyle-Width="80px"  />                                                        
                             <asp:TemplateField HeaderStyle-BackColor="#17252a" ItemStyle-BackColor="#17252a" ItemStyle-Width="30px">
                                 <ItemTemplate>
                                     <asp:ImageButton ID="imgEdit" runat="server" ImageUrl="~/img/edit.png" Width="20px" OnCommand="imgEdit_Command" CommandArgument='<%# Eval("IdPedido") %>' />
