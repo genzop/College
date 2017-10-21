@@ -35,35 +35,35 @@
                         <div class="editContent">
                             <p class="editContentTitle" style="font-weight: bold">Nombre</p>
                             <asp:TextBox ID="txtNombre" runat="server" CssClass="inputCentrado" />
-                            <asp:RequiredFieldValidator ID="rfvNombre" runat="server" ControlToValidate="txtNombre" ErrorMessage="*No puedes dejar este campo en blanco." Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
+                            <asp:RequiredFieldValidator ID="rfvNombre" runat="server" ControlToValidate="txtNombre" ErrorMessage="* Este campo es obligatorio" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
                         </div>
 
                         <div class="editContent">
                             <p class="editContentTitle" style="font-weight: bold">Apellido</p>
                             <asp:TextBox ID="txtApellido" runat="server" CssClass="inputCentrado" />
-                            <asp:RequiredFieldValidator ID="rfvApellido" runat="server" ControlToValidate="txtApellido" ErrorMessage="*No puedes dejar este campo en blanco." Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
+                            <asp:RequiredFieldValidator ID="rfvApellido" runat="server" ControlToValidate="txtApellido" ErrorMessage="* Este campo es obligatorio" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
                         </div>
 
                         <div class="editContent">
                             <p class="editContentTitle" style="font-weight: bold">Nombre de usuario</p>
                             <asp:TextBox ID="txtUsuario" runat="server" CssClass="inputCentrado" CausesValidation="true" />                            
-                            <asp:RequiredFieldValidator ID="rfvUsuario" runat="server" ControlToValidate="txtUsuario" ErrorMessage="*No puedes dejar este campo en blanco." Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />                                                                                    
+                            <asp:RequiredFieldValidator ID="rfvUsuario" runat="server" ControlToValidate="txtUsuario" ErrorMessage="* Este campo es obligatorio" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />                                                                                    
                             <asp:RegularExpressionValidator ID="revUsuario" runat="server" ControlToValidate="txtUsuario" ValidationExpression="^[\w]{0,8}" ErrorMessage="* El nombre de usuario puede contener hasta un máximo de 12 caracteres alfanuméricos" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />                            
-                            <asp:CustomValidator ID="cvUsuarioUnico" runat="server" OnServerValidate="cvUsuarioUnico_ServerValidate" ErrorMessage="*El nombre de usuario ya esta en uso" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />                                                                                    
+                            <asp:CustomValidator ID="cvUsuarioUnico" runat="server" OnServerValidate="cvUsuarioUnico_ServerValidate" ErrorMessage="* El nombre de usuario ya esta en uso" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />                                                                                    
                         </div>
 
                         <div class="editContent">
                             <p class="editContentTitle" style="font-weight: bold">Contraseña</p>
                             <asp:TextBox ID="txtContrasenia" runat="server" CssClass="inputCentrado" />
-                            <asp:RequiredFieldValidator ID="rfvContrasenia" runat="server" ControlToValidate="txtContrasenia" ErrorMessage="*No puedes dejar este campo en blanco." Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
+                            <asp:RequiredFieldValidator ID="rfvContrasenia" runat="server" ControlToValidate="txtContrasenia" ErrorMessage="* Este campo es obligatorio" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
                             <asp:RegularExpressionValidator ID="revContrasenia" runat="server" ControlToValidate="txtContrasenia" ValidationExpression="^[\w]{1,12}" ErrorMessage="* La contraseña puede contener hasta un máximo de 12 caracteres alfanuméricos" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
                         </div>
 
                         <div class="editContent">
                             <p class="editContentTitle" style="font-weight: bold">Confirmar contraseña</p>
                             <asp:TextBox ID="txtConfirmarContrasenia" runat="server" CssClass="inputCentrado" />
-                            <asp:RequiredFieldValidator ID="rfvConfirmarContrasenia" runat="server" ControlToValidate="txtConfirmarContrasenia" ErrorMessage="*No puedes dejar este campo en blanco." Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
-                            <asp:CompareValidator ID="cvContrasenias" runat="server" ControlToValidate="txtConfirmarContrasenia" ControlToCompare="txtContrasenia" ErrorMessage="*Las contraseñas no coinciden" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
+                            <asp:RequiredFieldValidator ID="rfvConfirmarContrasenia" runat="server" ControlToValidate="txtConfirmarContrasenia" ErrorMessage="* Este campo es obligatorio" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
+                            <asp:CompareValidator ID="cvContrasenias" runat="server" ControlToValidate="txtConfirmarContrasenia" ControlToCompare="txtContrasenia" ErrorMessage="* Las contraseñas no coinciden" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
                         </div>
 
                         <asp:Table runat="server" Width="100%" CellSpacing="10">

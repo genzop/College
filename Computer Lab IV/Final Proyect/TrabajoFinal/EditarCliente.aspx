@@ -28,7 +28,7 @@
                                     <p class="editContentTitle" style="font-weight: bold">Razon Social</p>
                                     <asp:TextBox ID="txtRazonSocial" runat="server" CssClass="inputCentrado" />
                                     <asp:RequiredFieldValidator ID="rfvRazonSocial" runat="server" ControlToValidate="txtRazonSocial" ErrorMessage="* Este campo es obligatorio" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
-                                    <asp:RegularExpressionValidator ID="revRazonSocial" runat="server" ControlToValidate="txtRazonSocial" ValidationExpression="^(\s|.){1,100}$" ErrorMessage="*La razon social puede contener hasta un máximo de 100 caracteres" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
+                                    <asp:RegularExpressionValidator ID="revRazonSocial" runat="server" ControlToValidate="txtRazonSocial" ValidationExpression="^(\s|.){1,50}$" ErrorMessage="*La razon social puede contener hasta un máximo de 50 caracteres" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
                                     <asp:CustomValidator ID="cvRazonSocialUnica" runat="server" OnServerValidate="cvRazonSocialUnica_ServerValidate" ErrorMessage="* La razon social ingresada ya esta en uso" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
                                 </div>
                             </asp:TableCell>
@@ -60,7 +60,7 @@
                                     <p class="editContentTitle" style="font-weight: bold">Calle</p>
                                     <asp:TextBox ID="txtCalle" runat="server" CssClass="inputCentrado"></asp:TextBox>
                                     <asp:RequiredFieldValidator ID="rfvCalle" runat="server" ControlToValidate="txtCalle" ErrorMessage="* Este campo es obligatorio" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
-                                    <asp:RegularExpressionValidator ID="revCalle" runat="server" ControlToValidate="txtCalle" ValidationExpression="^(\s|.){1,100}$" ErrorMessage="* La calle puede contener hasta un máximo de 100 caracteres" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
+                                    <asp:RegularExpressionValidator ID="revCalle" runat="server" ControlToValidate="txtCalle" ValidationExpression="^(\s|.){1,50}$" ErrorMessage="* La calle puede contener hasta un máximo de 50 caracteres" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
                                 </div>
                                 <!-- Numero -->
                                 <div class="editContent">

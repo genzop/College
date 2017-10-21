@@ -26,7 +26,7 @@
                     <p class="editContentTitle" style="font-weight: bold">Denominacion</p>
                     <asp:TextBox id="txtDenominacion" runat="server" TextMode="MultiLine" Rows="4" cssclass="inputCentrado" style="resize: none"></asp:TextBox>
                     <asp:RequiredFieldValidator ID="rfvDenominacion" runat="server" ControlToValidate="txtDenominacion" ErrorMessage="* Este campo es obligatorio" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px"/>         
-                    <asp:RegularExpressionValidator ID="revDenominacion" runat="server" ControlToValidate="txtDenominacion" ValidationExpression="^(\s|.){1,200}$" ErrorMessage="* La denominacion puede contener hasta un máximo de 200 caracteres" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px"/>    
+                    <asp:RegularExpressionValidator ID="revDenominacion" runat="server" ControlToValidate="txtDenominacion" ValidationExpression="^(\s|.){1,100}$" ErrorMessage="* La denominacion puede contener hasta un máximo de 100 caracteres" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px"/>    
                     <asp:CustomValidator ID="cvRubroUnico" runat="server" OnServerValidate="cvRubroUnico_ServerValidate" ErrorMessage="*Esta denominacion ya esta en uso" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px"/>         
                 </div>
 

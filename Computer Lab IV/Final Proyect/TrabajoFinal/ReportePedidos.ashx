@@ -1,25 +1,25 @@
-﻿<%@ WebHandler Language="C#" Class="ReporteArticulos" %>
+﻿<%@ WebHandler Language="C#" Class="ReportePedidos" %>
 
 using System;
-using System.Web;
-using System.Web.SessionState;
 using System.Collections.Generic;
 using System.IO;
-
+using System.Linq;
+using System.Web;
+using System.Web.SessionState;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 
-public class ReporteArticulos : IHttpHandler, IRequiresSessionState
+public class ReportePedidos : IHttpHandler, IRequiresSessionState
 {
 
-    public void ProcessRequest(HttpContext context)
-    {
-        //Carga la informacion
-        List<ArticuloCantidad> articulosVendidos = (List<ArticuloCantidad>)context.Session["ArticulosVendidos"];
-        //Ordena los articulos en base a la cantidad vendida de mayor a menor
-        articulosVendidos.Sort((x, y) => y.Cantidad.CompareTo(x.Cantidad));
+    private BaseDatosDataContext bd = new BaseDatosDataContext();
 
-        context.Session["ArticulosVendidos"] = null;
+    public void ProcessRequest (HttpContext context) {
+
+        //Carga toda la informacion
+        List<Pedido> pedidos = (List<Pedido>)context.Session["Pedidos"];
+        pedidos.Sort((x, y) => x.IdPedido.CompareTo(y.IdPedido));
+        context.Session["Pedidos"] = null;
         string txtVendedor = "-";
         string txtCliente = "-";
         string txtFechaInicio = "-";
@@ -27,61 +27,62 @@ public class ReporteArticulos : IHttpHandler, IRequiresSessionState
         string txtPais = "-";
         string txtProvincia = "-";
         string txtLocalidad = "-";
-        string txtRubro = "-";
+        string txtPagado = "-";
 
-        if (context.Session["ArticuloVendedor"].ToString() != "-")
+        if (context.Session["PedidoVendedor"].ToString() != "-")
         {
-            txtVendedor = context.Session["ArticuloVendedor"].ToString();
-            context.Session["ArticuloVendedor"] = null;
+            txtVendedor = context.Session["PedidoVendedor"].ToString();
+            context.Session["PedidoVendedor"] = null;
         }
 
-        if (context.Session["ArticuloCliente"].ToString() != "-")
+        if (context.Session["PedidoCliente"].ToString() != "-")
         {
-            txtCliente = context.Session["ArticuloCliente"].ToString();
-            context.Session["ArticuloCliente"] = null;
+            txtCliente = context.Session["PedidoCliente"].ToString();
+            context.Session["PedidoCliente"] = null;
         }
 
-        if (context.Session["ArticuloFechaInicio"].ToString() != "")
+        if (context.Session["PedidoFechaInicio"].ToString() != "")
         {
-            txtFechaInicio = context.Session["ArticuloFechaInicio"].ToString();
-            context.Session["ArticuloFechaInicio"] = null;
+            txtFechaInicio = context.Session["PedidoFechaInicio"].ToString();
+            context.Session["PedidoFechaInicio"] = null;
         }
 
-        if (context.Session["ArticuloFechaFin"].ToString() != "")
+        if (context.Session["PedidoFechaFin"].ToString() != "")
         {
-            txtFechaFin = context.Session["ArticuloFechaFin"].ToString();
-            context.Session["ArticuloFechaFin"] = null;
+            txtFechaFin = context.Session["PedidoFechaFin"].ToString();
+            context.Session["PedidoFechaFin"] = null;
         }
 
-        if (context.Session["ArticuloPais"].ToString() != "-")
+        if (context.Session["PedidoPais"].ToString() != "-")
         {
-            txtPais = context.Session["ArticuloPais"].ToString();
-            context.Session["ArticuloPais"] = null;
+            txtPais = context.Session["PedidoPais"].ToString();
+            context.Session["PedidoPais"] = null;
         }
 
-        if (context.Session["ArticuloProvincia"].ToString() != "-")
+        if (context.Session["PedidoProvincia"].ToString() != "-")
         {
-            txtProvincia = context.Session["ArticuloProvincia"].ToString();
-            context.Session["ArticuloProvincia"] = null;
+            txtProvincia = context.Session["PedidoProvincia"].ToString();
+            context.Session["PedidoProvincia"] = null;
         }
 
-        if (context.Session["ArticuloLocalidad"].ToString() != "-")
+        if (context.Session["PedidoLocalidad"].ToString() != "-")
         {
-            txtLocalidad = context.Session["ArticuloLocalidad"].ToString();
-            context.Session["ArticuloLocalidad"] = null;
+            txtLocalidad = context.Session["PedidoLocalidad"].ToString();
+            context.Session["PedidoLocalidad"] = null;
         }
 
-        if (context.Session["ArticuloRubro"].ToString() != "-")
+        if (context.Session["PedidoPagado"].ToString() != "-")
         {
-            txtRubro = context.Session["ArticuloRubro"].ToString();
-            context.Session["ArticuloRubro"] = null;
+            txtPagado = context.Session["PedidoPagado"].ToString();
+            context.Session["PedidoPagado"] = null;
         }
+
 
         //Se asigna el tipo de contenido
         context.Response.ContentType = "application/pdf";
 
         //Se asigna el tipo de descarga y nombre del archivo
-        context.Response.AddHeader("Content-disposition", "inline; filename=ArticulosVendidos.pdf");
+        context.Response.AddHeader("Content-disposition", "inline; filename=Pedidos.pdf");
 
         //Se crea un stream de memoria para almacenar el documento
         using (MemoryStream m = new MemoryStream())
@@ -90,7 +91,7 @@ public class ReporteArticulos : IHttpHandler, IRequiresSessionState
             Document documento = new Document();
             PdfWriter.GetInstance(documento, m);
 
-            //Se abre el documento
+            //Se abre el documento para escribirlo
             documento.Open();
 
             //FUENTES
@@ -131,6 +132,7 @@ public class ReporteArticulos : IHttpHandler, IRequiresSessionState
             cellFechaHora.AddElement(fecha);
             cellFechaHora.AddElement(hora);
 
+
             //Se agregan la celdas a la tabla
             tablaEncabezado.AddCell(cellLogo);
             tablaEncabezado.AddCell(cellFechaHora);
@@ -139,7 +141,7 @@ public class ReporteArticulos : IHttpHandler, IRequiresSessionState
             documento.Add(tablaEncabezado);
 
             //Titulo
-            Paragraph titulo = new Paragraph("Reporte Artículos", fuenteTitulo);
+            Paragraph titulo = new Paragraph("Reporte Pedidos", fuenteTitulo);
             titulo.Alignment = Element.ALIGN_CENTER;
             titulo.SpacingAfter = 30;
             documento.Add(titulo);
@@ -182,15 +184,15 @@ public class ReporteArticulos : IHttpHandler, IRequiresSessionState
             PdfPCell cellFiltroFechaFin = new PdfPCell(filtroFechaFin);
             cellFiltroFechaFin.BorderWidth = 0;
 
-            Paragraph filtroRubro = new Paragraph();
-            filtroRubro.Add(new Phrase("Rubro: ", fuente9Negrita));
-            filtroRubro.Add(new Phrase(txtRubro, fuente9));
-            PdfPCell cellFiltroRubro = new PdfPCell(filtroRubro);
-            cellFiltroRubro.BorderWidth = 0;
+            Paragraph filtroPagado = new Paragraph();
+            filtroPagado.Add(new Phrase("Pagado: ", fuente9Negrita));
+            filtroPagado.Add(new Phrase(txtPagado, fuente9));
+            PdfPCell cellFiltroPagado = new PdfPCell(filtroPagado);
+            cellFiltroPagado.BorderWidth = 0;
 
             tablaFiltrosFechas.AddCell(cellFiltroFechaInicio);
             tablaFiltrosFechas.AddCell(cellFiltroFechaFin);
-            tablaFiltrosFechas.AddCell(cellFiltroRubro);
+            tablaFiltrosFechas.AddCell(cellFiltroPagado);
 
             documento.Add(tablaFiltrosFechas);
 
@@ -223,79 +225,107 @@ public class ReporteArticulos : IHttpHandler, IRequiresSessionState
 
             documento.Add(tablaFiltrosUbicacion);
 
+
             //Tabla Titulos
-            PdfPTable tablaTitulos = new PdfPTable(6);
+            PdfPTable tablaTitulos = new PdfPTable(8);
             tablaTitulos.WidthPercentage = 100;
-            tablaTitulos.SetWidths(new float[] { 8, 4, 3, 3, 4, 4});
+            tablaTitulos.SetWidths(new float[] { 3, 6, 4, 4, 3, 4, 4, 4 });
 
-            PdfPCell cellTituloArticulo = new PdfPCell(new Phrase("Articulo", fuente8Negrita));
-            PdfPCell cellTituloRubro = new PdfPCell(new Phrase("Rubro", fuente8Negrita));
-            PdfPCell cellTituloCantidad = new PdfPCell(new Phrase("Cantidad", fuente8Negrita));
-            PdfPCell cellTituloPrecio = new PdfPCell(new Phrase("Precio unitario", fuente8Negrita));
+            PdfPCell cellTituloNumero = new PdfPCell(new Phrase("Numero", fuente8Negrita));
+            PdfPCell cellTituloCliente = new PdfPCell(new Phrase("Cliente", fuente8Negrita));
+            PdfPCell cellTituloEstado = new PdfPCell(new Phrase("Estado", fuente8Negrita));
+            PdfPCell cellTituloFecha = new PdfPCell(new Phrase("Fecha", fuente8Negrita));
+            PdfPCell cellTituloPagado = new PdfPCell(new Phrase("Pagado", fuente8Negrita));
             PdfPCell cellTituloSubtotal = new PdfPCell(new Phrase("Subtotal", fuente8Negrita));
-            PdfPCell cellTituloTotal = new PdfPCell(new Phrase("Total                (Desc. incluido)", fuente8Negrita));
+            PdfPCell cellTituloGastosEnvio = new PdfPCell(new Phrase("Gastos de Envio", fuente8Negrita));
+            PdfPCell cellTituloTotal = new PdfPCell(new Phrase("Total", fuente8Negrita));
 
-            cellTituloArticulo.HorizontalAlignment = Element.ALIGN_CENTER;
-            cellTituloArticulo.VerticalAlignment = Element.ALIGN_MIDDLE;
-            cellTituloRubro.HorizontalAlignment = Element.ALIGN_CENTER;
-            cellTituloRubro.VerticalAlignment = Element.ALIGN_MIDDLE;
-            cellTituloCantidad.HorizontalAlignment = Element.ALIGN_CENTER;
-            cellTituloCantidad.VerticalAlignment = Element.ALIGN_MIDDLE;
-            cellTituloPrecio.HorizontalAlignment = Element.ALIGN_CENTER;
-            cellTituloPrecio.VerticalAlignment = Element.ALIGN_MIDDLE;
+            cellTituloNumero.HorizontalAlignment = Element.ALIGN_CENTER;
+            cellTituloNumero.VerticalAlignment = Element.ALIGN_MIDDLE;
+            cellTituloCliente.HorizontalAlignment = Element.ALIGN_CENTER;
+            cellTituloCliente.VerticalAlignment = Element.ALIGN_MIDDLE;
+            cellTituloEstado.HorizontalAlignment = Element.ALIGN_CENTER;
+            cellTituloEstado.VerticalAlignment = Element.ALIGN_MIDDLE;
+            cellTituloFecha.HorizontalAlignment = Element.ALIGN_CENTER;
+            cellTituloFecha.VerticalAlignment = Element.ALIGN_MIDDLE;
+            cellTituloPagado.HorizontalAlignment = Element.ALIGN_CENTER;
+            cellTituloPagado.VerticalAlignment = Element.ALIGN_MIDDLE;
             cellTituloSubtotal.HorizontalAlignment = Element.ALIGN_CENTER;
             cellTituloSubtotal.VerticalAlignment = Element.ALIGN_MIDDLE;
+            cellTituloGastosEnvio.HorizontalAlignment = Element.ALIGN_CENTER;
+            cellTituloGastosEnvio.VerticalAlignment = Element.ALIGN_MIDDLE;
             cellTituloTotal.HorizontalAlignment = Element.ALIGN_CENTER;
             cellTituloTotal.VerticalAlignment = Element.ALIGN_MIDDLE;
 
-            tablaTitulos.AddCell(cellTituloArticulo);
-            tablaTitulos.AddCell(cellTituloRubro);
-            tablaTitulos.AddCell(cellTituloCantidad);
-            tablaTitulos.AddCell(cellTituloPrecio);
+            tablaTitulos.AddCell(cellTituloNumero);
+            tablaTitulos.AddCell(cellTituloCliente);
+            tablaTitulos.AddCell(cellTituloEstado);
+            tablaTitulos.AddCell(cellTituloFecha);
+            tablaTitulos.AddCell(cellTituloPagado);
             tablaTitulos.AddCell(cellTituloSubtotal);
+            tablaTitulos.AddCell(cellTituloGastosEnvio);
             tablaTitulos.AddCell(cellTituloTotal);
 
             documento.Add(tablaTitulos);
 
             double total = 0;
 
-            foreach (ArticuloCantidad articulo in articulosVendidos)
+            foreach (Pedido ped in pedidos)
             {
-                PdfPTable tablaArticulo = new PdfPTable(6);
-                tablaArticulo.WidthPercentage = 100;
-                tablaArticulo.SetWidths(new float[] { 8, 4, 3, 3, 4, 4,});
+                Cliente cliente = (from cli in bd.Clientes
+                                   where cli.IdCliente == ped.IdCliente
+                                   select cli).FirstOrDefault();
 
-                PdfPCell cellArticulo = new PdfPCell(new Phrase("  " + articulo.Denominacion, fuente8));
-                cellArticulo.PaddingTop = 5;
-                cellArticulo.PaddingBottom = 5;
-                PdfPCell cellRubro = new PdfPCell(new Phrase(articulo.Rubro, fuente8));
-                PdfPCell cellCantidad = new PdfPCell(new Phrase(articulo.Cantidad.ToString(), fuente8));
-                PdfPCell cellPrecio = new PdfPCell(new Phrase(String.Format("{0:C}", articulo.Precio), fuente8));
-                PdfPCell cellSubtotal = new PdfPCell(new Phrase(String.Format("{0:C}", articulo.Cantidad * articulo.Precio), fuente8));
-                PdfPCell cellTotal = new PdfPCell(new Phrase(String.Format("{0:C}", articulo.Total), fuente8));
+                PdfPTable tablaPedido = new PdfPTable(8);
+                tablaPedido.WidthPercentage = 100;
+                tablaPedido.SetWidths(new float[] { 3, 6, 4, 4, 3, 4, 4, 4 });
 
-                cellArticulo.VerticalAlignment = Element.ALIGN_MIDDLE;
-                cellRubro.HorizontalAlignment = Element.ALIGN_CENTER;
-                cellRubro.VerticalAlignment = Element.ALIGN_MIDDLE;
-                cellCantidad.HorizontalAlignment = Element.ALIGN_CENTER;
-                cellCantidad.VerticalAlignment = Element.ALIGN_MIDDLE;
-                cellPrecio.HorizontalAlignment = Element.ALIGN_CENTER;
-                cellPrecio.VerticalAlignment = Element.ALIGN_MIDDLE;
+                PdfPCell cellNumero = new PdfPCell(new Phrase(ped.IdPedido.ToString(), fuente8));
+                PdfPCell cellCliente = new PdfPCell(new Phrase(cliente.RazonSocial, fuente8));
+                PdfPCell cellEstado = new PdfPCell(new Phrase(ped.Estado, fuente8));
+                PdfPCell cellFecha = new PdfPCell(new Phrase(ped.FechaPedido.ToShortDateString(), fuente8));
+                PdfPCell cellPagado;
+                if (ped.Pagado)
+                {
+                    cellPagado = new PdfPCell(new Phrase("X", fuente8Negrita));
+                }else
+                {
+                    cellPagado = new PdfPCell(new Phrase(" ", fuente8));
+                }
+                PdfPCell cellSubtotal = new PdfPCell(new Phrase(String.Format("{0:C}", ped.SubTotal), fuente8));
+                PdfPCell cellGastosEnvio = new PdfPCell(new Phrase(String.Format("{0:C}", ped.GastosEnvio), fuente8));
+                PdfPCell cellTotal = new PdfPCell(new Phrase(String.Format("{0:C}", ped.Total), fuente8));
+
+
+                cellNumero.HorizontalAlignment = Element.ALIGN_CENTER;
+                cellNumero.VerticalAlignment = Element.ALIGN_MIDDLE;
+                cellCliente.HorizontalAlignment = Element.ALIGN_CENTER;
+                cellCliente.VerticalAlignment = Element.ALIGN_MIDDLE;
+                cellEstado.HorizontalAlignment = Element.ALIGN_CENTER;
+                cellEstado.VerticalAlignment = Element.ALIGN_MIDDLE;
+                cellFecha.HorizontalAlignment = Element.ALIGN_CENTER;
+                cellFecha.VerticalAlignment = Element.ALIGN_MIDDLE;
+                cellPagado.HorizontalAlignment = Element.ALIGN_CENTER;
+                cellPagado.VerticalAlignment = Element.ALIGN_MIDDLE;
                 cellSubtotal.HorizontalAlignment = Element.ALIGN_CENTER;
                 cellSubtotal.VerticalAlignment = Element.ALIGN_MIDDLE;
+                cellGastosEnvio.HorizontalAlignment = Element.ALIGN_CENTER;
+                cellGastosEnvio.VerticalAlignment = Element.ALIGN_MIDDLE;
                 cellTotal.HorizontalAlignment = Element.ALIGN_CENTER;
                 cellTotal.VerticalAlignment = Element.ALIGN_MIDDLE;
 
-                tablaArticulo.AddCell(cellArticulo);
-                tablaArticulo.AddCell(cellRubro);
-                tablaArticulo.AddCell(cellCantidad);
-                tablaArticulo.AddCell(cellPrecio);
-                tablaArticulo.AddCell(cellSubtotal);
-                tablaArticulo.AddCell(cellTotal);
+                tablaPedido.AddCell(cellNumero);
+                tablaPedido.AddCell(cellCliente);
+                tablaPedido.AddCell(cellEstado);
+                tablaPedido.AddCell(cellFecha);
+                tablaPedido.AddCell(cellPagado);
+                tablaPedido.AddCell(cellSubtotal);
+                tablaPedido.AddCell(cellGastosEnvio);
+                tablaPedido.AddCell(cellTotal);
 
-                documento.Add(tablaArticulo);
+                documento.Add(tablaPedido);
 
-                total += articulo.Total;
+                total += ped.Total;
             }
 
             //Total
@@ -310,22 +340,18 @@ public class ReporteArticulos : IHttpHandler, IRequiresSessionState
 
             documento.Add(paragraphTotal);
 
+
             //Se cierra el documento
             documento.Close();
             context.Response.OutputStream.Write(m.GetBuffer(), 0, m.GetBuffer().Length);
         }
         context.Response.End();
-
-
-
-
     }
 
-    public bool IsReusable
-    {
-        get
-        {
+    public bool IsReusable {
+        get {
             return false;
         }
     }
+
 }

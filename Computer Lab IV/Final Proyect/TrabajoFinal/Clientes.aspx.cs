@@ -28,8 +28,8 @@ public partial class Clientes : System.Web.UI.Page
 
             if (!usuario.Administrador)
             {                
-                grdClientes.Columns[6].Visible = false;
                 grdClientes.Columns[7].Visible = false;
+                grdClientes.Columns[8].Visible = false;
                 imgAdd.Visible = false;                         
             }            
         }        

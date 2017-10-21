@@ -26,8 +26,8 @@ public partial class Articulos : System.Web.UI.Page
 
             if (!usuario.Administrador)
             {
+                grdArticulos.Columns[5].Visible = false;
                 grdArticulos.Columns[6].Visible = false;
-                grdArticulos.Columns[7].Visible = false;
                 imgAdd.Visible = false;
             }
         }

@@ -21,6 +21,7 @@ public partial class Navegacion : System.Web.UI.MasterPage
         {
             hlUsuarios.Visible = true;
             hlLocalidades.Visible = true;
+            hlReportes.Visible = true;
         }
     }
 }
