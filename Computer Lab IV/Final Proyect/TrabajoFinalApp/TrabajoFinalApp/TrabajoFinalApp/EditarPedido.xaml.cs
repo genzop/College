@@ -18,33 +18,31 @@ namespace TrabajoFinalApp
         protected List<Cliente> clientes;
         protected List<Articulo> articulos;         
                 
-        protected PedidoVenta tempPedido;
+        protected Pedido tempPedido;
         protected Domicilio tempDomicilio;
-        protected PedidoVentaDetalle tempDetalle;
+        protected Detalle tempDetalle;
 
-        protected ObservableCollection<PedidoVentaDetalle> detalles;
-        protected List<PedidoVentaDetalle> detallesEliminados;
+        protected ObservableCollection<Detalle> detalles;
+        protected List<Detalle> detallesEliminados;
 
-        protected int IdVendedor { get; set; }
-        
+        protected int IdVendedor { get; set; }        
 
         //Constructor
-        public EditarPedido(PedidoVenta pedido, int idVendedor)
+        public EditarPedido(Pedido pedido, int idVendedor)
         {
-            //Se inicializan las cosas
+            //Inicializa la pantalla
             InitializeComponent();
             NavigationPage.SetHasNavigationBar(this, false);
 
-            //Se guarda el id del vendedor
+            //Guarda el ID del Vendedor
             this.IdVendedor = idVendedor;
 
-            //Se cargan los clientes para el picker
+            //Cargan los Clientes para el picker
             cargarClientes();
 
-            //Se cargan los articulos para el picker
+            //Cargan los Articulos para el picker
             cargarArticulos();
 
-            txtNumero.IsVisible = true;
             pickerCliente.IsVisible = true;
             pickerEstado.IsVisible = true;
             dateFechaPedido.IsVisible = true;
@@ -53,25 +51,29 @@ namespace TrabajoFinalApp
             imgAddDetalle.IsVisible = true;
             btnGuardar.IsVisible = true;
             btnGuardarDetalle.IsVisible = true;
-
-            lblNumero.IsVisible = false;
+            
             lblCliente.IsVisible = false;
             lblEstado.IsVisible = false;
             lblFecha.IsVisible = false;
             lblFechaEntrega.IsVisible = false;
             lblGastosEnvio.IsVisible = false;
 
-            //Se verifica si se esta creando un pedido o si se esta modificando uno
+            //Verifica si se esta creando un Pedido o si se esta odificando uno
             if (pedido == null)
             {
                 lblTitulo.Text = "Agregar Pedido";
-                
-                this.tempPedido = new PedidoVenta();
+                this.tempPedido = new Pedido();
                 this.tempDomicilio = new Domicilio();
+                int idPedido;
+                using (var cPedido = new ControladorPedido())
+                {
+                    idPedido = cPedido.LastID() + 1;                    
+                }
+                lblNumero.Text = idPedido.ToString();                
                 btnEliminar.Text = "Cancelar";
-                this.detalles = new ObservableCollection<PedidoVentaDetalle>();
+                this.detalles = new ObservableCollection<Detalle>();
                 listDetalles.ItemsSource = this.detalles;
-                this.detallesEliminados = new List<PedidoVentaDetalle>();
+                this.detallesEliminados = new List<Detalle>();
                 switchPagado.IsToggled = false;             
             }
             else
@@ -91,16 +93,16 @@ namespace TrabajoFinalApp
                 
                 rellenarCampos();
                 cargarDetalles();
-                this.detallesEliminados = new List<PedidoVentaDetalle>();                                
+                this.detallesEliminados = new List<Detalle>();                                
             }            
         }
 
         //Se cargan los articulos de la base de datos
         private void cargarArticulos()
         {
-            using(var artControlador = new ControladorArticulo())
+            using(var cArticulos = new ControladorArticulo())
             {
-                this.articulos = artControlador.ShowAll();
+                this.articulos = cArticulos.ShowAll();
             }
 
             foreach (Articulo art in this.articulos)
@@ -108,8 +110,7 @@ namespace TrabajoFinalApp
                 pickerArticulo.Items.Add(art.Denominacion);
             }
         }
-
-        //Cuando se presiona eliminar pedido
+                
         private async void btnEliminar_Clicked(object sender, EventArgs e)
         {
             //Si se esta eliminando un pedido ya persistido
@@ -121,18 +122,18 @@ namespace TrabajoFinalApp
                 if (respuesta)
                 {
                     //Se eliminan todos los detalles de ese pedido
-                    using(var detControlador = new ControladorPedidoVentaDetalle())
+                    using(var detControlador = new ControladorDetalle())
                     {
-                        var detallesAEliminar = detControlador.FindByPedidoVenta(this.tempPedido.IdPedidoVenta);
+                        var detallesAEliminar = detControlador.FindByPedido(this.tempPedido.IdPedido);
 
-                        foreach (PedidoVentaDetalle det in detallesAEliminar)
+                        foreach (Detalle det in detallesAEliminar)
                         {
                             detControlador.Delete(det);
                         }
                     }
 
                     //Se elimina el pedido en si
-                    using (var pedControlador = new ControladorPedidoVenta())
+                    using (var pedControlador = new ControladorPedido())
                     {
                         pedControlador.Delete(this.tempPedido);
                     }
@@ -169,8 +170,8 @@ namespace TrabajoFinalApp
                 if (lblTitulo.Text == "Agregar Pedido")
                 {
                     //Se crea un pedido nuevo y se guardan los datos ingresados
+                    tempPedido.IdPedido = Convert.ToInt32(lblNumero.Text);
                     tempPedido.Editable = true;
-                    tempPedido.NroPedido = Convert.ToInt64(txtNumero.Text);
                     tempPedido.IdCliente = clientes[pickerCliente.SelectedIndex].IdCliente;
 
                     using (var cliControlador = new ControladorCliente())
@@ -181,32 +182,22 @@ namespace TrabajoFinalApp
 
                     tempPedido.IdVendedor = this.IdVendedor;
                     tempPedido.Estado = pickerEstado.Items[pickerEstado.SelectedIndex];
-                    if (tempPedido.Estado == "Entregado")
-                    {
-                        tempPedido.Entregado = true;
-                    }
-                    else
-                    {
-                        tempPedido.Entregado = false;
-                    }
                     tempPedido.FechaPedido = dateFechaPedido.Date;
-                    tempPedido.FechaEstimadaEntrega = dateFechaEntrega.Date;
-                    tempPedido.SubTotal = Convert.ToDouble(lblSubTotal.Text);
+                    tempPedido.FechaEntrega = dateFechaEntrega.Date;
+                    tempPedido.Subtotal = Convert.ToDouble(lblSubTotal.Text);
                     tempPedido.GastosEnvio = Convert.ToDouble(txtGastosEnvio.Text);
-                    tempPedido.MontoTotal = Convert.ToDouble(lblTotal.Text);
+                    tempPedido.Total = Convert.ToDouble(lblTotal.Text);
                     tempPedido.Pagado = switchPagado.IsToggled;
 
                     //Se persiste el pedido a la base de datos
-                    using (var pedControlador = new ControladorPedidoVenta())
+                    using (var pedControlador = new ControladorPedido())
                     {
                         pedControlador.Insert(tempPedido);
                     }
                 }
                 else
                 {
-                    tempPedido.NroPedido = Convert.ToInt64(txtNumero.Text);
                     tempPedido.IdCliente = clientes[pickerCliente.SelectedIndex].IdCliente;
-
                     using (var cliControlador = new ControladorCliente())
                     {
                         var clienteSeleccionado = cliControlador.FindById(tempPedido.IdCliente);
@@ -214,23 +205,15 @@ namespace TrabajoFinalApp
                     }
 
                     tempPedido.Estado = pickerEstado.Items[pickerEstado.SelectedIndex];
-                    if (tempPedido.Estado == "Entregado")
-                    {
-                        tempPedido.Entregado = true;
-                    }
-                    else
-                    {
-                        tempPedido.Entregado = false;
-                    }
                     tempPedido.FechaPedido = dateFechaPedido.Date;
-                    tempPedido.FechaEstimadaEntrega = dateFechaEntrega.Date;
-                    tempPedido.SubTotal = Convert.ToDouble(lblSubTotal.Text);
+                    tempPedido.FechaEntrega = dateFechaEntrega.Date;
+                    tempPedido.Subtotal = Convert.ToDouble(lblSubTotal.Text);
                     tempPedido.GastosEnvio = Convert.ToDouble(txtGastosEnvio.Text);
-                    tempPedido.MontoTotal = Convert.ToDouble(lblTotal.Text);
+                    tempPedido.Total = Convert.ToDouble(lblTotal.Text);
                     tempPedido.Pagado = switchPagado.IsToggled;
 
                     //Se persiste el pedido a la base de datos
-                    using (var pedControlador = new ControladorPedidoVenta())
+                    using (var pedControlador = new ControladorPedido())
                     {
                         pedControlador.Update(tempPedido);
                     }
@@ -238,19 +221,19 @@ namespace TrabajoFinalApp
                 }
 
                 //Persistir detalles
-                foreach (PedidoVentaDetalle det in detalles)
+                foreach (Detalle det in detalles)
                 {
-                    if (det.IdPedidoVentaDetalle == 0)
+                    if (det.IdDetalle == 0)
                     {
-                        det.IdPedidoVenta = tempPedido.IdPedidoVenta;
-                        using (var detControlador = new ControladorPedidoVentaDetalle())
+                        det.IdPedido = tempPedido.IdPedido;
+                        using (var detControlador = new ControladorDetalle())
                         {
                             detControlador.Insert(det);
                         }
                     }
                     else
                     {
-                        using (var detControlador = new ControladorPedidoVentaDetalle())
+                        using (var detControlador = new ControladorDetalle())
                         {
                             detControlador.Update(det);
                         }
@@ -258,9 +241,9 @@ namespace TrabajoFinalApp
                 }
 
                 //Eliminar detalles eliminados
-                foreach (PedidoVentaDetalle det in detallesEliminados)
+                foreach (Detalle det in detallesEliminados)
                 {
-                    using (var detControlador = new ControladorPedidoVentaDetalle())
+                    using (var detControlador = new ControladorDetalle())
                     {
                         detControlador.Delete(det);
                     }
@@ -277,7 +260,7 @@ namespace TrabajoFinalApp
             ((ListView)sender).SelectedItem = null;
 
             //Se guarda el detalle seleccionado en una variable
-            this.tempDetalle = (PedidoVentaDetalle)e.Item;
+            this.tempDetalle = (Detalle)e.Item;
 
             //Se muestra el formulario para editar un detalle
             tablaDetalles.IsVisible = false;
@@ -295,20 +278,22 @@ namespace TrabajoFinalApp
             }
 
             txtCantidad.Text = this.tempDetalle.Cantidad.ToString();
-            lblSubTotalDetalle.Text = this.tempDetalle.SubTotal.ToString();
-            txtDescuento.Text = this.tempDetalle.PorcentajeDescuento.ToString();
+            lblSubTotalDetalle.Text = this.tempDetalle.Subtotal.ToString();
+            txtDescuento.Text = this.tempDetalle.Descuento.ToString();
             lblTotalDetalle.Text = this.tempDetalle.Total.ToString();
 
-            if (this.tempPedido.Editable)
+            if (this.tempPedido.Editable || lblTitulo.Text == "Agregar Pedido")
             {
-                btnEliminarDetalle.Text = "Eliminar";
+                btnEliminarDetalle.Text = "Eliminar";                
                 pickerArticulo.IsEnabled = true;
                 txtCantidad.IsEnabled = true;
                 txtDescuento.IsEnabled = true;
+                
             }
             else
             {
                 btnEliminarDetalle.Text = "Cancelar";
+                btnEliminarDetalle.BackgroundColor = Color.FromHex("#3AAFA9");
                 pickerArticulo.IsEnabled = false;
                 txtCantidad.IsEnabled = false;
                 txtDescuento.IsEnabled = false;
@@ -317,9 +302,9 @@ namespace TrabajoFinalApp
 
         public void cargarDetalles()
         {
-           using(var detControlador = new ControladorPedidoVentaDetalle())
+           using(var detControlador = new ControladorDetalle())
             {
-                this.detalles = new ObservableCollection<PedidoVentaDetalle>(detControlador.FindByPedidoVenta(this.tempPedido.IdPedidoVenta));
+                this.detalles = new ObservableCollection<Detalle>(detControlador.FindByPedido(this.tempPedido.IdPedido));
                 listDetalles.ItemsSource = this.detalles;
             }
         }
@@ -338,7 +323,7 @@ namespace TrabajoFinalApp
             }            
         }
 
-        //Cuando cambian los gastos de envio, se actualizan los totales 
+        //Cuando cambian los gastos de envio, se actualizan los Totales 
         private void txtGastosEnvio_TextChanged(object sender, TextChangedEventArgs e)
         {
             double subTotal = Convert.ToDouble(lblSubTotal.Text);
@@ -365,7 +350,7 @@ namespace TrabajoFinalApp
 
             btnEliminarDetalle.Text = "Cancelar";
 
-            this.tempDetalle = new PedidoVentaDetalle();
+            this.tempDetalle = new Detalle();
         }
 
         //Se rellenan todos los campos con los datos del pedido seleccionado
@@ -374,7 +359,7 @@ namespace TrabajoFinalApp
             if(this.tempPedido.Editable)
             {
                 //Pedido
-                txtNumero.Text = this.tempPedido.NroPedido.ToString();
+                lblNumero.Text = tempPedido.IdPedido.ToString();
                 for (int i = 0; i < clientes.Count(); i++)
                 {
                     if (this.tempPedido.IdCliente == clientes[i].IdCliente)
@@ -399,13 +384,12 @@ namespace TrabajoFinalApp
                 }
 
                 dateFechaPedido.Date = this.tempPedido.FechaPedido;
-                dateFechaEntrega.Date = this.tempPedido.FechaEstimadaEntrega;
+                dateFechaEntrega.Date = this.tempPedido.FechaEntrega;
                 txtGastosEnvio.Text = this.tempPedido.GastosEnvio.ToString();
                 switchPagado.IsToggled = this.tempPedido.Pagado;
             }
             else
-            {
-                txtNumero.IsVisible = false;
+            {                
                 pickerCliente.IsVisible = false;
                 pickerEstado.IsVisible = false;
                 dateFechaPedido.IsVisible = false;
@@ -415,14 +399,13 @@ namespace TrabajoFinalApp
                 btnGuardar.IsVisible = false;
                 btnGuardarDetalle.IsVisible = false;
 
-                lblNumero.IsVisible = true;
                 lblCliente.IsVisible = true;
                 lblEstado.IsVisible = true;
                 lblFecha.IsVisible = true;
                 lblFechaEntrega.IsVisible = true;
-                lblGastosEnvio.IsVisible = true;                
+                lblGastosEnvio.IsVisible = true;
 
-                lblNumero.Text = this.tempPedido.NroPedido.ToString();
+                lblNumero.Text = tempPedido.IdPedido.ToString();
                 foreach (Cliente cli in clientes)
                 {
                     if (cli.IdCliente == this.tempPedido.IdCliente)
@@ -432,28 +415,42 @@ namespace TrabajoFinalApp
                 }                
                 lblEstado.Text = this.tempPedido.Estado;                
                 lblFecha.Text = this.tempPedido.FechaPedido.ToString("dd/MM/yyyy");
-                lblFechaEntrega.Text = this.tempPedido.FechaEstimadaEntrega.ToString("dd/MM/yyyy");
+                lblFechaEntrega.Text = this.tempPedido.FechaEntrega.ToString("dd/MM/yyyy");
                 lblGastosEnvio.Text = this.tempPedido.GastosEnvio.ToString();
-                switchPagado.IsToggled = this.tempPedido.Pagado;                
+                switchPagado.IsToggled = this.tempPedido.Pagado;
+
+                btnEliminar.BackgroundColor = Color.FromHex("#3AAFA9");
+                btnEliminar.Text = "Cancelar";
             }           
             
             //Domicilio
-            lblCalle.Text = tempDomicilio.Calle + " " + tempDomicilio.Numero.ToString();            
-            lblLocalidad.Text = tempDomicilio.Localidad;       
-            lblLatitud.Text = tempDomicilio.Latitud.ToString();
-            lblLongitud.Text = tempDomicilio.Longitud.ToString();
+            lblCalle.Text = tempDomicilio.Calle + " " + tempDomicilio.Numero.ToString();
+            using (var cLocalidad = new ControladorLocalidad())
+            {
+                Localidad localidad = cLocalidad.FindById(tempDomicilio.IdLocalidad);
+                lblLocalidad.Text = localidad.Denominacion;
+
+                using (var cProvincia = new ControladorProvincia())
+                {
+                    Provincia provincia = cProvincia.FindById(localidad.IdProvincia);
+                    lblProvincia.Text = provincia.Denominacion;
+
+                    using(var cPais = new ControladorPais())
+                    {
+                        Pais pais = cPais.FindById(provincia.IdPais);
+                        lblPais.Text = pais.Denominacion;
+                    }
+                }
+            }
 
             //Totales
-            lblSubTotal.Text = this.tempPedido.SubTotal.ToString();
-            lblTotal.Text = this.tempPedido.MontoTotal.ToString();
+            lblSubTotal.Text = this.tempPedido.Subtotal.ToString();
+            lblTotal.Text = this.tempPedido.Total.ToString();
 
-            btnEliminar.BackgroundColor = Color.FromHex("#3AAFA9");
-            btnEliminar.Text = "Cancelar";
-
-            btnEliminarDetalle.BackgroundColor = Color.FromHex("#3AAFA9");           
+                   
         }
 
-        //Se calcula el subtotal del detalles
+        //Calcula el subtotal del detalles
         private void calcularSubTotalDetalle()
         {
             double precio = Convert.ToDouble(lblPrecioUnitario.Text);
@@ -510,8 +507,8 @@ namespace TrabajoFinalApp
                     tempDetalle.Articulo = articulo.Denominacion;
                     tempDetalle.PrecioUnitario = articulo.PrecioVenta;
                     tempDetalle.Cantidad = Convert.ToInt32(txtCantidad.Text);
-                    tempDetalle.SubTotal = Convert.ToDouble(lblSubTotalDetalle.Text);
-                    tempDetalle.PorcentajeDescuento = Convert.ToDouble(txtDescuento.Text);
+                    tempDetalle.Subtotal = Convert.ToDouble(lblSubTotalDetalle.Text);
+                    tempDetalle.Descuento = Convert.ToDouble(txtDescuento.Text);
                     tempDetalle.Total = Convert.ToDouble(lblTotalDetalle.Text);
 
                     this.detalles.Add(tempDetalle);
@@ -523,8 +520,8 @@ namespace TrabajoFinalApp
                     int posicion = this.detalles.IndexOf(this.tempDetalle);
 
                     tempDetalle.Cantidad = Convert.ToInt32(txtCantidad.Text);
-                    tempDetalle.SubTotal = Convert.ToDouble(lblSubTotalDetalle.Text);
-                    tempDetalle.PorcentajeDescuento = Convert.ToDouble(txtDescuento.Text);
+                    tempDetalle.Subtotal = Convert.ToDouble(lblSubTotalDetalle.Text);
+                    tempDetalle.Descuento = Convert.ToDouble(txtDescuento.Text);
                     tempDetalle.IdArticulo = articulo.IdArticulo;
                     tempDetalle.Articulo = articulo.Denominacion;
                     tempDetalle.PrecioUnitario = articulo.PrecioVenta;
@@ -555,7 +552,7 @@ namespace TrabajoFinalApp
                 
                 tablaDetalles.IsVisible = true;
 
-                if (this.txtNumero.IsVisible)
+                if (this.pickerCliente.IsVisible)
                 {
                     imgAddDetalle.IsVisible = true;
                 }
@@ -572,7 +569,7 @@ namespace TrabajoFinalApp
                     //Se guarda la posicion del pedido en la lista
                     int posicion = this.detalles.IndexOf(this.tempDetalle);
 
-                    if (this.tempDetalle.IdPedidoVentaDetalle == 0)
+                    if (this.tempDetalle.IdDetalle == 0)
                     {
                         detalles.RemoveAt(posicion);
                     }
@@ -590,13 +587,14 @@ namespace TrabajoFinalApp
             calcularTotales();
         }               
         
+        //Calcula el Subtotal y el Total del Pedido
         private void calcularTotales()
         {
             double subTotal = 0;
             double gastosEnvio = 0;
             double total = 0;
 
-            foreach (PedidoVentaDetalle det in detalles)
+            foreach (Detalle det in detalles)
             {
                 subTotal += det.Total;
             }
@@ -613,58 +611,66 @@ namespace TrabajoFinalApp
             lblTotal.Text = total.ToString();
         } 
 
+        //Validaciones
         private bool validarCamposObligatorios()
         {
-            if (!string.IsNullOrEmpty(txtNumero.Text))
+            if (pickerCliente.SelectedIndex != -1)
             {
-                if (pickerCliente.SelectedIndex != -1)
+                if (pickerEstado.SelectedIndex != -1)
                 {
-                    if (pickerEstado.SelectedIndex != -1)
+                    if (!string.IsNullOrEmpty(txtGastosEnvio.Text))
                     {
-                        if (!string.IsNullOrEmpty(txtGastosEnvio.Text))
-                        {
-                            return true;
-                        }
-                        else
-                        {
-                            DisplayAlert("Error", "Debe ingresar los gastos de envio", "Aceptar");
-                            txtGastosEnvio.Focus();
-                            return false;
-                        }
+                        return true;
                     }
                     else
                     {
-                        DisplayAlert("Error", "Debe seleccionar un estado", "Aceptar");
+                        DisplayAlert("Error", "Debe ingresar los gastos de envio", "Aceptar");
+                        txtGastosEnvio.Focus();
                         return false;
                     }
                 }
                 else
                 {
-                    DisplayAlert("Error", "Debe seleccionar un cliente", "Aceptar");
+                    DisplayAlert("Error", "Debe seleccionar un estado", "Aceptar");
                     return false;
                 }
             }
             else
             {
-                DisplayAlert("Error", "Debe ingresar un numero", "Aceptar");
-                txtNumero.Focus();
+                DisplayAlert("Error", "Debe seleccionar un cliente", "Aceptar");
                 return false;
-            }
+            }        
         }
 
+        //Cuando se selecciona otro Cliente, se actualiza el Domicilio
         private void pickerCliente_SelectedIndexChanged(object sender, EventArgs e)
         {
-            using (var cliControlador = new ControladorCliente())
+            using (var cCliente = new ControladorCliente())
             {
-                Cliente tempCli = cliControlador.FindByRazonSocial(pickerCliente.Items[pickerCliente.SelectedIndex]);
+                Cliente tempCli = cCliente.FindByRazonSocial(pickerCliente.Items[pickerCliente.SelectedIndex]);
 
-                using (var domControlador = new ControladorDomicilio())
+                using (var cDomicilio = new ControladorDomicilio())
                 {
-                    Domicilio tempDom = domControlador.FindById(tempCli.IdDomicilio);
+                    Domicilio tempDom = cDomicilio.FindById(tempCli.IdDomicilio);
                     lblCalle.Text = tempDom.Calle + " " + tempDom.Numero;
-                    lblLocalidad.Text = tempDom.Localidad;
-                    lblLatitud.Text = tempDom.Latitud.ToString();
-                    lblLongitud.Text = tempDom.Longitud.ToString();
+
+                    using (var cLocalidad = new ControladorLocalidad())
+                    {
+                        Localidad localidad = cLocalidad.FindById(tempDom.IdLocalidad);
+                        lblLocalidad.Text = localidad.Denominacion;
+
+                        using (var cProvincia = new ControladorProvincia())
+                        {
+                            Provincia provincia = cProvincia.FindById(localidad.IdProvincia);
+                            lblProvincia.Text = provincia.Denominacion;
+
+                            using (var cPais = new ControladorPais())
+                            {
+                                Pais pais = cPais.FindById(provincia.IdPais);
+                                lblPais.Text = pais.Denominacion;
+                            }
+                        }
+                    }
                 }
             }           
         }

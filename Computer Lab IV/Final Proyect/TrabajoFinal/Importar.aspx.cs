@@ -18,18 +18,18 @@ public partial class Importar : System.Web.UI.Page
         {
             BaseDatosDataContext bd = new BaseDatosDataContext();
             
-            pedido.IdPedidoVenta = 0;
+            pedido.IdPedido = 0;
 
-            bd.PedidoVentas.InsertOnSubmit(pedido);
+            bd.Pedidos.InsertOnSubmit(pedido);
             bd.SubmitChanges();
 
-            foreach (PedidoVentaDetalle detalle in detalles)
+            foreach (Detalle detalle in detalles)
             {
-                detalle.IdPedidoVentaDetalle = 0;
-                detalle.IdPedidoVenta = pedido.IdPedidoVenta;
-                detalle.PorcentajeDescuento = detalle.PorcentajeDescuento / 100;
+                detalle.IdDetalle = 0;
+                detalle.IdPedido = pedido.IdPedido;
+                detalle.Descuento = detalle.Descuento / 100;
 
-                bd.PedidoVentaDetalles.InsertOnSubmit(detalle);
+                bd.Detalles.InsertOnSubmit(detalle);
                 bd.SubmitChanges();
             }
 
@@ -38,21 +38,7 @@ public partial class Importar : System.Web.UI.Page
       
     }
 
-    private Domicilio recibirDomicilio(string domicilioJSON)
-    {
-        if (!string.IsNullOrEmpty(domicilioJSON))
-        {
-            //Se crea un domicilio con la informacion recibida
-            Domicilio domicilio = JsonConvert.DeserializeObject<Domicilio>(domicilioJSON);
-            return domicilio;
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-    private PedidoVenta recibirPedido(string pedidoJSON)
+    private Pedido recibirPedido(string pedidoJSON)
     {
         if (!string.IsNullOrEmpty(pedidoJSON))
         {
@@ -62,7 +48,7 @@ public partial class Importar : System.Web.UI.Page
             pedidoJSON = pedidoTemp.ToString();
 
             //Se crea un pedido con la informacion recibida
-            PedidoVenta pedido = JsonConvert.DeserializeObject<PedidoVenta>(pedidoJSON);
+            Pedido pedido = JsonConvert.DeserializeObject<Pedido>(pedidoJSON);
             return pedido;
         }
         else
@@ -71,7 +57,7 @@ public partial class Importar : System.Web.UI.Page
         }
     }
 
-    private List<PedidoVentaDetalle> recibirDetalles(string detallesJSON)
+    private List<Detalle> recibirDetalles(string detallesJSON)
     {
         if (!string.IsNullOrEmpty(detallesJSON))
         {
@@ -85,7 +71,7 @@ public partial class Importar : System.Web.UI.Page
             detallesJSON = detallesTemp.ToString();
 
             //Se crea una lista de detalles
-            List<PedidoVentaDetalle> detalles = JsonConvert.DeserializeObject<List<PedidoVentaDetalle>>(detallesJSON);
+            List<Detalle> detalles = JsonConvert.DeserializeObject<List<Detalle>>(detallesJSON);
             return detalles;
         }
         else
@@ -101,7 +87,7 @@ public partial class Importar : System.Web.UI.Page
         double subtotalCliente = 0;
 
         //Se verifica si ese cliente tiene pedidos a su nombre
-        bool tienePedidos = (from ped in bd.PedidoVentas
+        bool tienePedidos = (from ped in bd.Pedidos
                              where ped.IdCliente == idCliente
                              select ped).Any();
 
@@ -109,7 +95,7 @@ public partial class Importar : System.Web.UI.Page
         if (tienePedidos)
         {
             //Se cargan los pedidos
-            var pedidos = from ped in bd.PedidoVentas
+            var pedidos = from ped in bd.Pedidos
                           where ped.IdCliente == idCliente
                           select ped;
 
@@ -119,7 +105,7 @@ public partial class Importar : System.Web.UI.Page
                 if (!Convert.ToBoolean(pedido.Pagado))
                 {
                     //Se suma el monto total de cada pedido
-                    subtotalCliente += Convert.ToDouble(pedido.MontoTotal);
+                    subtotalCliente += Convert.ToDouble(pedido.Total);
                 }                
             }
         }

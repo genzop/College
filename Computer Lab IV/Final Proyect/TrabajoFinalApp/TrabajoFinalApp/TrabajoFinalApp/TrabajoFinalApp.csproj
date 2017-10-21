@@ -40,9 +40,12 @@
     </Compile>
     <Compile Include="Controladores\ControladorArticulo.cs" />
     <Compile Include="Controladores\ControladorCliente.cs" />
+    <Compile Include="Controladores\ControladorDetalle.cs" />
     <Compile Include="Controladores\ControladorDomicilio.cs" />
-    <Compile Include="Controladores\ControladorPedidoVenta.cs" />
-    <Compile Include="Controladores\ControladorPedidoVentaDetalle.cs" />
+    <Compile Include="Controladores\ControladorLocalidad.cs" />
+    <Compile Include="Controladores\ControladorPais.cs" />
+    <Compile Include="Controladores\ControladorPedido.cs" />
+    <Compile Include="Controladores\ControladorProvincia.cs" />
     <Compile Include="Controladores\ControladorVendedor.cs" />
     <Compile Include="EditarPedido.xaml.cs">
       <DependentUpon>EditarPedido.xaml</DependentUpon>
@@ -53,9 +56,12 @@
     </Compile>
     <Compile Include="Modelo\Articulo.cs" />
     <Compile Include="Modelo\Cliente.cs" />
+    <Compile Include="Modelo\Detalle.cs" />
     <Compile Include="Modelo\Domicilio.cs" />
-    <Compile Include="Modelo\PedidoVenta.cs" />
-    <Compile Include="Modelo\PedidoVentaDetalle.cs" />
+    <Compile Include="Modelo\Localidad.cs" />
+    <Compile Include="Modelo\Pais.cs" />
+    <Compile Include="Modelo\Pedido.cs" />
+    <Compile Include="Modelo\Provincia.cs" />
     <Compile Include="Modelo\Vendedor.cs" />
     <Compile Include="Pedidos.xaml.cs">
       <DependentUpon>Pedidos.xaml</DependentUpon>

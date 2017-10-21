@@ -44,6 +44,15 @@ public partial class Exportar : System.Web.UI.Page
             case "domicilios":
                 respuesta = exportarDomicilios();
                 break;
+            case "localidades":
+                respuesta = exportarLocalidades();
+                break;
+            case "provincias":
+                respuesta = exportarProvincias();
+                break;
+            case "paises":
+                respuesta = exportarPaises();
+                break;
         }
 
         Response.Write(respuesta);
@@ -81,7 +90,7 @@ public partial class Exportar : System.Web.UI.Page
 
     protected string exportarPedidos()
     {
-        string sql = "SELECT * FROM PedidoVenta";
+        string sql = "SELECT * FROM Pedido";
         SqlDataAdapter da = new SqlDataAdapter(sql, ConfigurationManager.ConnectionStrings["TrabajoFinalConnectionString"].ToString());
         DataSet ds = new DataSet();
         da.Fill(ds);
@@ -91,7 +100,7 @@ public partial class Exportar : System.Web.UI.Page
 
     protected string exportarDetalles()
     {
-        string sql = "SELECT * FROM PedidoVentaDetalle";
+        string sql = "SELECT * FROM Detalle";
         SqlDataAdapter da = new SqlDataAdapter(sql, ConfigurationManager.ConnectionStrings["TrabajoFinalConnectionString"].ToString());
         DataSet ds = new DataSet();
         da.Fill(ds);
@@ -102,6 +111,36 @@ public partial class Exportar : System.Web.UI.Page
     protected string exportarDomicilios()
     {
         string sql = "SELECT * FROM Domicilio";
+        SqlDataAdapter da = new SqlDataAdapter(sql, ConfigurationManager.ConnectionStrings["TrabajoFinalConnectionString"].ToString());
+        DataSet ds = new DataSet();
+        da.Fill(ds);
+
+        return JsonConvert.SerializeObject(ds.Tables[0], Newtonsoft.Json.Formatting.Indented);
+    }
+
+    protected string exportarLocalidades()
+    {
+        string sql = "SELECT * FROM Localidad";
+        SqlDataAdapter da = new SqlDataAdapter(sql, ConfigurationManager.ConnectionStrings["TrabajoFinalConnectionString"].ToString());
+        DataSet ds = new DataSet();
+        da.Fill(ds);
+
+        return JsonConvert.SerializeObject(ds.Tables[0], Newtonsoft.Json.Formatting.Indented);
+    }
+
+    protected string exportarProvincias()
+    {
+        string sql = "SELECT * FROM Provincia";
+        SqlDataAdapter da = new SqlDataAdapter(sql, ConfigurationManager.ConnectionStrings["TrabajoFinalConnectionString"].ToString());
+        DataSet ds = new DataSet();
+        da.Fill(ds);
+
+        return JsonConvert.SerializeObject(ds.Tables[0], Newtonsoft.Json.Formatting.Indented);
+    }
+
+    protected string exportarPaises()
+    {
+        string sql = "SELECT * FROM Pais";
         SqlDataAdapter da = new SqlDataAdapter(sql, ConfigurationManager.ConnectionStrings["TrabajoFinalConnectionString"].ToString());
         DataSet ds = new DataSet();
         da.Fill(ds);

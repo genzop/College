@@ -14,7 +14,8 @@ namespace TrabajoFinalApp.Modelo
         public int IdCliente { get; set; }
         public string RazonSocial { get; set; }
         public string Cuit { get; set; }
-        public double Saldo { get; set; }        
+        public double Saldo { get; set; }    
+        [ForeignKey(typeof(Domicilio))]
         public int IdDomicilio { get; set; }
 
         public Cliente() { }

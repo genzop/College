@@ -15,6 +15,7 @@ namespace TrabajoFinalApp.Modelo
         public string Contrasenia { get; set; }
         public string Nombre { get; set; }
         public string Apellido { get; set; }
+        public bool Administrador { get; set; }
 
         public Vendedor() { }
 

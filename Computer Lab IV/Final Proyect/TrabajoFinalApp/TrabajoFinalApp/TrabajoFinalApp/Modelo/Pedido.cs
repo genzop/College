@@ -8,32 +8,26 @@ using System.Threading.Tasks;
 
 namespace TrabajoFinalApp.Modelo
 {
-    public class PedidoVenta
+    public class Pedido
     {
-        [PrimaryKey, AutoIncrement]
-        public int IdPedidoVenta { get; set; }
+        [PrimaryKey]
+        public int IdPedido { get; set; }
         public bool Editable { get; set; }
-        public long NroPedido { get; set; }
         public string Estado { get; set; }
-        public bool Entregado { get; set; }
         public bool Pagado { get; set; }
         public DateTime FechaPedido { get; set; }
-        public DateTime FechaEstimadaEntrega { get; set; }
-        public double SubTotal { get; set; }
-        public double GastosEnvio { get; set; }        
-        public double MontoTotal { get; set; }
-    
+        public DateTime FechaEntrega { get; set; }
+        public double Subtotal { get; set; }
+        public double GastosEnvio { get; set; }
+        public double Total { get; set; }
         [ForeignKey(typeof(Cliente))]
         public int IdCliente { get; set; }
-
         [ForeignKey(typeof(Vendedor))]
         public int IdVendedor { get; set; }
 
         //Agregado para que se vea en la lista
         public string Cliente { get; set; }
 
-
-        public PedidoVenta() { }       
-
+        public Pedido() { }
     }
 }

@@ -8,27 +8,21 @@ using System.Threading.Tasks;
 
 namespace TrabajoFinalApp.Modelo
 {
-    public class PedidoVentaDetalle
+    public class Detalle
     {
         [PrimaryKey, AutoIncrement]
-        public int IdPedidoVentaDetalle { get; set; }
+        public int IdDetalle { get; set; }
         public int Cantidad { get; set; }
-        public double SubTotal { get; set; }
-        public double PorcentajeDescuento { get; set; }
+        public double Subtotal { get; set; }
+        public double Descuento { get; set; }
         public double Total { get; set; }
-
-        [ForeignKey(typeof(PedidoVenta))]
-        public int IdPedidoVenta { get; set; }
-
+        [ForeignKey(typeof(Pedido))]
+        public int IdPedido { get; set; }
         [ForeignKey(typeof(Articulo))]
         public int IdArticulo { get; set; }
 
         //Agregado para que se vea en la lista
         public string Articulo { get; set; }
         public double PrecioUnitario { get; set; }
-
-        public PedidoVentaDetalle() { }        
-     
-         
     }
 }

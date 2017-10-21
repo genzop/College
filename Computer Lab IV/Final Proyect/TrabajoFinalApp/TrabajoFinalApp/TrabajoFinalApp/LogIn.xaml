@@ -19,6 +19,7 @@
             <Button x:Name="btnLogIn" Text="Ingresar" BackgroundColor="#3AAFA9" TextColor="#FEFFFF" FontAttributes="Bold" Margin="0, 30, 0, 0" Clicked="btnLogIn_Clicked" HeightRequest="55"/>
 
             <StackLayout Margin="0, 40, 0, 0">
+                <ActivityIndicator x:Name="importarIndicator" Color="#def2f1" IsRunning="True" IsVisible="False"/>
                 <Image x:Name="imgImportar" Source="importar" WidthRequest="35">
                     <Image.GestureRecognizers>
                         <TapGestureRecognizer Tapped="imgImportar_Tapped"/>
@@ -27,7 +28,7 @@
             </StackLayout>
 
             <!-- Entry invisible que sirve para especificar la direccion del servidor -->
-            <Label x:Name="lblDireccion" Text="http://192.168.1.36:63942/" IsVisible="False"/>
+            <Label x:Name="lblDireccion" Text="http://192.168.1.38:63942/" IsVisible="False"/>
 
         </StackLayout>            
     </ContentPage.Content>

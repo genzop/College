@@ -28,9 +28,9 @@ namespace TrabajoFinalApp
 
             using (var cVendedor = new ControladorVendedor())
             {
-                var vendedor = cVendedor.FindByUser(usuario);
-                //Si el usuario existe
-                if(vendedor != null)
+                Vendedor vendedor = cVendedor.FindByUser(usuario);                
+                
+                if(vendedor != null && !vendedor.Administrador)
                 {
                     if(vendedor.Contrasenia == contrasenia)
                     {
@@ -58,10 +58,15 @@ namespace TrabajoFinalApp
 
             if (confirmacion)
             {
+                imgImportar.IsVisible = false;
+                importarIndicator.IsVisible = true;
                 await importarVendedores();
+                await importarUbicaciones();
                 await importarClientes();
                 await importarArticulos();
-                await importarPedidos();                
+                await importarPedidos();
+                importarIndicator.IsVisible = false;
+                imgImportar.IsVisible = true;
             }
         }
 
@@ -89,6 +94,75 @@ namespace TrabajoFinalApp
                     cVendedor.Insert(vend);
                 }
             }
+        }
+
+        private async Task importarUbicaciones()
+        {
+            //Elimina todos los Paises
+            using (var cPais = new ControladorPais())
+            {
+                cPais.DeleteAll();
+            }
+
+            //Elimina todos las Provincias
+            using (var cProvincia = new ControladorProvincia())
+            {
+                cProvincia.DeleteAll();
+            }
+
+            //Elimina todas las Localidades
+            using(var cLocalidad = new ControladorLocalidad())
+            {
+                cLocalidad.DeleteAll();
+            }
+
+            //Importa los Paises
+            HttpClient clienteHttp = new HttpClient();
+            clienteHttp.BaseAddress = new Uri(lblDireccion.Text);
+            string url = string.Format("/Exportar.aspx?exportar=paises");
+            var respuesta = await clienteHttp.GetAsync(url);
+            var resultado = respuesta.Content.ReadAsStringAsync().Result;
+            List<Pais> paises = JsonConvert.DeserializeObject<List<Pais>>(resultado);
+
+            //Importa las Provincias
+            url = string.Format("/Exportar.aspx?exportar=provincias");
+            respuesta = await clienteHttp.GetAsync(url);
+            resultado = respuesta.Content.ReadAsStringAsync().Result;
+            List<Provincia> provincias = JsonConvert.DeserializeObject<List<Provincia>>(resultado);
+
+            //Importa las Localidades
+            url = string.Format("/Exportar.aspx?exportar=localidades");
+            respuesta = await clienteHttp.GetAsync(url);
+            resultado = respuesta.Content.ReadAsStringAsync().Result;
+            List<Localidad> localidades = JsonConvert.DeserializeObject<List<Localidad>>(resultado);
+
+            //Persiste los Paises
+            using (var cPais = new ControladorPais())
+            {
+                foreach (Pais pais in paises)
+                {
+                    cPais.Insert(pais);
+                }
+            }
+
+            //Persiste las Provincias
+            using (var cProvincia = new ControladorProvincia())
+            {
+                foreach (Provincia prov in provincias)
+                {
+                    cProvincia.Insert(prov);
+                }
+            }
+
+            //Persiste las Localidades
+            using (var cLocalidad = new ControladorLocalidad())
+            {
+                foreach (Localidad loc in localidades)
+                {
+                    cLocalidad.Insert(loc);
+                }
+            }
+
         }
 
         private async Task importarClientes()
@@ -167,13 +241,13 @@ namespace TrabajoFinalApp
         private async Task importarPedidos()
         {            
             //Se eliminan todos los detalles
-            using (var cDetalle = new ControladorPedidoVentaDetalle())
+            using (var cDetalle = new ControladorDetalle())
             {
                 cDetalle.DeleteAll();
             }
 
             //Se eliminan todos los pedidos
-            using (var cPedido = new ControladorPedidoVenta())
+            using (var cPedido = new ControladorPedido())
             {
                 cPedido.DeleteAll();
             }            
@@ -184,18 +258,18 @@ namespace TrabajoFinalApp
             string url = string.Format("/Exportar.aspx?exportar=pedidos");
             var respuesta = await clienteHttp.GetAsync(url);
             var resultado = respuesta.Content.ReadAsStringAsync().Result;
-            List<PedidoVenta> pedidos = JsonConvert.DeserializeObject<List<PedidoVenta>>(resultado);           
+            List<Pedido> pedidos = JsonConvert.DeserializeObject<List<Pedido>>(resultado);           
             
             //Se importan todos los detalles
             url = string.Format("/Exportar.aspx?exportar=detalles");
             respuesta = await clienteHttp.GetAsync(url);
             resultado = respuesta.Content.ReadAsStringAsync().Result;
-            List<PedidoVentaDetalle> detalles = JsonConvert.DeserializeObject<List<PedidoVentaDetalle>>(resultado);
+            List<Detalle> detalles = JsonConvert.DeserializeObject<List<Detalle>>(resultado);
             
             //Por cada pedido
-            foreach (PedidoVenta pedido in pedidos)
+            foreach (Pedido pedido in pedidos)
             {
-                int idPedidoSeleccionado = pedido.IdPedidoVenta;
+                int idPedidoSeleccionado = pedido.IdPedido;
                 
                 using (var cCliente = new ControladorCliente())
                 {
@@ -204,19 +278,19 @@ namespace TrabajoFinalApp
                 }
 
                 //Se persiste el pedido
-                using (var cPedidos = new ControladorPedidoVenta())
+                using (var cPedidos = new ControladorPedido())
                 {
                     cPedidos.Insert(pedido);
                 }
 
                 //Se buscan los detalles que correspondan a ese pedido
-                foreach (PedidoVentaDetalle detalle in detalles)
+                foreach (Detalle detalle in detalles)
                 {
-                    if (detalle.IdPedidoVenta == idPedidoSeleccionado)
+                    if (detalle.IdPedido == idPedidoSeleccionado)
                     {
                         //Se actualiza el IdPedidoVenta en cada detalle
-                        detalle.IdPedidoVenta = pedido.IdPedidoVenta;
-                        detalle.PorcentajeDescuento = detalle.PorcentajeDescuento * 100;
+                        detalle.IdPedido = pedido.IdPedido;
+                        detalle.Descuento = detalle.Descuento * 100;
 
                         using(var cArticulo = new ControladorArticulo())
                         {
@@ -226,7 +300,7 @@ namespace TrabajoFinalApp
                         }
 
                         //Se persiste el detalle
-                        using(var cDetalle = new ControladorPedidoVentaDetalle())
+                        using(var cDetalle = new ControladorDetalle())
                         {
                             cDetalle.Insert(detalle);
                         }
