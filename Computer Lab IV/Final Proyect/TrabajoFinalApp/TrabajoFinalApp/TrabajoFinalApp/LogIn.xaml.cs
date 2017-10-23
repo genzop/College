@@ -23,33 +23,42 @@ namespace TrabajoFinalApp
 
         private void btnLogIn_Clicked(object sender, EventArgs e)
         {
-            string usuario = txtUsuario.Text;
-            string contrasenia = txtContrasenia.Text;
-
-            using (var cVendedor = new ControladorVendedor())
+            if (imgImportar.IsVisible)
             {
-                Vendedor vendedor = cVendedor.FindByUser(usuario);                
-                
-                if(vendedor != null && !vendedor.Administrador)
+                string usuario = txtUsuario.Text;
+                string contrasenia = txtContrasenia.Text;
+
+                using (var cVendedor = new ControladorVendedor())
                 {
-                    if(vendedor.Contrasenia == contrasenia)
+                    Vendedor vendedor = cVendedor.FindByUser(usuario);
+
+                    if (vendedor != null && !vendedor.Administrador)
                     {
-                        App.Current.MainPage = new Pedidos(vendedor.IdVendedor, lblDireccion.Text);
+                        if (vendedor.Contrasenia == contrasenia)
+                        {
+                            App.Current.MainPage = new Pedidos(vendedor.IdVendedor, txtDireccionWeb.Text);
+                        }
+                        else
+                        {
+                            DisplayAlert("Error", "La contraseña ingresada no es correcta", "Aceptar");
+                            txtContrasenia.Text = "";
+                            txtContrasenia.Focus();
+                        }
                     }
                     else
                     {
-                        DisplayAlert("Error", "La contraseña ingresada no es correcta", "Aceptar");
+                        DisplayAlert("Error", "El usuario ingresado no existe", "Aceptar");
+                        txtUsuario.Text = "";
                         txtContrasenia.Text = "";
-                        txtContrasenia.Focus();
+                        txtUsuario.Focus();
                     }
-                }else
-                {
-                    DisplayAlert("Error", "El usuario ingresado no existe", "Aceptar");
-                    txtUsuario.Text = "";
-                    txtContrasenia.Text = "";
-                    txtUsuario.Focus();
-                }                
-            }                       
+                }
+            }
+            else
+            {
+                DisplayAlert("Error", "Debe esperar que terminen de descargarse los datos para poder continuar.", "Aceptar");
+            }
+                                 
         }
         
         private async void imgImportar_Tapped(object sender, EventArgs e)
@@ -60,11 +69,29 @@ namespace TrabajoFinalApp
             {
                 imgImportar.IsVisible = false;
                 importarIndicator.IsVisible = true;
+                comprobarConexion();
+            }
+        }
+
+        private async Task comprobarConexion()
+        {
+            try
+            {
+                HttpClient clienteHttp = new HttpClient();
+                clienteHttp.BaseAddress = new Uri(txtDireccionWeb.Text);
+                string url = string.Format("/Exportar.aspx?exportar=vendedores");
+                var respuesta = clienteHttp.GetAsync(url);
+                
                 await importarVendedores();
                 await importarUbicaciones();
                 await importarClientes();
                 await importarArticulos();
                 await importarPedidos();
+                
+            }
+            catch (Exception)
+            {
+                await DisplayAlert("Error de conexión", "No se pudo descargar la informacion del sitio web. Compruebe que su conexión a internet este funcionando correctamente.", "Aceptar");
                 importarIndicator.IsVisible = false;
                 imgImportar.IsVisible = true;
             }
@@ -80,7 +107,7 @@ namespace TrabajoFinalApp
 
             //Se hace el request al servidor
             HttpClient clienteHttp = new HttpClient();
-            clienteHttp.BaseAddress = new Uri(lblDireccion.Text);
+            clienteHttp.BaseAddress = new Uri(txtDireccionWeb.Text);
             string url = string.Format("/Exportar.aspx?exportar=vendedores");
             var respuesta = await clienteHttp.GetAsync(url);
             var resultado = respuesta.Content.ReadAsStringAsync().Result;
@@ -118,7 +145,7 @@ namespace TrabajoFinalApp
 
             //Importa los Paises
             HttpClient clienteHttp = new HttpClient();
-            clienteHttp.BaseAddress = new Uri(lblDireccion.Text);
+            clienteHttp.BaseAddress = new Uri(txtDireccionWeb.Text);
             string url = string.Format("/Exportar.aspx?exportar=paises");
             var respuesta = await clienteHttp.GetAsync(url);
             var resultado = respuesta.Content.ReadAsStringAsync().Result;
@@ -181,7 +208,7 @@ namespace TrabajoFinalApp
 
             //Se importan los clientes
             HttpClient clienteHttp = new HttpClient();
-            clienteHttp.BaseAddress = new Uri(lblDireccion.Text);
+            clienteHttp.BaseAddress = new Uri(txtDireccionWeb.Text);
             string url = string.Format("/Exportar.aspx?exportar=clientes");
             var respuesta = await clienteHttp.GetAsync(url);
             var resultado = respuesta.Content.ReadAsStringAsync().Result;
@@ -222,7 +249,7 @@ namespace TrabajoFinalApp
 
             //Se hace el request al servidor
             HttpClient clienteHttp = new HttpClient();
-            clienteHttp.BaseAddress = new Uri(lblDireccion.Text);
+            clienteHttp.BaseAddress = new Uri(txtDireccionWeb.Text);
             string url = string.Format("/Exportar.aspx?exportar=articulos");
             var respuesta = await clienteHttp.GetAsync(url);
             var resultado = respuesta.Content.ReadAsStringAsync().Result;
@@ -254,7 +281,7 @@ namespace TrabajoFinalApp
             
             //Se importan todos los pedidos
             HttpClient clienteHttp = new HttpClient();
-            clienteHttp.BaseAddress = new Uri(lblDireccion.Text);
+            clienteHttp.BaseAddress = new Uri(txtDireccionWeb.Text);
             string url = string.Format("/Exportar.aspx?exportar=pedidos");
             var respuesta = await clienteHttp.GetAsync(url);
             var resultado = respuesta.Content.ReadAsStringAsync().Result;
@@ -308,7 +335,21 @@ namespace TrabajoFinalApp
                 }                
             }
 
-            await DisplayAlert("Descarga exitosa", "Los datos se descargaron exitosamente", "Aceptar");
+            importarIndicator.IsVisible = false;
+            imgImportar.IsVisible = true;
+            await DisplayAlert("Descarga exitosa", "Los datos se descargaron exitosamente", "Aceptar");            
+        }
+
+        private void imgConfig_Tapped(object sender, EventArgs e)
+        {
+            if (imgImportar.IsVisible)
+            {
+                frameDireccionWeb.IsVisible = !frameDireccionWeb.IsVisible;
+            }
+            else
+            {
+                DisplayAlert("Error", "Debe esperar que terminen de descargarse los datos para poder continuar.", "Aceptar");
+            }            
         }
     }
 }

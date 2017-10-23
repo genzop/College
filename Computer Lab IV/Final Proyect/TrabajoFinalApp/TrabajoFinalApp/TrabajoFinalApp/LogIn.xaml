@@ -6,14 +6,22 @@
     <ContentPage.Content>
         <StackLayout BackgroundColor="#0d2625" Padding="20">
 
-            <Image Source="utnGrande" WidthRequest="250" Margin="0, 70, 0 ,0"/>
+            <StackLayout Margin="0, 5, 0, 0" HorizontalOptions="End">
+                <Image x:Name="imgConfig" Source="config" WidthRequest="20">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="imgConfig_Tapped"/>
+                    </Image.GestureRecognizers>
+                </Image>
+            </StackLayout>
+
+            <Image Source="utnGrande" WidthRequest="250" Margin="0, 50, 0 ,0"/>
 
             <Frame Padding="20, 5, 20, 5" HorizontalOptions="FillAndExpand" Margin="0, 30, 0 ,0">
-                <Entry x:Name="txtUsuario" FontSize="17" Placeholder="Usuario" HorizontalOptions="FillAndExpand" Text="enzo"/>
+                <Entry x:Name="txtUsuario" FontSize="17" Placeholder="Usuario" HorizontalOptions="FillAndExpand"/>
             </Frame>
 
             <Frame Padding="20, 5, 20, 5" HorizontalOptions="FillAndExpand">
-                <Entry x:Name="txtContrasenia" IsPassword="True" FontSize="17"  Placeholder="Contraseña" HorizontalOptions="FillAndExpand" Text="enzo"/>
+                <Entry x:Name="txtContrasenia" IsPassword="True" FontSize="17"  Placeholder="Contraseña" HorizontalOptions="FillAndExpand"/>
             </Frame>
 
             <Button x:Name="btnLogIn" Text="Ingresar" BackgroundColor="#3AAFA9" TextColor="#FEFFFF" FontAttributes="Bold" Margin="0, 30, 0, 0" Clicked="btnLogIn_Clicked" HeightRequest="55"/>
@@ -25,11 +33,13 @@
                         <TapGestureRecognizer Tapped="imgImportar_Tapped"/>
                     </Image.GestureRecognizers>
                 </Image>
-            </StackLayout>
-
-            <!-- Entry invisible que sirve para especificar la direccion del servidor -->
-            <Label x:Name="lblDireccion" Text="http://192.168.1.38:63942/" IsVisible="False"/>
-
+            </StackLayout>            
+            
+            <!-- Entry que especifica la direccion del servidor -->
+            <Frame x:Name="frameDireccionWeb" Margin="0, 10, 0, 0" Padding="20, 5, 20, 5" HorizontalOptions="FillAndExpand" IsVisible="False">
+                <Entry x:Name="txtDireccionWeb" Text="http://192.168.1.38:63942/" />
+            </Frame>           
+            
         </StackLayout>            
     </ContentPage.Content>
 </ContentPage>

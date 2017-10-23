@@ -33,33 +33,47 @@ namespace TrabajoFinalApp
 
         private void txtBuscar_TextChanged(object sender, TextChangedEventArgs e)
         {
-            listPedidos.BeginRefresh();
-
-            if (string.IsNullOrEmpty(e.NewTextValue))
+            if (imgExportar.IsVisible)
             {
-                cargarPedidos();
+                listPedidos.BeginRefresh();
+
+                if (string.IsNullOrEmpty(e.NewTextValue))
+                {
+                    cargarPedidos();
+                }
+                else
+                {
+                    //Se cargan los pedidos correspondientes a ese vendedor
+                    using (var pedControlador = new ControladorPedido())
+                    {
+                        this.listaPedidos = new ObservableCollection<Pedido>(pedControlador.FindByVendedorAndRazonSocial(this.IdVendedor, e.NewTextValue));
+                    }
+
+                    listPedidos.ItemsSource = listaPedidos;
+                }
+
+                listPedidos.EndRefresh();
             }
             else
             {
-                //Se cargan los pedidos correspondientes a ese vendedor
-                using (var pedControlador = new ControladorPedido())
-                {
-                    this.listaPedidos = new ObservableCollection<Pedido>(pedControlador.FindByVendedorAndRazonSocial(this.IdVendedor, e.NewTextValue));
-                }
-
-                listPedidos.ItemsSource = listaPedidos;
-            }
-
-            listPedidos.EndRefresh();
+                DisplayAlert("Error", "Debe esperar que terminen de enviarse los datos para poder continuar.", "Aceptar");
+            }            
         }
              
         private async void listPedidos_ItemTapped(object sender, ItemTappedEventArgs e)
-        {                    
-            //No se muestra el item seleccionado
-            ((ListView)sender).SelectedItem = null;
+        {
+            if (imgExportar.IsVisible)
+            {
+                //No se muestra el item seleccionado
+                ((ListView)sender).SelectedItem = null;
 
-            //Se redirecciona a la pagina Editar Pedido con el pedido seleccionado
-            await Navigation.PushModalAsync(new EditarPedido((Pedido)e.Item, this.IdVendedor));            
+                //Se redirecciona a la pagina Editar Pedido con el pedido seleccionado
+                await Navigation.PushModalAsync(new EditarPedido((Pedido)e.Item, this.IdVendedor));
+            }
+            else
+            {
+                await DisplayAlert("Error", "Debe esperar que terminen de enviarse los datos para poder continuar.", "Aceptar");
+            }                      
         }       
 
         private async void imgExportar_Tapped(object sender, EventArgs e)
@@ -70,15 +84,21 @@ namespace TrabajoFinalApp
             {
                 imgExportar.IsVisible = false;
                 exportarIndicator.IsVisible = true;
+                
                 await exportarPedidos();
-                exportarIndicator.IsVisible = false;
-                imgExportar.IsVisible = true;
             }
         }
 
         private async void imgInsertar_Tapped(object sender, EventArgs e)
         {
-            await Navigation.PushModalAsync(new EditarPedido(null, this.IdVendedor));
+            if (imgExportar.IsVisible)
+            {
+                await Navigation.PushModalAsync(new EditarPedido(null, this.IdVendedor));
+            }
+            else
+            {
+                await DisplayAlert("Error", "Debe esperar que terminen de enviarse los datos para poder continuar.", "Aceptar");
+            }            
         }
 
         private void cargarPedidos()
@@ -97,74 +117,90 @@ namespace TrabajoFinalApp
             base.OnAppearing();
             cargarPedidos();
         }
+        
 
         private async Task exportarPedidos()
         {
-            //Cargar todos los pedidos editables de este vendedor  
-            List<Pedido> pedidosExportar;
-            bool operacionExitosa = true;
-
-            using (var cPedidos = new ControladorPedido())
+            try
             {
-                pedidosExportar = cPedidos.FindForExport(this.IdVendedor);
-            }
+                HttpClient clienteHttp = new HttpClient();
+                clienteHttp.BaseAddress = new Uri(Direccion);
+                string url = string.Format("/Exportar.aspx?exportar=vendedores");
+                var respuesta = await clienteHttp.GetAsync(url);
 
-            //Por cada pedido encontrado
-            foreach (Pedido pedExportar in pedidosExportar)
-            {
-                //Se cambia el atributo "editable" en todos los pedidos que fueron exportados
-                pedExportar.Editable = false;
-                using (var pControlador = new ControladorPedido())
+                //Cargar todos los pedidos editables de este vendedor  
+                List<Pedido> pedidosExportar;
+                bool operacionExitosa = true;
+
+                using (var cPedidos = new ControladorPedido())
                 {
-                    pControlador.Update(pedExportar);
+                    pedidosExportar = cPedidos.FindForExport(this.IdVendedor);
                 }
 
-                //Se guardan sus detalles
-                List<Detalle> detExportar;
-                using (var cDetalle = new ControladorDetalle())
+                //Por cada pedido encontrado
+                foreach (Pedido pedExportar in pedidosExportar)
                 {
-                    detExportar = cDetalle.FindByPedido(pedExportar.IdPedido);
-                }
+                    //Se cambia el atributo "editable" en todos los pedidos que fueron exportados
+                    pedExportar.Editable = false;
+                    using (var pControlador = new ControladorPedido())
+                    {
+                        pControlador.Update(pedExportar);
+                    }
 
-                //Se pasan a formato JSON
-                var pedidoJson = JsonConvert.SerializeObject(pedExportar, Newtonsoft.Json.Formatting.Indented);
-                var detallesJson = JsonConvert.SerializeObject(detExportar, Newtonsoft.Json.Formatting.Indented);
+                    //Se guardan sus detalles
+                    List<Detalle> detExportar;
+                    using (var cDetalle = new ControladorDetalle())
+                    {
+                        detExportar = cDetalle.FindByPedido(pedExportar.IdPedido);
+                    }
 
-                //Se crea una lista de parejas
-                var parejas = new List<KeyValuePair<string, string>>
+                    //Se pasan a formato JSON
+                    var pedidoJson = JsonConvert.SerializeObject(pedExportar, Newtonsoft.Json.Formatting.Indented);
+                    var detallesJson = JsonConvert.SerializeObject(detExportar, Newtonsoft.Json.Formatting.Indented);
+
+                    //Se crea una lista de parejas
+                    var parejas = new List<KeyValuePair<string, string>>
                     {
                         new KeyValuePair<string, string>("pedido", pedidoJson),
                         new KeyValuePair<string, string>("detalles", detallesJson)
                     };
 
-                //Se le da formato de formulario
-                var contenido = new FormUrlEncodedContent(parejas);
+                    //Se le da formato de formulario
+                    var contenido = new FormUrlEncodedContent(parejas);
 
-                //Se envia el pedido y sus detalles correspondientes al servidor
-                HttpClient clienteHttp = new HttpClient();
-                clienteHttp.BaseAddress = new Uri(this.Direccion);
-                string url = string.Format("/Importar.aspx");
-                var respuesta = clienteHttp.PostAsync(url, contenido).Result;
+                    //Se envia el pedido y sus detalles correspondientes al servidor
+                    clienteHttp = new HttpClient();
+                    clienteHttp.BaseAddress = new Uri(this.Direccion);
+                    url = string.Format("/Importar.aspx");
+                    respuesta = clienteHttp.PostAsync(url, contenido).Result;
 
-                if (!respuesta.IsSuccessStatusCode)
-                {
-                    operacionExitosa = false;
+                    if (!respuesta.IsSuccessStatusCode)
+                    {
+                        operacionExitosa = false;
+                    }
                 }
-            }
 
-            //Si fue exitosa la operacion se muestra un mensaje
-            if (operacionExitosa)
+                //Si fue exitosa la operacion se muestra un mensaje
+                if (operacionExitosa)
+                {
+                    exportarIndicator.IsVisible = false;
+                    imgExportar.IsVisible = true;
+                    if (pedidosExportar.Count > 0)
+                    {
+                        await DisplayAlert("Exportacion exitosa", "Los pedidos se exportaron exitosamente", "Aceptar");
+                        App.Current.MainPage = new Pedidos(this.IdVendedor, this.Direccion);
+                    }
+                    else
+                    {
+                        await DisplayAlert("Exportacion fallida", "No hay ningun pedido para exportar", "Aceptar");
+                    }
+                }
+
+            }
+            catch (Exception)
             {
-                if (pedidosExportar.Count > 0)
-                {
-                    await DisplayAlert("Exportacion exitosa", "Los pedidos se exportaron exitosamente", "Aceptar");
-                    App.Current.MainPage = new Pedidos(this.IdVendedor, this.Direccion);
-                }
-                else
-                {
-                    await DisplayAlert("Exportacion fallida", "No hay ningun pedido para exportar", "Aceptar");
-                }
-            }
+                await DisplayAlert("Error de conexión", "No se pudo descargar la informacion del sitio web. Compruebe que su conexión a internet este funcionando correctamente.", "Aceptar");
+            }            
         }
     }
 }
