@@ -26,7 +26,7 @@
                                 <asp:SqlDataSource ID="SqlDataSourcePaises" runat="server" ConnectionString="<%$ ConnectionStrings:TrabajoFinalConnectionString %>" SelectCommand="SELECT * FROM [Pais] ORDER BY [Denominacion]"></asp:SqlDataSource>
                                 <asp:ImageButton ID="imgAddPais" runat="server" ImageUrl="~/img/add.png" Width="20px" OnClick="imgAddPais_Click" Style="margin: 0px 0px 0px 8px" />
                                 <asp:ImageButton ID="imgEditPais" runat="server" ImageUrl="~/img/edit.png" Width="20px" OnClick="imgEditPais_Click" Style="margin: 0px 0px 0px 8px" />
-                                <asp:ImageButton ID="imgDeletePais" runat="server" ImageUrl="~/img/delete.png" Width="20px" OnClientClick="return confirm('¿Esta seguro que quiere borrar este pais?')" OnClick="imgDeletePais_Click" Style="margin: 0px 0px 0px 8px" />
+                                <asp:ImageButton ID="imgDeletePais" runat="server" ImageUrl="~/img/delete.png" Width="20px" OnClientClick="return confirm('¿Esta seguro que quiere eliminar este pais?')" OnClick="imgDeletePais_Click" Style="margin: 0px 0px 0px 8px" />
                             </div>                            
                         </td>
                         <td style="vertical-align: top">
@@ -44,7 +44,7 @@
                                 </asp:SqlDataSource>
                                 <asp:ImageButton ID="imgAddProvincia" runat="server" ImageUrl="~/img/add.png" OnClick="imgAddProvincia_Click" Width="20px" Style="margin: 0px 0px 0px 8px" />
                                 <asp:ImageButton ID="imgEditProvincia" runat="server" ImageUrl="~/img/edit.png" OnClick="imgEditProvincia_Click" Width="20px" Style="margin: 0px 0px 0px 8px" />
-                                <asp:ImageButton ID="imgDeleteProvincia" runat="server" ImageUrl="~/img/delete.png" OnClientClick="return confirm('¿Esta seguro que quiere borrar esta provincia?')" OnClick="imgDeleteProvincia_Click" Width="20px" Style="margin: 0px 0px 0px 8px" />
+                                <asp:ImageButton ID="imgDeleteProvincia" runat="server" ImageUrl="~/img/delete.png" OnClientClick="return confirm('¿Esta seguro que quiere eliminar esta provincia?')" OnClick="imgDeleteProvincia_Click" Width="20px" Style="margin: 0px 0px 0px 8px" />
                             </div>                                                       
                         </td>
                         <td style="vertical-align: top">
@@ -62,7 +62,7 @@
                                 </asp:SqlDataSource>
                                 <asp:ImageButton ID="imgAddLocalidad" runat="server" ImageUrl="~/img/add.png" OnClick="imgAddLocalidad_Click" Width="20px" Style="margin: 0px 0px 0px 8px" />
                                 <asp:ImageButton ID="imgEditLocalidad" runat="server" ImageUrl="~/img/edit.png" OnClick="imgEditLocalidad_Click" Width="20px" Style="margin: 0px 0px 0px 8px" />
-                                <asp:ImageButton ID="imgDeleteLocalidad" runat="server" ImageUrl="~/img/delete.png" OnClientClick="return confirm('¿Esta seguro que quiere borrar esta localidad?')" OnClick="imgDeleteLocalidad_Click" Width="20px" Style="margin: 0px 0px 0px 8px" />
+                                <asp:ImageButton ID="imgDeleteLocalidad" runat="server" ImageUrl="~/img/delete.png" OnClientClick="return confirm('¿Esta seguro que quiere eliminar esta localidad?')" OnClick="imgDeleteLocalidad_Click" Width="20px" Style="margin: 0px 0px 0px 8px" />
                             </div>                            
                         </td>
                     </tr>
@@ -81,7 +81,7 @@
                         <p class="editContentTitle" style="font-weight: bold">Denominacion</p>
                         <asp:TextBox ID="txtDenominacion" runat="server" TextMode="MultiLine" Rows="4" CssClass="inputCentrado" Style="resize: none"></asp:TextBox>
                         <asp:RequiredFieldValidator ID="rfvDenominacion" runat="server" ValidationGroup="formGroup" ControlToValidate="txtDenominacion" ErrorMessage="* Este campo es obligatorio" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
-                        <asp:RegularExpressionValidator ID="revDenominacion" runat="server" ValidationGroup="formGroup" ControlToValidate="txtDenominacion" ValidationExpression="^(\s|.){1,50}$" ErrorMessage="* La denominacion puede contener hasta un máximo de 200 caracteres" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />                        
+                        <asp:RegularExpressionValidator ID="revDenominacion" runat="server" ValidationGroup="formGroup" ControlToValidate="txtDenominacion" ValidationExpression="^(\s|.){1,50}$" ErrorMessage="* La denominacion puede contener hasta un máximo de 50 caracteres" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />                        
                         <asp:CustomValidator ID="csvDenominacionUnica" runat="server" ValidationGroup="formGroup" OnServerValidate="csvDenominacionUnica_ServerValidate" ErrorMessage="*Esta denominacion ya esta en uso" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />                        
                     </div>
 

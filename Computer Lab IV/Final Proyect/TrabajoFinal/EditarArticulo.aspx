@@ -35,13 +35,13 @@
                     <p class="editContentTitle" style="font-weight: bold">Precio de Compra</p>
                     <asp:textbox id="txtPrecioCompra" runat="server" cssclass="inputCentrado" />
                     <asp:RequiredFieldValidator ID="rvfPrecioCompra" runat="server" ControlToValidate="txtPrecioCompra" ErrorMessage="* Este campo es obligatorio" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px"/>                             
-                    <asp:RegularExpressionValidator ID="revPrecioCompra" runat="server" ControlToValidate="txtPrecioCompra" ValidationExpression="[+-]?([0-9]*[,])?[0-9]+" ErrorMessage="* El precio de compra solo puede ser un numero" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px"/>                                            
+                    <asp:RegularExpressionValidator ID="revPrecioCompra" runat="server" ControlToValidate="txtPrecioCompra" ValidationExpression="(\d*[,])?\d+" ErrorMessage="* El precio de compra solo puede ser un numero" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px"/>                                            
                 </div>
                 <div class="editContent">
                     <p class="editContentTitle" style="font-weight: bold">Precio de Venta</p>
                     <asp:textbox id="txtPrecioVenta" runat="server" cssclass="inputCentrado" />
                     <asp:RequiredFieldValidator ID="rfvPrecioVenta" runat="server" ControlToValidate="txtPrecioVenta" ErrorMessage="* Este campo es obligatorio" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px"/>         
-                    <asp:RegularExpressionValidator ID="revPrecioVenta" runat="server" ControlToValidate="txtPrecioVenta" ValidationExpression="[+-]?([0-9]*[,])?[0-9]+" ErrorMessage="* El precio de venta solo puede ser un numero" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px"/>                                          
+                    <asp:RegularExpressionValidator ID="revPrecioVenta" runat="server" ControlToValidate="txtPrecioVenta" ValidationExpression="(\d*[,])?\d+" ErrorMessage="* El precio de venta solo puede ser un numero" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px"/>                                          
                 </div>
                 <div class="editContent">
                     <p class="editContentTitle" style="font-weight: bold">Rubro</p>

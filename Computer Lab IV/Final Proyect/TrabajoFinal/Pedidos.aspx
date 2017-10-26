@@ -53,7 +53,7 @@
                             </asp:TemplateField>
                             <asp:TemplateField HeaderStyle-BackColor="#17252a" ItemStyle-BackColor="#17252a" ItemStyle-Width="30px">
                                 <ItemTemplate>
-                                    <asp:ImageButton ID="imgDelete" runat="server" ImageUrl="~/img/delete.png" Width="20px" OnClientClick="return confirm('¿Esta seguro que quiere borrar este pedido?')" OnCommand="imgDelete_Command" CommandArgument='<%# Eval("IdPedido") %>' ImageAlign="Left" />
+                                    <asp:ImageButton ID="imgDelete" runat="server" ImageUrl="~/img/delete.png" Width="20px" OnClientClick="return confirm('¿Esta seguro que quiere eliminar este pedido?')" OnCommand="imgDelete_Command" CommandArgument='<%# Eval("IdPedido") %>' ImageAlign="Left" />
                                 </ItemTemplate>
                             </asp:TemplateField>
                         </Columns>

@@ -69,58 +69,51 @@ namespace TrabajoFinalApp
             {
                 imgImportar.IsVisible = false;
                 importarIndicator.IsVisible = true;
-                comprobarConexion();
-            }
-        }
-
-        private async Task comprobarConexion()
-        {
-            try
-            {
-                HttpClient clienteHttp = new HttpClient();
-                clienteHttp.BaseAddress = new Uri(txtDireccionWeb.Text);
-                string url = string.Format("/Exportar.aspx?exportar=vendedores");
-                var respuesta = clienteHttp.GetAsync(url);
-                
                 await importarVendedores();
-                await importarUbicaciones();
-                await importarClientes();
-                await importarArticulos();
-                await importarPedidos();
-                
-            }
-            catch (Exception)
-            {
-                await DisplayAlert("Error de conexión", "No se pudo descargar la informacion del sitio web. Compruebe que su conexión a internet este funcionando correctamente.", "Aceptar");
-                importarIndicator.IsVisible = false;
-                imgImportar.IsVisible = true;
             }
         }
 
         private async Task importarVendedores()
         {
-            //Se eliminan todos los vendedores
-            using (var cVendedor = new ControladorVendedor())
+            try
             {
-                cVendedor.DeleteAll();
-            }
+                //Hace el request al servidor
+                HttpClient clienteHttp = new HttpClient();
+                clienteHttp.BaseAddress = new Uri(txtDireccionWeb.Text);
+                clienteHttp.Timeout = TimeSpan.FromSeconds(30);
+                HttpResponseMessage respuesta = await clienteHttp.GetAsync("/Exportar.aspx?exportar=vendedores");
 
-            //Se hace el request al servidor
-            HttpClient clienteHttp = new HttpClient();
-            clienteHttp.BaseAddress = new Uri(txtDireccionWeb.Text);
-            string url = string.Format("/Exportar.aspx?exportar=vendedores");
-            var respuesta = await clienteHttp.GetAsync(url);
-            var resultado = respuesta.Content.ReadAsStringAsync().Result;
-            List<Vendedor> vendedores = JsonConvert.DeserializeObject<List<Vendedor>>(resultado);
-
-            //Se persisten a la base de datos
-            using (var cVendedor = new ControladorVendedor())
-            {
-                foreach (Vendedor vend in vendedores)
+                //Si el request es exitoso
+                if (respuesta.IsSuccessStatusCode)
                 {
-                    cVendedor.Insert(vend);
+                    //Elimina todos los vendedores
+                    using (var cVendedor = new ControladorVendedor())
+                    {
+                        cVendedor.DeleteAll();
+                    }
+
+                    //Guarda los vendedores en un list
+                    var resultado = respuesta.Content.ReadAsStringAsync().Result;
+                    List<Vendedor> vendedores = JsonConvert.DeserializeObject<List<Vendedor>>(resultado);
+
+                    //Persiste los vendedores a la base de datos
+                    using (var cVendedor = new ControladorVendedor())
+                    {
+                        foreach (Vendedor vend in vendedores)
+                        {
+                            cVendedor.Insert(vend);
+                        }
+                    }
+
+                    await importarUbicaciones();
                 }
             }
+            catch (Exception)
+            {
+                importarIndicator.IsVisible = false;
+                imgImportar.IsVisible = true;
+                await DisplayAlert("Error de conexión", "No se pudo descargar la informacion del sitio web. Compruebe que su conexión a internet este funcionando correctamente.", "Aceptar");                
+            }                       
         }
 
         private async Task importarUbicaciones()
@@ -190,6 +183,7 @@ namespace TrabajoFinalApp
                 }
             }
 
+            await importarClientes();
         }
 
         private async Task importarClientes()
@@ -237,6 +231,8 @@ namespace TrabajoFinalApp
                     cCliente.Insert(cli);
                 }
             }
+
+            await importarArticulos();            
         }
 
         private async Task importarArticulos()
@@ -263,6 +259,8 @@ namespace TrabajoFinalApp
                     cArticulo.Insert(art);
                 }
             }
+
+            await importarPedidos();
         }
 
         private async Task importarPedidos()

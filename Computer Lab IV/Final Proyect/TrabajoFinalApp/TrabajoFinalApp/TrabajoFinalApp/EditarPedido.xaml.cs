@@ -63,6 +63,7 @@ namespace TrabajoFinalApp
             {
                 lblTitulo.Text = "Agregar Pedido";
                 this.tempPedido = new Pedido();
+                tempPedido.Editable = true;
                 this.tempDomicilio = new Domicilio();
                 int idPedido;
                 using (var cPedido = new ControladorPedido())

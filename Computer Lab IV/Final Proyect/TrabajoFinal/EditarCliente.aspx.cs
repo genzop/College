@@ -63,7 +63,7 @@ public partial class EditarCliente : System.Web.UI.Page
                     {
                         txtRazonSocial.Text = tempCliente.RazonSocial;
                         txtCuit.Text = tempCliente.Cuit;
-                        txtSaldo.Text = "$ " + tempCliente.Saldo.ToString();
+                        txtSaldo.Text = String.Format("{0:C}", tempCliente.Saldo);
                         txtCalle.Text = tempDomicilio.Calle;
                         txtNumero.Text = tempDomicilio.Numero.ToString();
                         if (tempDomicilio.Latitud == null)

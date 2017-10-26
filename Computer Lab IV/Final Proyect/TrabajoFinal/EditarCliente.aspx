@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Navegacion.master" AutoEventWireup="true" CodeFile="EditarCliente.aspx.cs" Inherits="EditarCliente" %>
+﻿    <%@ Page Title="" Language="C#" MasterPageFile="~/Navegacion.master" AutoEventWireup="true" CodeFile="EditarCliente.aspx.cs" Inherits="EditarCliente" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="cphCabecera" runat="Server">
     <title>Editar Cliente</title>
@@ -35,10 +35,10 @@
                             <asp:TableCell Width="33%" style="vertical-align: top">
                                 <!-- Cuit -->
                                 <div class="editContent">
-                                    <p class="editContentTitle" style="font-weight: bold">CUIT</p>
+                                    <p class="editContentTitle" style="font-weight: bold">Cuit</p>
                                     <asp:TextBox ID="txtCuit" runat="server" CssClass="inputCentrado"></asp:TextBox>
                                     <asp:RequiredFieldValidator ID="rfvCuit" runat="server" ControlToValidate="txtCuit" ErrorMessage="* Este campo es obligatorio" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
-                                    <asp:RegularExpressionValidator ID="revCuit" runat="server" ControlToValidate="txtCuit" ValidationExpression="([0-9]{2}-[0-9]{8}-[0-9]{1})" ErrorMessage="* No es un numero de CUIT válido" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
+                                    <asp:RegularExpressionValidator ID="revCuit" runat="server" ControlToValidate="txtCuit" ValidationExpression="(\d{2}-\d{8}-\d{1})" ErrorMessage="* No es un numero de CUIT válido" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
                                     <asp:CustomValidator ID="cvCuitUnico" runat="server" OnServerValidate="cvCuitUnico_ServerValidate" ErrorMessage="* El cuit ingresado ya esta en uso" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
                                 </div>
                             </asp:TableCell>
@@ -67,7 +67,7 @@
                                     <p class="editContentTitle" style="font-weight: bold">Numero</p>
                                     <asp:TextBox ID="txtNumero" runat="server" CssClass="inputCentrado"></asp:TextBox>
                                     <asp:RequiredFieldValidator ID="rfvNumero" runat="server" ControlToValidate="txtNumero" ErrorMessage="* Este campo es obligatorio" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
-                                    <asp:RegularExpressionValidator ID="revNumero" runat="server" ControlToValidate="txtNumero" ValidationExpression="[0-9]+" ErrorMessage="* Debe ser un numero entero" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
+                                    <asp:RegularExpressionValidator ID="revNumero" runat="server" ControlToValidate="txtNumero" ValidationExpression="\d+" ErrorMessage="* Debe ser un numero entero" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
                                 </div>
                                 <!-- Pais -->
                                 <div class="editContent">
@@ -112,8 +112,10 @@
                                 </div>
                             </asp:TableCell>
                             <asp:TableCell>
-                        <div style="padding-top: 13px"></div>
-                        <div id="mapa" style="width: 93%; height: 470px; margin-left: 30px"></div>
+                                <div class="editContent">
+                                    <p class="editContentTitle" style="font-weight: bold">Mapa</p>
+                                    <div id="mapa" style="width: 100%; height: 470px; margin-top: 5px", />                                        
+                                </div>
                             </asp:TableCell>
                         </asp:TableRow>
                     </asp:Table>

@@ -36,19 +36,21 @@
                             <p class="editContentTitle" style="font-weight: bold">Nombre</p>
                             <asp:TextBox ID="txtNombre" runat="server" CssClass="inputCentrado" />
                             <asp:RequiredFieldValidator ID="rfvNombre" runat="server" ControlToValidate="txtNombre" ErrorMessage="* Este campo es obligatorio" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
+                            <asp:RegularExpressionValidator ID="revNombre" runat="server" ControlToValidate="txtNombre" ValidationExpression="^(\s|.){1,30}$" ErrorMessage="* El nombre puede contener hasta un máximo de 30 caracteres" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px"/>    
                         </div>
 
                         <div class="editContent">
                             <p class="editContentTitle" style="font-weight: bold">Apellido</p>
                             <asp:TextBox ID="txtApellido" runat="server" CssClass="inputCentrado" />
                             <asp:RequiredFieldValidator ID="rfvApellido" runat="server" ControlToValidate="txtApellido" ErrorMessage="* Este campo es obligatorio" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
+                            <asp:RegularExpressionValidator ID="revApellido" runat="server" ControlToValidate="txtApellido" ValidationExpression="^(\s|.){1,30}$" ErrorMessage="* El apellido puede contener hasta un máximo de 30 caracteres" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px"/>    
                         </div>
 
                         <div class="editContent">
                             <p class="editContentTitle" style="font-weight: bold">Nombre de usuario</p>
                             <asp:TextBox ID="txtUsuario" runat="server" CssClass="inputCentrado" CausesValidation="true" />                            
                             <asp:RequiredFieldValidator ID="rfvUsuario" runat="server" ControlToValidate="txtUsuario" ErrorMessage="* Este campo es obligatorio" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />                                                                                    
-                            <asp:RegularExpressionValidator ID="revUsuario" runat="server" ControlToValidate="txtUsuario" ValidationExpression="^[\w]{0,8}" ErrorMessage="* El nombre de usuario puede contener hasta un máximo de 12 caracteres alfanuméricos" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />                            
+                            <asp:RegularExpressionValidator ID="revUsuario" runat="server" ControlToValidate="txtUsuario" ValidationExpression="^(\w|\d){1,20}" ErrorMessage="* El nombre de usuario puede contener hasta un máximo de 20 caracteres alfanuméricos" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />                            
                             <asp:CustomValidator ID="cvUsuarioUnico" runat="server" OnServerValidate="cvUsuarioUnico_ServerValidate" ErrorMessage="* El nombre de usuario ya esta en uso" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />                                                                                    
                         </div>
 
@@ -56,7 +58,7 @@
                             <p class="editContentTitle" style="font-weight: bold">Contraseña</p>
                             <asp:TextBox ID="txtContrasenia" runat="server" CssClass="inputCentrado" />
                             <asp:RequiredFieldValidator ID="rfvContrasenia" runat="server" ControlToValidate="txtContrasenia" ErrorMessage="* Este campo es obligatorio" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
-                            <asp:RegularExpressionValidator ID="revContrasenia" runat="server" ControlToValidate="txtContrasenia" ValidationExpression="^[\w]{1,12}" ErrorMessage="* La contraseña puede contener hasta un máximo de 12 caracteres alfanuméricos" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
+                            <asp:RegularExpressionValidator ID="revContrasenia" runat="server" ControlToValidate="txtContrasenia" ValidationExpression="^(\w|\d){1,20}" ErrorMessage="* La contraseña puede contener hasta un máximo de 20 caracteres alfanuméricos" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" />
                         </div>
 
                         <div class="editContent">

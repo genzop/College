@@ -83,8 +83,7 @@ namespace TrabajoFinalApp
             if (confirmacion)
             {
                 imgExportar.IsVisible = false;
-                exportarIndicator.IsVisible = true;
-                
+                exportarIndicator.IsVisible = true;                
                 await exportarPedidos();
             }
         }
@@ -116,22 +115,14 @@ namespace TrabajoFinalApp
         {
             base.OnAppearing();
             cargarPedidos();
-        }
-        
+        }        
 
         private async Task exportarPedidos()
         {
             try
             {
-                HttpClient clienteHttp = new HttpClient();
-                clienteHttp.BaseAddress = new Uri(Direccion);
-                string url = string.Format("/Exportar.aspx?exportar=vendedores");
-                var respuesta = await clienteHttp.GetAsync(url);
-
                 //Cargar todos los pedidos editables de este vendedor  
                 List<Pedido> pedidosExportar;
-                bool operacionExitosa = true;
-
                 using (var cPedidos = new ControladorPedido())
                 {
                     pedidosExportar = cPedidos.FindForExport(this.IdVendedor);
@@ -140,13 +131,6 @@ namespace TrabajoFinalApp
                 //Por cada pedido encontrado
                 foreach (Pedido pedExportar in pedidosExportar)
                 {
-                    //Se cambia el atributo "editable" en todos los pedidos que fueron exportados
-                    pedExportar.Editable = false;
-                    using (var pControlador = new ControladorPedido())
-                    {
-                        pControlador.Update(pedExportar);
-                    }
-
                     //Se guardan sus detalles
                     List<Detalle> detExportar;
                     using (var cDetalle = new ControladorDetalle())
@@ -167,39 +151,43 @@ namespace TrabajoFinalApp
 
                     //Se le da formato de formulario
                     var contenido = new FormUrlEncodedContent(parejas);
-
+                                        
                     //Se envia el pedido y sus detalles correspondientes al servidor
-                    clienteHttp = new HttpClient();
+                    HttpClient clienteHttp = new HttpClient();
                     clienteHttp.BaseAddress = new Uri(this.Direccion);
-                    url = string.Format("/Importar.aspx");
-                    respuesta = clienteHttp.PostAsync(url, contenido).Result;
+                    clienteHttp.Timeout = TimeSpan.FromSeconds(30);
+                    string url = string.Format("/Importar.aspx");
+                    HttpResponseMessage respuesta = clienteHttp.PostAsync(url, contenido).Result;
 
-                    if (!respuesta.IsSuccessStatusCode)
+                    if (respuesta.IsSuccessStatusCode)
                     {
-                        operacionExitosa = false;
+                        //Se cambia el atributo "editable" en todos los pedidos que fueron exportados
+                        pedExportar.Editable = false;
+                        using (var pControlador = new ControladorPedido())
+                        {
+                            pControlador.Update(pedExportar);
+                        }                        
                     }
+
                 }
 
-                //Si fue exitosa la operacion se muestra un mensaje
-                if (operacionExitosa)
+                exportarIndicator.IsVisible = false;
+                imgExportar.IsVisible = true;
+                if (pedidosExportar.Count > 0)
                 {
-                    exportarIndicator.IsVisible = false;
-                    imgExportar.IsVisible = true;
-                    if (pedidosExportar.Count > 0)
-                    {
-                        await DisplayAlert("Exportacion exitosa", "Los pedidos se exportaron exitosamente", "Aceptar");
-                        App.Current.MainPage = new Pedidos(this.IdVendedor, this.Direccion);
-                    }
-                    else
-                    {
-                        await DisplayAlert("Exportacion fallida", "No hay ningun pedido para exportar", "Aceptar");
-                    }
+                    await DisplayAlert("Exportacion exitosa", "Los pedidos se exportaron exitosamente", "Aceptar");
+                    App.Current.MainPage = new Pedidos(this.IdVendedor, this.Direccion);
                 }
-
+                else
+                {
+                    await DisplayAlert("Exportacion fallida", "No hay ningun pedido para exportar", "Aceptar");
+                }
             }
             catch (Exception)
             {
-                await DisplayAlert("Error de conexión", "No se pudo descargar la informacion del sitio web. Compruebe que su conexión a internet este funcionando correctamente.", "Aceptar");
+                exportarIndicator.IsVisible = false;
+                imgExportar.IsVisible = true;
+                await DisplayAlert("Error de conexión", "No se pudo enviar la informacion al sitio web. Compruebe que su conexión a internet este funcionando correctamente.", "Aceptar");
             }            
         }
     }

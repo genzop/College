@@ -159,12 +159,24 @@ public partial class Localidades : System.Web.UI.Page
 
     protected void imgDeleteLocalidad_Click(object sender, ImageClickEventArgs e)
     {
-        var localidad = (from loc in bd.Localidads
-                         where loc.IdLocalidad == Convert.ToInt32(ddlLocalidades.SelectedValue)
-                         select loc).FirstOrDefault();
-        bd.Localidads.DeleteOnSubmit(localidad);
-        bd.SubmitChanges();
-        ddlLocalidades.DataBind();
+        //Verifica si no hay ninguna Localidad asociada con esta Provincia
+        bool tieneDomicilios = (from dom in bd.Domicilios
+                                where dom.IdLocalidad == Convert.ToInt32(ddlLocalidades.SelectedValue)
+                                select dom).Any();
+        if (!tieneDomicilios)
+        {
+            //Si no hay niguna, elimina la Provincia
+            var localidad = (from loc in bd.Localidads
+                             where loc.IdLocalidad == Convert.ToInt32(ddlLocalidades.SelectedValue)
+                             select loc).FirstOrDefault();
+            bd.Localidads.DeleteOnSubmit(localidad);
+            bd.SubmitChanges();
+            ddlLocalidades.DataBind();
+        }
+        else
+        {
+            ScriptManager.RegisterClientScriptBlock(updatePanel, GetType(), "errorEliminarLocalidad", "alert('ERROR: No se puede eliminar esta pronvincia ya que aún tiene domicilios asociados')", true);
+        }        
     }
 
     protected void btnGuardar_Click(object sender, EventArgs e)

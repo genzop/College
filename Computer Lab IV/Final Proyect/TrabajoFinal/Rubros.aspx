@@ -45,7 +45,7 @@
                         </asp:TemplateField>
                         <asp:TemplateField HeaderStyle-BackColor="#17252a" ItemStyle-BackColor="#17252a" ItemStyle-Width="30px">
                             <ItemTemplate>
-                                <asp:ImageButton ID="imgDelete" runat="server" ImageUrl="~/img/delete.png" Width="18px" OnClientClick="return confirm('¿Esta seguro que quiere borrar este rubro?')" OnCommand="imgDelete_Command" CommandArgument='<%# Eval("IdRubro") %>' ImageAlign="Left" />
+                                <asp:ImageButton ID="imgDelete" runat="server" ImageUrl="~/img/delete.png" Width="18px" OnClientClick="return confirm('¿Esta seguro que quiere eliminar este rubro?')" OnCommand="imgDelete_Command" CommandArgument='<%# Eval("IdRubro") %>' ImageAlign="Left" />
                             </ItemTemplate>
                         </asp:TemplateField>
                     </Columns>
