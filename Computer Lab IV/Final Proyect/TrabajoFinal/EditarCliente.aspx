@@ -118,9 +118,19 @@
                                 </div>
                             </asp:TableCell>
                         </asp:TableRow>
+                    </asp:Table><br />
+
+                    <asp:Table runat="server" Style="margin: 0 auto">
+                        <asp:TableRow>
+                            <asp:TableCell>
+                                <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" CausesValidation="false" CssClass="botonImportante" Width="200px" OnClick="btnCancelar_Click" Style="margin-right: 20px" />
+                            </asp:TableCell>
+                            <asp:TableCell>
+                                <asp:Button ID="btnAccion" runat="server" Text="Guardar" CssClass="botonImportante" OnClick="btnAccion_Click" Width="200px"/>
+                            </asp:TableCell>
+                        </asp:TableRow>
                     </asp:Table>
 
-                    <asp:Button ID="btnAccion" runat="server" Text="Guardar" CssClass="botonImportante" OnClick="btnAccion_Click" Width="200px" Style="margin-top: 20px" />
                 </ContentTemplate>
             </asp:UpdatePanel>
 

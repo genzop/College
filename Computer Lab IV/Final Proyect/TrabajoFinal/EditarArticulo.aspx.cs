@@ -114,4 +114,9 @@ public partial class EditarArticulo : System.Web.UI.Page
             }
         }
     }
+
+    protected void btnCancelar_Click(object sender, EventArgs e)
+    {
+        Response.Redirect("Articulos.aspx");
+    }
 }

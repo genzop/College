@@ -40,6 +40,7 @@ input[type="text"], input[type="date"], input[type="submit"], input[type="passwo
     background-color: #3AAFA9;
     color: #FFFFFF;
     font-weight: bold;
+    height: 40px;
 }
 
 input[type="image"]{

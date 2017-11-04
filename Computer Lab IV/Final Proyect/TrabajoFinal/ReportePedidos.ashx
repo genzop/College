@@ -24,10 +24,12 @@ public class ReportePedidos : IHttpHandler, IRequiresSessionState
         string txtCliente = "-";
         string txtFechaInicio = "-";
         string txtFechaFin = "-";
+        string txtEstado = "-";
+        string txtPagado = "-";
         string txtPais = "-";
         string txtProvincia = "-";
         string txtLocalidad = "-";
-        string txtPagado = "-";
+
 
         if (context.Session["PedidoVendedor"].ToString() != "-")
         {
@@ -53,6 +55,18 @@ public class ReportePedidos : IHttpHandler, IRequiresSessionState
             context.Session["PedidoFechaFin"] = null;
         }
 
+        if(context.Session["PedidoEstado"].ToString() != "-")
+        {
+            txtEstado = context.Session["PedidoEstado"].ToString();
+            context.Session["PedidoEstado"] = null;
+        }
+
+        if (context.Session["PedidoPagado"].ToString() != "-")
+        {
+            txtPagado = context.Session["PedidoPagado"].ToString();
+            context.Session["PedidoPagado"] = null;
+        }
+
         if (context.Session["PedidoPais"].ToString() != "-")
         {
             txtPais = context.Session["PedidoPais"].ToString();
@@ -69,12 +83,6 @@ public class ReportePedidos : IHttpHandler, IRequiresSessionState
         {
             txtLocalidad = context.Session["PedidoLocalidad"].ToString();
             context.Session["PedidoLocalidad"] = null;
-        }
-
-        if (context.Session["PedidoPagado"].ToString() != "-")
-        {
-            txtPagado = context.Session["PedidoPagado"].ToString();
-            context.Session["PedidoPagado"] = null;
         }
 
 
@@ -141,7 +149,7 @@ public class ReportePedidos : IHttpHandler, IRequiresSessionState
             documento.Add(tablaEncabezado);
 
             //Titulo
-            Paragraph titulo = new Paragraph("Reporte Pedidos", fuenteTitulo);
+            Paragraph titulo = new Paragraph("Listado de Pedidos", fuenteTitulo);
             titulo.Alignment = Element.ALIGN_CENTER;
             titulo.SpacingAfter = 30;
             documento.Add(titulo);
@@ -166,40 +174,11 @@ public class ReportePedidos : IHttpHandler, IRequiresSessionState
             tablaFiltrosPersonas.AddCell(cellFiltroVendedor);
             tablaFiltrosPersonas.AddCell(cellFiltroCliente);
 
-            documento.Add(tablaFiltrosPersonas);
-
-            //Tabla Filtros Fechas y Pagado                
-            PdfPTable tablaFiltrosFechas = new PdfPTable(3);
-            tablaFiltrosFechas.WidthPercentage = 100;
-
-            Paragraph filtroFechaInicio = new Paragraph();
-            filtroFechaInicio.Add(new Phrase("A partir de: ", fuente9Negrita));
-            filtroFechaInicio.Add(new Phrase(txtFechaInicio, fuente9));
-            PdfPCell cellFiltroFechaInicio = new PdfPCell(filtroFechaInicio);
-            cellFiltroFechaInicio.BorderWidth = 0;
-
-            Paragraph filtroFechaFin = new Paragraph();
-            filtroFechaFin.Add(new Phrase("Hasta: ", fuente9Negrita));
-            filtroFechaFin.Add(new Phrase(txtFechaFin, fuente9));
-            PdfPCell cellFiltroFechaFin = new PdfPCell(filtroFechaFin);
-            cellFiltroFechaFin.BorderWidth = 0;
-
-            Paragraph filtroPagado = new Paragraph();
-            filtroPagado.Add(new Phrase("Pagado: ", fuente9Negrita));
-            filtroPagado.Add(new Phrase(txtPagado, fuente9));
-            PdfPCell cellFiltroPagado = new PdfPCell(filtroPagado);
-            cellFiltroPagado.BorderWidth = 0;
-
-            tablaFiltrosFechas.AddCell(cellFiltroFechaInicio);
-            tablaFiltrosFechas.AddCell(cellFiltroFechaFin);
-            tablaFiltrosFechas.AddCell(cellFiltroPagado);
-
-            documento.Add(tablaFiltrosFechas);
+            documento.Add(tablaFiltrosPersonas);                                                               
 
             //Tabla Filtros Ubicacion
-            PdfPTable tablaFiltrosUbicacion = new PdfPTable(3);
-            tablaFiltrosUbicacion.WidthPercentage = 100;
-            tablaFiltrosUbicacion.SpacingAfter = 20;
+            PdfPTable tablaFiltrosUbicacion = new PdfPTable(4);
+            tablaFiltrosUbicacion.WidthPercentage = 100;            
 
             Paragraph filtroPais = new Paragraph();
             filtroPais.Add(new Phrase("Pais: ", fuente9Negrita));
@@ -219,12 +198,51 @@ public class ReportePedidos : IHttpHandler, IRequiresSessionState
             PdfPCell cellFiltroLocalidad = new PdfPCell(filtroLocalidad);
             cellFiltroLocalidad.BorderWidth = 0;
 
+            PdfPCell cellEspacio = new PdfPCell();
+            cellEspacio.BorderWidth = 0;
+                               
             tablaFiltrosUbicacion.AddCell(cellFiltroPais);
             tablaFiltrosUbicacion.AddCell(cellFiltroProvincia);
             tablaFiltrosUbicacion.AddCell(cellFiltroLocalidad);
+            tablaFiltrosUbicacion.AddCell(cellEspacio);
 
             documento.Add(tablaFiltrosUbicacion);
 
+            //Tabla Filtros Estados y Fechas           
+            PdfPTable tablaFiltrosEstadosFechas = new PdfPTable(4);
+            tablaFiltrosEstadosFechas.WidthPercentage = 100;
+            tablaFiltrosEstadosFechas.SpacingAfter = 20;
+
+            Paragraph filtroEstado = new Paragraph();
+            filtroEstado.Add(new Phrase("Estado: ", fuente9Negrita));
+            filtroEstado.Add(new Phrase(txtEstado, fuente9));
+            PdfPCell cellFiltroEstado = new PdfPCell(filtroEstado);
+            cellFiltroEstado.BorderWidth = 0;
+
+            Paragraph filtroPagado = new Paragraph();
+            filtroPagado.Add(new Phrase("Pagado: ", fuente9Negrita));
+            filtroPagado.Add(new Phrase(txtPagado, fuente9));
+            PdfPCell cellFiltroPagado = new PdfPCell(filtroPagado);
+            cellFiltroPagado.BorderWidth = 0;
+
+            Paragraph filtroFechaInicio = new Paragraph();
+            filtroFechaInicio.Add(new Phrase("A partir de: ", fuente9Negrita));
+            filtroFechaInicio.Add(new Phrase(txtFechaInicio, fuente9));
+            PdfPCell cellFiltroFechaInicio = new PdfPCell(filtroFechaInicio);
+            cellFiltroFechaInicio.BorderWidth = 0;
+
+            Paragraph filtroFechaFin = new Paragraph();
+            filtroFechaFin.Add(new Phrase("Hasta: ", fuente9Negrita));
+            filtroFechaFin.Add(new Phrase(txtFechaFin, fuente9));
+            PdfPCell cellFiltroFechaFin = new PdfPCell(filtroFechaFin);
+            cellFiltroFechaFin.BorderWidth = 0;
+
+            tablaFiltrosEstadosFechas.AddCell(cellFiltroEstado);
+            tablaFiltrosEstadosFechas.AddCell(cellFiltroPagado);
+            tablaFiltrosEstadosFechas.AddCell(cellFiltroFechaInicio);
+            tablaFiltrosEstadosFechas.AddCell(cellFiltroFechaFin);
+
+            documento.Add(tablaFiltrosEstadosFechas);
 
             //Tabla Titulos
             PdfPTable tablaTitulos = new PdfPTable(8);

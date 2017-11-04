@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Navegacion.master" AutoEventWireup="true" CodeFile="EditarPedido.aspx.cs" Inherits="EditarPedido" MaintainScrollPositionOnPostback="true" %>
+﻿    <%@ Page Title="" Language="C#" MasterPageFile="~/Navegacion.master" AutoEventWireup="true" CodeFile="EditarPedido.aspx.cs" Inherits="EditarPedido" MaintainScrollPositionOnPostback="true" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="cphCabecera" runat="Server">
     <title>Editar Pedido</title>
@@ -266,7 +266,17 @@
                         </div>
                         <br />
                         <asp:CustomValidator ID="cstvMinimoDetalles" runat="server" ValidationGroup="Pedido" OnServerValidate="cstvMinimoDetalles_ServerValidate" ErrorMessage="*El pedido debe tener al menos un detalle" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px" /><br />
-                        <asp:Button ID="btnAccion" runat="server" ValidationGroup="Pedido" Text="Guardar" CssClass="botonImportante" Width="200px" OnClick="btnAccion_Click" Style="margin-top: 20px" />
+
+                        <asp:Table runat="server" style="margin: 0 auto">
+                            <asp:TableRow>
+                                <asp:TableCell>
+                                    <asp:Button ID="btnCancelarPedido" runat="server" Text="Cancelar" CausesValidation="false" CssClass="botonImportante" Width="200px" OnClick="btnCancelarPedido_Click" style="margin-right: 20px" />
+                                </asp:TableCell>
+                                <asp:TableCell>
+                                    <asp:Button ID="btnAccion" runat="server" ValidationGroup="Pedido" Text="Guardar" CssClass="botonImportante" Width="200px" OnClick="btnAccion_Click"/>
+                                </asp:TableCell>
+                            </asp:TableRow>
+                        </asp:Table>                       
 
                     </ContentTemplate>
                 </asp:UpdatePanel>

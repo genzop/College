@@ -62,6 +62,13 @@ public partial class Reportes : System.Web.UI.Page
             ddlArticuloCliente.Items.Add(new ListItem(cli.RazonSocial, cli.IdCliente.ToString()));
         }
 
+        //Pedidos Estado
+        ddlPedidoEstado.Items.Add(new ListItem("-", "-"));
+        ddlPedidoEstado.Items.Add(new ListItem("Pendiente", "Pendiente"));
+        ddlPedidoEstado.Items.Add(new ListItem("Enviado", "Enviado"));
+        ddlPedidoEstado.Items.Add(new ListItem("Entregado", "Entregado"));
+        ddlPedidoEstado.Items.Add(new ListItem("Anulado", "Anulado"));
+
         //Pedidos Pagados
         ddlPedidoPagado.Items.Add(new ListItem("-", "-"));
         ddlPedidoPagado.Items.Add(new ListItem("Si", "true"));
@@ -320,8 +327,52 @@ public partial class Reportes : System.Web.UI.Page
                 }
             }
 
+            //Filtro Estado
+            if(pedidos.Count() != 0 && ddlPedidoEstado.SelectedValue != "-")
+            {
+                List<Pedido> pedidosEliminados = new List<Pedido>();
+                foreach (Pedido pedido in pedidos)
+                {
+                    bool eliminar = true;
+                    if(pedido.Estado == ddlPedidoEstado.SelectedValue)
+                    {
+                        eliminar = false;
+                    }
+                    if (eliminar)
+                    {
+                        pedidosEliminados.Add(pedido);
+                    }
+                }
+                foreach (Pedido pedido in pedidosEliminados)
+                {
+                    pedidos.Remove(pedido);
+                }
+            }
+
+            //Filtro Pagado
+            if (pedidos.Count() != 0 && ddlPedidoPagado.SelectedValue != "-")
+            {
+                List<Pedido> pedidosEliminados = new List<Pedido>();
+                foreach (Pedido pedido in pedidos)
+                {
+                    bool eliminar = true;
+                    if (pedido.Pagado == Convert.ToBoolean(ddlPedidoPagado.Text))
+                    {
+                        eliminar = false;
+                    }
+                    if (eliminar)
+                    {
+                        pedidosEliminados.Add(pedido);
+                    }
+                }
+                foreach (Pedido pedido in pedidosEliminados)
+                {
+                    pedidos.Remove(pedido);
+                }
+            }
+
             //Filtro Pais
-            if(pedidos.Count() != 0 && ddlPedidoPais.SelectedValue != "-")
+            if (pedidos.Count() != 0 && ddlPedidoPais.SelectedValue != "-")
             {
                 //Carga todas la Localidades de ese Pais
                 List<int> idLocalidadesIncluidas = new List<int>();
@@ -444,30 +495,7 @@ public partial class Reportes : System.Web.UI.Page
                 {
                     pedidos.Remove(pedido);
                 }
-            }
-
-
-            //Filtro Pagado
-            if (pedidos.Count() != 0 && ddlPedidoPagado.SelectedValue != "-")
-            {
-                List<Pedido> pedidosEliminados = new List<Pedido>();
-                foreach (Pedido pedido in pedidos)
-                {
-                    bool eliminar = true;
-                    if (pedido.Pagado == Convert.ToBoolean(ddlPedidoPagado.Text))
-                    {
-                        eliminar = false;
-                    }
-                    if (eliminar)
-                    {
-                        pedidosEliminados.Add(pedido);
-                    }
-                }
-                foreach (Pedido pedido in pedidosEliminados)
-                {
-                    pedidos.Remove(pedido);
-                }
-            }
+            }                     
 
             if (pedidos.Count() != 0)
             {
@@ -476,10 +504,11 @@ public partial class Reportes : System.Web.UI.Page
                 Session["PedidoCliente"] = ddlPedidoCliente.SelectedItem.Text;
                 Session["PedidoFechaInicio"] = txtPedidoFechaInicio.Text;
                 Session["PedidoFechaFin"] = txtPedidoFechaFin.Text;
+                Session["PedidoEstado"] = ddlPedidoEstado.SelectedItem.Text;
+                Session["PedidoPagado"] = ddlPedidoPagado.SelectedItem.Text;
                 Session["PedidoPais"] = ddlPedidoPais.SelectedItem.Text;
                 Session["PedidoProvincia"] = ddlPedidoProvincia.SelectedItem.Text;
-                Session["PedidoLocalidad"] = ddlPedidoLocalidad.SelectedItem.Text;
-                Session["PedidoPagado"] = ddlPedidoPagado.SelectedItem.Text;
+                Session["PedidoLocalidad"] = ddlPedidoLocalidad.SelectedItem.Text;                
                 ScriptManager.RegisterClientScriptBlock(updatePanel, GetType(), "pedidosPDF", "window.open('ReportePedidos.ashx')", true);
             }
             else

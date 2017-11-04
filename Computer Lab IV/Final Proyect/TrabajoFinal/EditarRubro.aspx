@@ -36,8 +36,16 @@
                     <asp:LinqDataSource ID="LinqDataSource1" runat="server" ContextTypeName="BaseDatosDataContext" EntityTypeName="" Select="new (IdRubro, Denominacion)" TableName="Rubros" />
                     <asp:CustomValidator ID="cvRubroSuperior" runat="server" OnServerValidate="cvRubroSuperior_ServerValidate" ErrorMessage="* Este rubro no puede ser asignado como rubro superior" Display="Dynamic" ForeColor="#ff0000" Font-Bold="true" Font-Size="11px"/>
                 </div>               
-                
-                <asp:button id="btnAccion" runat="server" text="Guardar" cssclass="botonImportante" OnClick="btnAccion_Click"/>
+                <asp:Table runat="server" Style="margin: 0 auto" Width="100%">
+                    <asp:TableRow>
+                        <asp:TableCell>
+                            <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" CausesValidation="false" CssClass="botonImportante" OnClick="btnCancelar_Click" Style="margin-right: 20px" Width="140px" />
+                        </asp:TableCell>
+                        <asp:TableCell>
+                            <asp:button id="btnAccion" runat="server" text="Guardar" cssclass="botonImportante" OnClick="btnAccion_Click" Width="140px"/>
+                        </asp:TableCell>
+                    </asp:TableRow>
+                </asp:Table>
             </form>
         </div>
     </div>

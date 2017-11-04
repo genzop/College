@@ -645,4 +645,9 @@ public partial class EditarPedido : System.Web.UI.Page
             args.IsValid = true;
         }
     }
+
+    protected void btnCancelarPedido_Click(object sender, EventArgs e)
+    {
+        Response.Redirect("Pedidos.aspx");
+    }
 }

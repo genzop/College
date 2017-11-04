@@ -22,10 +22,10 @@
                     <div style="width: 900px; margin: 0 auto">
                         <table style="width: 100%">
                             <tr>
-                                <td style="width: 5%">
-                                    <asp:Label ID="lblPedidos" runat="server" Text="Pedidos" ForeColor="#FEFFFF" Font-Names="Arial" Font-Bold="true" Font-Size="23px " />
+                                <td style="width: 25%">
+                                    <asp:Label ID="lblPedidos" runat="server" Text="Listado de Pedidos" ForeColor="#FEFFFF" Font-Names="Arial" Font-Bold="true" Font-Size="23px " />
                                 </td>
-                                <td style="width: 95%">
+                                <td style="width: 75%">
                                     <hr style="display: block; height: 1px; border: 0; border-top: 3px solid #ccc; margin: 1em 0; padding: 0; margin-left:10px" />
                                 </td>
                             </tr>
@@ -65,34 +65,43 @@
                         </td>
                     </tr>
                     <tr>
+                        <!-- Estado -->
+                        <td>
+                            <div class="editContent">
+                                <p class="editContentTitle" style="font-weight: bold; color: white">Estado</p>
+                                <asp:DropDownList ID="ddlPedidoEstado" runat="server" CssClass="drownDownList" AutoPostBack="True" />                                
+                            </div>
+                        </td>                        
+                        <!-- Pagado -->
+                        <td>
+                            <div class="editContent">
+                                <p class="editContentTitle" style="font-weight: bold; color: white">Pagado</p>
+                                <asp:DropDownList ID="ddlPedidoPagado" runat="server" CssClass="drownDownList" AutoPostBack="True" />                                
+                            </div>
+                        </td>                        
                         <!-- Pais -->
                         <td style="width: 25%; vertical-align: top">
                             <div class="editContent">
-                                <p class="editContentTitle" style="font-weight: bold; color: white"">Pais</p>
+                                <p class="editContentTitle" style="font-weight: bold; color: white">Pais</p>
                                 <asp:DropDownList ID="ddlPedidoPais" runat="server" CssClass="drownDownList" AutoPostBack="True" OnSelectedIndexChanged="ddlPedidoPais_SelectedIndexChanged"/>                                
                             </div>
                         </td>
                         <!-- Provincia -->
                         <td style="width: 25%; vertical-align: top">
                             <div class="editContent">
-                                <p class="editContentTitle" style="font-weight: bold; color: white"">Provincia</p>
+                                <p class="editContentTitle" style="font-weight: bold; color: white">Provincia</p>
                                 <asp:DropDownList ID="ddlPedidoProvincia" runat="server" CssClass="drownDownList" AutoPostBack="True" OnSelectedIndexChanged="ddlPedidoProvincia_SelectedIndexChanged" />                                
                             </div>
-                        </td>
+                        </td>                                   
+                    </tr>
+                    <tr>                        
                         <!-- Localidad -->
                         <td style="width: 25%; vertical-align: top">
                             <div class="editContent">
-                                <p class="editContentTitle" style="font-weight: bold; color: white"">Localidad</p>
+                                <p class="editContentTitle" style="font-weight: bold; color: white">Localidad</p>
                                 <asp:DropDownList ID="ddlPedidoLocalidad" runat="server" CssClass="drownDownList" AutoPostBack="True" />                                
                             </div>
-                        </td>
-                        <!-- Pagado -->
-                        <td>
-                            <div class="editContent">
-                                <p class="editContentTitle" style="font-weight: bold; color: white"">Pagado</p>
-                                <asp:DropDownList ID="ddlPedidoPagado" runat="server" CssClass="drownDownList" AutoPostBack="True" />                                
-                            </div>
-                        </td>                        
+                        </td>        
                     </tr>
                 </table><br />  
                 <asp:button id="btnReportePedidos" runat="server" text="Generar Reporte" OnClick="btnReportePedidos_Click" cssclass="botonImportante" Width="200" Height="50" style="float: right; margin-right: 15px"/>
@@ -104,10 +113,10 @@
             <div style="width: 900px; margin: 0 auto">
                 <table style="width: 100%">
                     <tr>
-                        <td style="width: 5%">
-                            <asp:Label ID="lblArticulo" runat="server" Text="Articulos" ForeColor="#FEFFFF" Font-Names="Arial" Font-Bold="true" Font-Size="23px " />
+                        <td style="width: 25%">
+                            <asp:Label ID="lblArticulo" runat="server" Text="Articulos Vendidos" ForeColor="#FEFFFF" Font-Names="Arial" Font-Bold="true" Font-Size="23px " />
                         </td>
-                        <td style="width: 95%">
+                        <td style="width: 75%">
                             <hr style="display: block; height: 1px; border: 0; border-top: 3px solid #ccc; margin: 1em 0; padding: 0; margin-left:10px" />
                         </td>
                     </tr>
@@ -186,10 +195,10 @@
             <div style="width: 900px; margin: 0 auto">
                 <table style="width: 100%">
                     <tr>
-                        <td style="width: 5%">
-                            <asp:Label ID="lblClientes" runat="server" Text="Clientes" ForeColor="#FEFFFF" Font-Names="Arial" Font-Bold="true" Font-Size="23px " />
+                        <td style="width: 35%">
+                            <asp:Label ID="lblClientes" runat="server" Text="Información de los Clientes" ForeColor="#FEFFFF" Font-Names="Arial" Font-Bold="true" Font-Size="23px " />
                         </td>
-                        <td style="width: 95%">
+                        <td style="width: 65%">
                             <hr style="display: block; height: 1px; border: 0; border-top: 3px solid #ccc; margin: 1em 0; padding: 0; margin-left:10px" />
                         </td>
                     </tr>

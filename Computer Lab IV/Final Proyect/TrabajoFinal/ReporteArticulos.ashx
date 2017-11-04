@@ -139,7 +139,7 @@ public class ReporteArticulos : IHttpHandler, IRequiresSessionState
             documento.Add(tablaEncabezado);
 
             //Titulo
-            Paragraph titulo = new Paragraph("Reporte Artículos", fuenteTitulo);
+            Paragraph titulo = new Paragraph("Artículos Vendidos", fuenteTitulo);
             titulo.Alignment = Element.ALIGN_CENTER;
             titulo.SpacingAfter = 30;
             documento.Add(titulo);

@@ -51,9 +51,17 @@
                             <asp:Parameter DefaultValue="-" Name="Denominacion" Type="String" />
                         </WhereParameters>
                     </asp:LinqDataSource>
-                </div>               
-                
-                <asp:button id="btnAccion" runat="server" text="Guardar" cssclass="botonImportante" OnClick="btnAccion_Click"/>
+                </div>
+                <asp:Table runat="server" Style="margin: 0 auto" Width="100%">
+                    <asp:TableRow>
+                        <asp:TableCell>
+                            <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" CausesValidation="false" CssClass="botonImportante" OnClick="btnCancelar_Click" Style="margin-right: 20px" Width="140px" />
+                        </asp:TableCell>
+                        <asp:TableCell>
+                            <asp:Button ID="btnAccion" runat="server" Text="Guardar" CssClass="botonImportante" OnClick="btnAccion_Click"  Width="140px"  />
+                        </asp:TableCell>
+                    </asp:TableRow>
+                </asp:Table>
             </form>
         </div>
     </div>
