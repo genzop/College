@@ -29,10 +29,8 @@ public partial class Pedidos : System.Web.UI.Page
 
             //Si el usuario es administrador, se muestran cargan todos los pedidos en la tabla
             if (usuario.Administrador)
-            {             
-                if(!IsPostBack){
-                    SqlDataSource1.SelectCommand = "SELECT Pedido.IdPedido, Pedido.Editable, Pedido.Pagado, Pedido.FechaEntrega, Pedido.GastosEnvio, Pedido.Estado, Pedido.FechaPedido, Pedido.SubTotal, Pedido.Total, Cliente.RazonSocial, Vendedor.Nombre + ' ' + Vendedor.Apellido AS Vendedor FROM Pedido INNER JOIN Cliente ON Pedido.IdCliente = Cliente.IdCliente INNER JOIN Vendedor ON Pedido.IdVendedor = Vendedor.IdVendedor";                    
-                }
+            {
+                SqlDataSource1.SelectCommand = "SELECT Pedido.IdPedido, Pedido.Editable, Pedido.Pagado, Pedido.FechaEntrega, Pedido.GastosEnvio, Pedido.Estado, Pedido.FechaPedido, Pedido.SubTotal, Pedido.Total, Cliente.RazonSocial, Vendedor.Nombre + ' ' + Vendedor.Apellido AS Vendedor FROM Pedido INNER JOIN Cliente ON Pedido.IdCliente = Cliente.IdCliente INNER JOIN Vendedor ON Pedido.IdVendedor = Vendedor.IdVendedor";                                    
             }
         }
     }
@@ -121,22 +119,22 @@ public partial class Pedidos : System.Web.UI.Page
         {
             if (txtBuscar.Text == "")
             {
-                query = "SELECT Pedido.IdPedido, Pedido.Editable, Pedido.Pagado, Pedido.FechaEntrega, Pedido.GastosEnvio, Pedido.Estado, Pedido.FechaPedido, Pedido.SubTotal, Pedido.Total, Cliente.RazonSocial, Vendedor.Nombre + ' ' + Vendedor.Apellido AS Vendedor FROM Pedido INNER JOIN Cliente ON Pedido.IdCliente = Cliente.IdCliente INNER JOIN Vendedor ON Pedido.IdVendedor = Vendedor.IdVendedor";
+                query = "SELECT Pedido.IdPedido, Pedido.Editable, Pedido.Pagado, Pedido.FechaEntrega, Pedido.GastosEnvio, Pedido.Estado, Pedido.FechaPedido, Pedido.SubTotal, Pedido.Total, Cliente.RazonSocial FROM Pedido INNER JOIN Cliente ON Pedido.IdCliente = Cliente.IdCliente";                       
             }
             else
             {
-                query = "SELECT Pedido.IdPedido, Pedido.Editable, Pedido.Pagado, Pedido.FechaEntrega, Pedido.GastosEnvio, Pedido.Estado, Pedido.FechaPedido, Pedido.SubTotal, Pedido.Total, Cliente.RazonSocial, Vendedor.Nombre + ' ' + Vendedor.Apellido AS Vendedor FROM Pedido INNER JOIN Cliente ON Pedido.IdCliente = Cliente.IdCliente INNER JOIN Vendedor ON Pedido.IdVendedor = Vendedor.IdVendedor WHERE " + ddlBuscar.SelectedValue + " LIKE '%" + txtBuscar.Text + "%'";
+                query = "SELECT Pedido.IdPedido, Pedido.Editable, Pedido.Pagado, Pedido.FechaEntrega, Pedido.GastosEnvio, Pedido.Estado, Pedido.FechaPedido, Pedido.SubTotal, Pedido.Total, Cliente.RazonSocial FROM Pedido INNER JOIN Cliente ON Pedido.IdCliente = Cliente.IdCliente WHERE " + ddlBuscar.SelectedValue + " LIKE '%" + txtBuscar.Text + "%'";                       
             }
         }
         else
         {
             if (txtBuscar.Text == "")
             {
-                query = "SELECT Pedido.IdPedido, Pedido.Editable, Pedido.Pagado,Pedido.FechaEntrega, Pedido.GastosEnvio, Pedido.Estado, Pedido.FechaPedido, Pedido.SubTotal, Pedido.Total, Cliente.RazonSocial FROM Pedido INNER JOIN Cliente ON Pedido.IdCliente = Cliente.IdCliente WHERE Pedido.IdVendedor=@vendedor";
+                query = "SELECT Pedido.IdPedido, Pedido.Editable, Pedido.Pagado, Pedido.FechaEntrega, Pedido.GastosEnvio, Pedido.Estado, Pedido.FechaPedido, Pedido.SubTotal, Pedido.Total, Cliente.RazonSocial FROM Pedido INNER JOIN Cliente ON Pedido.IdCliente = Cliente.IdCliente WHERE Pedido.IdVendedor = @vendedor";                       
             }
             else
             {
-                query = "SELECT Pedido.IdPedido, Pedido.Editable, Pedido.Pagado,Pedido.FechaEntrega, Pedido.GastosEnvio, Pedido.Estado, Pedido.FechaPedido, Pedido.SubTotal, Pedido.Total, Cliente.RazonSocial FROM Pedido INNER JOIN Cliente ON Pedido.IdCliente = Cliente.IdCliente WHERE Pedido.IdVendedor=@vendedor AND " + ddlBuscar.SelectedValue + " LIKE '%" + txtBuscar.Text + "%'";
+                query = "SELECT Pedido.IdPedido, Pedido.Editable, Pedido.Pagado, Pedido.FechaEntrega, Pedido.GastosEnvio, Pedido.Estado, Pedido.FechaPedido, Pedido.SubTotal, Pedido.Total, Cliente.RazonSocial FROM Pedido INNER JOIN Cliente ON Pedido.IdCliente = Cliente.IdCliente WHERE Pedido.IdVendedor=@vendedor AND " + ddlBuscar.SelectedValue + " LIKE '%" + txtBuscar.Text + "%'";                       
             }
         }
 

@@ -21,7 +21,7 @@
                 <!-- Buscar -->
                 <div style="width: 1100px; margin: 0 auto">
                     <asp:DropDownList ID="ddlBuscar" runat="server" Style="padding-left: 5px" Height="37px" BackColor="#f2f2f2">
-                        <asp:ListItem Text="Numero" Value="Pedido.IdCliente" />
+                        <asp:ListItem Text="Numero" Value="Pedido.IdPedido" />
                         <asp:ListItem Text="Cliente" Value="Cliente.RazonSocial" />
                         <asp:ListItem Text="Estado" Value="Pedido.Estado" />
                         <asp:ListItem Text="Fecha" Value="Pedido.FechaPedido" />
@@ -35,7 +35,7 @@
 
                 <div>
                     <!-- Tabla Pedidos -->
-                    <asp:GridView ID="grdPedidos" runat="server" AutoGenerateColumns="False" CellPadding="6" DataSourceID="SqlDataSource1" ForeColor="#333333" GridLines="None" Font-Size="14px" AllowPaging="True" AllowSorting="True" BorderWidth="0px" Style="margin: 0 auto; margin-top: 20px; text-align: center; width: 1100px" DataKeyNames="IdPedido">
+                    <asp:GridView ID="grdPedidos" runat="server" AutoGenerateColumns="False" DataKeyNames="IdPedido" DataSourceID="SqlDataSource1" AllowPaging="True" AllowSorting="True"  CellPadding="6" ForeColor="#333333" GridLines="None" Font-Size="14px" Style="margin: 0 auto; margin-top: 20px; text-align: center; width: 1100px">
                         <AlternatingRowStyle BackColor="#F2F2F2" />
                         <Columns>
                             <asp:BoundField DataField="IdPedido" HeaderText="N°" SortExpression="IdPedido" ItemStyle-Width="100px" />
